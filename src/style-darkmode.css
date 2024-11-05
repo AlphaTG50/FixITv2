@@ -1,0 +1,67 @@
+:root {
+    /* Colors */
+    --lightblue: #8AD0F1;
+    --darkblue: #1473A8;
+    --darkgrey: #161616;
+    --lightgrey: #ebebeb;
+}
+
+
+body.dark-mode {
+    background-color: #111;
+}
+
+body.dark-mode .logo svg {
+        width: 75px; /* Beibehaltung der ursprünglichen Breite */
+        filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4))  /* Sanfter Glanz */
+        drop-shadow(0 0 3px rgba(255, 255, 255, 0.2))  /* Milder Glanz */
+        drop-shadow(0 0 5px rgba(255, 255, 255, 0.1)); /* Leichter Glanz */
+transition: filter 0.3s; /* Sanfte Übergänge */
+      }
+
+
+body.dark-mode .logo svg {
+    fill: #fff;
+}
+
+
+body.dark-mode .darkmode-text, body.dark-mode #searchInput, body.dark-mode .socialicon a, body.dark-mode .albumtitle h1 {
+    color: #fff;
+}
+
+
+body.dark-mode #searchInput, body.dark-mode .albumlist, body.dark-mode .navbar {
+    background-color: var(--darkgrey);
+}
+
+
+body.dark-mode .albumtitle h2 {
+color: #FFFFFF99;
+}
+    
+body.dark-mode .albumtitle h3 {
+    padding-left: 5px;
+    font-size: 0.70rem;
+    font-weight: 700;
+    color: #ffffff; /* Weißer Text */
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.6); /* Leichter weißer Glow */
+  }
+  
+
+body.dark-mode .albumitem img {
+    background-color: #272727;
+    height: 160px;
+}
+
+
+body.dark-mode .albumartwork:before {
+    background: #FFFFFF1A;
+}
+
+body.dark-mode .wiki a{
+    color: #fff;
+}
+
+body.dark-mode .socialicon i:hover {
+    color: #ffffffc6;;
+    }

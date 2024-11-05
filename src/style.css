@@ -1,0 +1,399 @@
+:root{
+  --search-input-margin-top: 20px;
+
+  /* Colors */
+  --lightblue: #8AD0F1;
+  --darkblue: #1473A8;
+  --darkgrey: #161616;
+  --lightgrey: #ebebeb;
+
+  /* Others */
+  --container-width: 1600px;
+  --album-width: 200px;
+}
+
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  margin-top: 70px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+
+html {
+  box-sizing: border-box;
+  height: 100%;
+  user-select: none;
+}
+
+
+h1, h2 {
+  font-weight: normal;
+  margin: 0;
+}
+
+.albumartwork img {
+  pointer-events: none; /* Verhindert, dass Bilder markierbar sind */
+}
+
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Search */
+#searchInput {
+  margin-top: 25px;
+  padding: 10px;
+  width: 500px;
+  border: 0.0px solid #ccc;
+  border-radius: 5px;
+  background-color: var(--lightgrey);
+  color: #000;
+  font-size: 1rem;
+  box-shadow: 0 4px 2px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+
+.logo {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.logo svg {
+  width: 75px; /* Beibehaltung der ursprünglichen Breite */
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4))  /* Sanfter Glanz in Schwarz */
+  drop-shadow(0 0 3px rgba(0, 0, 0, 0.2))  /* Milder Glanz in Schwarz */
+  drop-shadow(0 0 5px rgba(0, 0, 0, 0.1)); /* Leichter Glanz in Schwarz */
+transition: filter 0.3s; /* Sanfte Übergänge */
+}
+
+
+
+
+/* Album List */
+.container {
+  max-width: var(--container-width);
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.albumlist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--album-width), 1fr));
+  gap: 20px;
+  padding: 40px;
+  padding-right: 0px;
+  background-color: var(--lightgrey);
+  border-radius: 20px;
+  transition: grid-template-columns 0.4s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+
+/* Album Items */
+.albumitem {
+  transition: transform 0.5s ease-in-out, box-shadow 0.4s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 0.6;
+  width: calc(var(--album-width) - 40px);
+  cursor: pointer;
+}
+
+.albumitem img {
+  background-color: #fff;
+  max-width: 100%;
+  height: 160px;
+}
+
+.albumitem:hover {
+  opacity: 1;
+  transform-origin: top;
+}
+
+.albumitem:hover .albumartwork:before {
+  transform: rotate(45deg) translate(0px, -70%);
+  filter: blur(6px);
+}
+
+
+/* Album Title */
+.albumtitle h1 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #000;
+  font-weight: 700;
+}
+
+.albumtitle h2 {
+  font-size: 0.8rem;
+}
+
+.albumtitle h3 {
+  padding-left: 5px;
+  font-size: 0.70rem;
+  font-weight: 700;
+  color: #000000; /* Schwarzer Text */
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Leichter schwarzer Glow */
+}
+
+
+
+.albumtitle h1, .albumtitle h2{
+  padding-left: 5px;
+  color: #444444;
+}
+
+
+/* Album Artwork */
+.albumartwork {
+  position: relative;
+  transition: 0.4s;
+  transform-origin: 50% -40px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border-radius: 25px;
+  z-index: 0;
+}
+
+
+.albumartwork:before {
+  content: "";
+  transform: rotate(45deg) translate(0px, -90%);
+  filter: blur(4px);
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: 0.4s;
+}
+
+
+
+
+/* Media Queries */
+@media (min-width: 4400px) {
+  .albumlist {
+    grid-template-columns: repeat(19, var(--album-width));
+  }
+}
+
+
+@media (max-width: 4399px) and (min-width: 4200px) {
+  .albumlist {
+    grid-template-columns: repeat(19, var(--album-width));
+  }
+}
+
+@media (max-width: 4199px) and (min-width: 4000px) {
+  .albumlist {
+    grid-template-columns: repeat(18, var(--album-width));
+  }
+}
+
+@media (max-width: 3999px) and (min-width: 3800px) {
+  .albumlist {
+    grid-template-columns: repeat(17, var(--album-width));
+  }
+}
+
+@media (max-width: 3799px) and (min-width: 3600px) {
+  .albumlist {
+    grid-template-columns: repeat(16, var(--album-width));
+  }
+}
+
+@media (max-width: 3600px) and (min-width: 3400px) {
+  .albumlist {
+    grid-template-columns: repeat(15, var(--album-width));
+  }
+}
+
+@media (max-width: 3399px) and (min-width: 3200px) {
+  .albumlist {
+    grid-template-columns: repeat(14, var(--album-width));
+  }
+}
+
+@media (max-width: 3199px) and (min-width: 3000px) {
+  .albumlist {
+    grid-template-columns: repeat(13, var(--album-width));
+  }
+}
+
+@media (max-width: 2999px) and (min-width: 2800px) {
+  .albumlist {
+    grid-template-columns: repeat(12, var(--album-width));
+  }
+}
+
+@media (max-width: 2799px) and (min-width: 2600px) {
+  .albumlist {
+    grid-template-columns: repeat(11, var(--album-width));
+  }
+}
+
+@media (max-width: 2599px) and (min-width: 2400px) {
+  .albumlist {
+    grid-template-columns: repeat(10, var(--album-width));
+  }
+}
+
+@media (max-width: 2399px) and (min-width: 2200px) {
+  .albumlist {
+    grid-template-columns: repeat(9, var(--album-width));
+  }
+}
+
+@media (max-width: 2199px) and (min-width: 2000px) {
+  .albumlist {
+    grid-template-columns: repeat(8, var(--album-width));
+  }
+}
+
+@media (max-width: 1999px) and (min-width: 1800px) {
+  .albumlist {
+    grid-template-columns: repeat(7, var(--album-width));
+  }
+}
+
+@media (max-width: 1799px) and (min-width: 1600px) {
+  .albumlist {
+    grid-template-columns: repeat(6, var(--album-width));
+  }
+}
+
+@media (max-width: 1599px) and (min-width: 1400px) {
+  .albumlist {
+    grid-template-columns: repeat(5, var(--album-width));
+  }
+}
+
+@media (max-width: 1399px) and (min-width: 1200px) {
+  .albumlist {
+    grid-template-columns: repeat(4, var(--album-width));
+  }
+
+}
+
+@media (max-width: 1199px) and (min-width: 1000px) {
+  .albumlist {
+    grid-template-columns: repeat(3, var(--album-width));
+  }
+
+}
+
+@media (max-width: 999px) and (min-width: 850px) {
+  .albumlist {
+    grid-template-columns: repeat(2, var(--album-width));
+  }
+  .albumitem {
+    margin-left: 5px;
+      }
+  #searchInput {
+width: 400px;
+  }
+}
+
+@media (max-width: 849px) and (min-width: 700px) {
+  .albumlist {
+    grid-template-columns: repeat(2, var(--album-width));
+  }
+  #searchInput {
+    width: 400px;
+  }
+}
+
+@media (max-width: 699px) and (min-width: 550px) {
+  .albumlist {
+    grid-template-columns: repeat(1, var(--album-width));
+  }
+  #searchInput {
+    width: 200px;
+  }
+}
+
+@media (max-width: 549px) and (min-width: 400px) {
+  .albumlist {
+    grid-template-columns: repeat(1, var(--album-width));
+  }
+  #searchInput {
+    width: 200px;
+  }
+}
+
+@media (max-width: 399px) {
+  .albumlist {
+    grid-template-columns: repeat(1, var(--album-width));
+  }
+  #searchInput {
+    width: 200px;
+  }
+}
+
+@media (max-width: 550px) {
+  .albumitem {
+    margin-left: 5px;
+  }
+}
+
+@media (max-width: 350px) {
+  .logo svg {
+    position: relative;
+    justify-content: center; /* Zentriert die Inhalte horizontal */
+  }
+}
+
+@media (max-width: 350px) {
+
+  .logo svg{
+    left: 0; /* Zurücksetzen der linken Position */
+    transform: none; /* Zurücksetzen der Transformierung */
+    margin-left: auto; /* Abstand zum linken Rand der Navbar */
+    margin-right: auto; /* Abstand zum rechten Rand der Navbar */
+  }
+
+  .darkmode_container {
+    margin-top: 20px;
+  }
+}
+
+
+
+/* Animation */
+@keyframes keyframes-fill {
+  0% {
+    transform: rotate(-360deg) scale(0);
+    opacity: 0;
+  }
+  75% {
+    transform: rotate(25deg);
+  }
+}
+
+
+
+
+
