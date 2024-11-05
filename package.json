@@ -1,0 +1,71 @@
+{
+  "name": "fixit",
+  "version": "4.25.6",
+  "main": "main.js",
+  "bin": "main.js",
+  "author": "HelpIT",
+  "license": "ISC",
+  "keywords": [
+    "IT-Tool",
+    "Produktivität",
+    "Automatisierung",
+    "All-in-One"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.helpit.fixit",
+    "productName": "FixIT",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/portable-apps",
+        "to": "portable-apps",
+        "filter": [
+          "**/*.exe",
+          "**/*.ps1",
+          "**/*.bat"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "src/assets/images/logo/win/icon.ico",
+      "artifactName": "FixIT.Portable.v${version}.zip"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "FixIT",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "FixIT.Setup.v${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^32.2.2",
+    "electron-builder": "^25.1.8",
+    "rcedit": "^4.0.1"
+  },
+  "dependencies": {
+    "auto-launch": "^5.0.6",
+    "axios": "^1.7.7",
+    "electron-icon-maker": "^0.0.5",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.0"
+  }
+}
