@@ -38,20 +38,21 @@ document.querySelectorAll('.albumitem').forEach(item => {
 function filterAlbums() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
     const albums = document.querySelectorAll('.albumitem');
-    const albumList = document.querySelector('.albumlist');
-    let found = false;
 
     albums.forEach(album => {
         const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
-        const isVisible = searchTerm === '' || title.includes(searchTerm);
-        album.style.display = isVisible ? 'block' : 'none';
-        album.classList.toggle('found', isVisible);
-        found = found || isVisible; // Setze found auf true, wenn mindestens ein Album gefunden wird
+        const description = album.querySelector('.albumtitle h2').textContent.toLowerCase();
+        const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
+        
+        if (searchTerm === '' || 
+            title.includes(searchTerm) || 
+            description.includes(searchTerm) || 
+            searchData.includes(searchTerm)) {
+            album.style.display = 'flex'; // Geändert von 'block' zu 'flex'
+        } else {
+            album.style.display = 'none';
+        }
     });
-
-    albumList.classList.toggle('centered', found);
-    albumList.style.display = found ? 'grid' : 'none';
-    adjustGridColumns();
 }
 
 // Event-Listener für die Eingabe in das Suchfeld
@@ -96,6 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('error', (event, errorMessage) => {
         console.error('IPC Error:', errorMessage); // Fehlerprotokollierung
         alert('Ein Fehler ist aufgetreten: ' + errorMessage); // Benutzerbenachrichtigung
+    });
+
+    // Work in Progress Items deaktivieren
+    document.querySelectorAll('.albumitem').forEach(item => {
+        const description = item.querySelector('.albumtitle h2');
+        if (description && description.textContent.includes('🚧')) {
+            item.style.opacity = '0.5';
+            item.style.filter = 'grayscale(100%)';
+            item.style.pointerEvents = 'none';
+            item.style.cursor = 'not-allowed';
+            
+            // Entferne alle Event Listener
+            item.replaceWith(item.cloneNode(true));
+        }
     });
 });
 

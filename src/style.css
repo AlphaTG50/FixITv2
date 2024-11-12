@@ -21,13 +21,14 @@
 body {
   font-family: 'Open Sans', sans-serif;
   margin: 0;
-  margin-top: 70px;
+  padding: 40px 0;
   min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
+  transition: background-color 0.3s ease;
 }
 
 
@@ -55,7 +56,8 @@ figure {
 
 /* Search */
 #searchInput {
-  margin-top: 25px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   padding: 10px;
   width: 500px;
   border: 0.0px solid #ccc;
@@ -65,6 +67,7 @@ figure {
   font-size: 1rem;
   box-shadow: 0 4px 2px rgba(0, 0, 0, 0.2);
   outline: none;
+  transition: all 0.3s ease;
 }
 
 
@@ -72,6 +75,7 @@ figure {
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-top: 40px;
 }
 
 .logo svg {
@@ -80,44 +84,49 @@ figure {
   drop-shadow(0 0 3px rgba(0, 0, 0, 0.2))  /* Milder Glanz in Schwarz */
   drop-shadow(0 0 5px rgba(0, 0, 0, 0.1)); /* Leichter Glanz in Schwarz */
 transition: filter 0.3s; /* Sanfte Übergänge */
+  transition: all 0.3s ease;
 }
 
 
 
 
 /* Album List */
-.container {
-  max-width: var(--container-width);
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
+.albumlist {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.albumlist {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--album-width), 1fr));
-  gap: 20px;
+  gap: 15px;
   padding: 40px;
-  padding-right: 0px;
   background-color: var(--lightgrey);
   border-radius: 20px;
-  transition: grid-template-columns 0.4s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-top: 50px;
-  margin-bottom: 50px;
+  width: 80%;
+  max-width: 1200px;
 }
 
 
 /* Album Items */
 .albumitem {
-  transition: transform 0.5s ease-in-out, box-shadow 0.4s ease-in-out, opacity 0.3s ease-in-out;
-  opacity: 0.6;
-  width: calc(var(--album-width) - 40px);
+  display: flex; /* Standardanzeige ist flex */
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  border-radius: 15px;
+  opacity: 0.8;
+  transition: all 0.3s ease;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Wenn ein Element ausgeblendet werden soll */
+.albumitem[style*="display: none"] {
+  display: none !important;
+}
+
+.albumitem:hover {
+  opacity: 1;
+  transform: translateX(10px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .albumitem img {
@@ -143,21 +152,61 @@ transition: filter 0.3s; /* Sanfte Übergänge */
   margin-bottom: 5px;
   color: #000;
   font-weight: 700;
+  transition: all 0.3s ease;
 }
 
 .albumtitle h2 {
   font-size: 0.8rem;
+  transition: all 0.3s ease;
 }
 
 .albumtitle h3 {
-  padding-left: 5px;
   font-size: 0.70rem;
-  font-weight: 700;
-  color: #000000; /* Schwarzer Text */
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.3); /* Leichter schwarzer Glow */
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--darkblue) 0%, var(--lightblue) 100%);
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 12px;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(20, 115, 168, 0.3);
+  transition: all 0.3s ease;
 }
 
+.albumtitle h3::before {
+  content: "📦";
+  margin-right: 5px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
 
+.wip-tag {
+  font-size: 0.70rem;
+  font-weight: 600;
+  color: #856404;
+  background-color: #fff3cd;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.wip-tag::before {
+  content: "🚧";
+  margin-right: 5px;
+}
+
+.albumitem:hover .albumtitle h3 {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(20, 115, 168, 0.4);
+}
 
 .albumtitle h1, .albumtitle h2{
   padding-left: 5px;
@@ -167,15 +216,20 @@ transition: filter 0.3s; /* Sanfte Übergänge */
 
 /* Album Artwork */
 .albumartwork {
-  position: relative;
-  transition: 0.4s;
-  transform-origin: 50% -40px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  border-radius: 25px;
-  z-index: 0;
+  width: 100px;
+  min-width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  margin-bottom: 0;
 }
 
+.albumartwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
 
 .albumartwork:before {
   content: "";
@@ -190,207 +244,192 @@ transition: filter 0.3s; /* Sanfte Übergänge */
   transition: 0.4s;
 }
 
+.albuminfo {
+  flex-grow: 1;
+}
 
+.albumtitle h1 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
 
+.albumtitle h2 {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
 
-/* Media Queries */
-@media (min-width: 4400px) {
-  .albumlist {
-    grid-template-columns: repeat(19, var(--album-width));
-  }
+/* Anpassung für Dark Mode */
+body.dark-mode .albumitem {
+  background-color: #272727;
+}
+
+/* Work in Progress Items ausgrauen und deaktivieren */
+.albumitem:has(h2:contains('🚧')) {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Hover-Effekte für WIP-Items deaktivieren */
+.albumitem:has(h2:contains('🚧')):hover {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.5;
+}
+
+/* WIP-Tag Styling anpassen */
+.wip-tag {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 
-@media (max-width: 4399px) and (min-width: 4200px) {
-  .albumlist {
-    grid-template-columns: repeat(19, var(--album-width));
-  }
+/* WIP Section Styling */
+.wip-section {
+  width: 80%;
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
-@media (max-width: 4199px) and (min-width: 4000px) {
-  .albumlist {
-    grid-template-columns: repeat(18, var(--album-width));
-  }
+.wip-section-title {
+  font-size: 1.2rem;
+  color: #856404;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff3cd;
+  border-radius: 10px;
+  display: inline-block;
 }
 
-@media (max-width: 3999px) and (min-width: 3800px) {
-  .albumlist {
-    grid-template-columns: repeat(17, var(--album-width));
-  }
+.wip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background-color: rgba(255, 243, 205, 0.3);
+  border-radius: 20px;
+  margin-bottom: 30px;
 }
 
-@media (max-width: 3799px) and (min-width: 3600px) {
-  .albumlist {
-    grid-template-columns: repeat(16, var(--album-width));
-  }
+/* WIP Items in der WIP-Section */
+.wip-list .albumitem {
+  opacity: 1;
+  filter: none;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
-@media (max-width: 3600px) and (min-width: 3400px) {
-  .albumlist {
-    grid-template-columns: repeat(15, var(--album-width));
-  }
+/* Portable Section Title */
+.portable-section {
+  width: 80%;
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
-@media (max-width: 3399px) and (min-width: 3200px) {
-  .albumlist {
-    grid-template-columns: repeat(14, var(--album-width));
-  }
+.portable-section-title {
+  font-size: 1.2rem;
+  color: var(--darkblue);
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: var(--lightblue);
+  border-radius: 10px;
+  display: inline-block;
 }
 
-@media (max-width: 3199px) and (min-width: 3000px) {
-  .albumlist {
-    grid-template-columns: repeat(13, var(--album-width));
-  }
+/* Section Header Styling */
+.section-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
 }
 
-@media (max-width: 2999px) and (min-width: 2800px) {
-  .albumlist {
-    grid-template-columns: repeat(12, var(--album-width));
-  }
+.toggle-icon {
+  margin-left: 10px;
+  transition: transform 0.3s ease;
+  font-size: 1rem;
 }
 
-@media (max-width: 2799px) and (min-width: 2600px) {
-  .albumlist {
-    grid-template-columns: repeat(11, var(--album-width));
-  }
+.section-header.collapsed .toggle-icon {
+  transform: rotate(-90deg);
 }
 
-@media (max-width: 2599px) and (min-width: 2400px) {
-  .albumlist {
-    grid-template-columns: repeat(10, var(--album-width));
-  }
+/* Collapsible Content */
+.wip-list, 
+.portable-section .albumlist {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+  max-height: 2000px; /* Anpassen je nach Inhalt */
+  opacity: 1;
+  /* Initial versteckt */
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
 }
 
-@media (max-width: 2399px) and (min-width: 2200px) {
-  .albumlist {
-    grid-template-columns: repeat(9, var(--album-width));
-  }
+.wip-list.collapsed, 
+.portable-section .albumlist.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: 0;
 }
 
-@media (max-width: 2199px) and (min-width: 2000px) {
-  .albumlist {
-    grid-template-columns: repeat(8, var(--album-width));
-  }
+/* Wenn die .visible Klasse hinzugefügt wird */
+.wip-list.visible, 
+.portable-section .albumlist.visible {
+  max-height: 2000px;
+  opacity: 1;
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
-@media (max-width: 1999px) and (min-width: 1800px) {
-  .albumlist {
-    grid-template-columns: repeat(7, var(--album-width));
-  }
+/* Work in Progress Label neu gestalten */
+.wip-label {
+    font-size: 0.70rem !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    background: linear-gradient(135deg, #856404 0%, #ffeeba 100%);
+    display: inline-flex !important;
+    align-items: center;
+    padding: 5px 12px !important;
+    border-radius: 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(133, 100, 4, 0.3);
+    transition: all 0.3s ease;
 }
 
-@media (max-width: 1799px) and (min-width: 1600px) {
-  .albumlist {
-    grid-template-columns: repeat(6, var(--album-width));
-  }
+/* Icon und Schatten für WIP Label */
+.wip-label::before {
+    content: "🚧";
+    margin-right: 5px;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
 }
 
-@media (max-width: 1599px) and (min-width: 1400px) {
-  .albumlist {
-    grid-template-columns: repeat(5, var(--album-width));
-  }
+/* Hover-Effekt für das WIP Label */
+.albumitem:hover .wip-label {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(133, 100, 4, 0.4);
 }
 
-@media (max-width: 1399px) and (min-width: 1200px) {
-  .albumlist {
-    grid-template-columns: repeat(4, var(--album-width));
-  }
-
+/* Ausgrauen der WIP Items */
+.albumitem:has(.wip-label) {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
-@media (max-width: 1199px) and (min-width: 1000px) {
-  .albumlist {
-    grid-template-columns: repeat(3, var(--album-width));
-  }
-
-}
-
-@media (max-width: 999px) and (min-width: 850px) {
-  .albumlist {
-    grid-template-columns: repeat(2, var(--album-width));
-  }
-  .albumitem {
-    margin-left: 5px;
-      }
-  #searchInput {
-width: 400px;
-  }
-}
-
-@media (max-width: 849px) and (min-width: 700px) {
-  .albumlist {
-    grid-template-columns: repeat(2, var(--album-width));
-  }
-  #searchInput {
-    width: 400px;
-  }
-}
-
-@media (max-width: 699px) and (min-width: 550px) {
-  .albumlist {
-    grid-template-columns: repeat(1, var(--album-width));
-  }
-  #searchInput {
-    width: 200px;
-  }
-}
-
-@media (max-width: 549px) and (min-width: 400px) {
-  .albumlist {
-    grid-template-columns: repeat(1, var(--album-width));
-  }
-  #searchInput {
-    width: 200px;
-  }
-}
-
-@media (max-width: 399px) {
-  .albumlist {
-    grid-template-columns: repeat(1, var(--album-width));
-  }
-  #searchInput {
-    width: 200px;
-  }
-}
-
-@media (max-width: 550px) {
-  .albumitem {
-    margin-left: 5px;
-  }
-}
-
-@media (max-width: 350px) {
-  .logo svg {
-    position: relative;
-    justify-content: center; /* Zentriert die Inhalte horizontal */
-  }
-}
-
-@media (max-width: 350px) {
-
-  .logo svg{
-    left: 0; /* Zurücksetzen der linken Position */
-    transform: none; /* Zurücksetzen der Transformierung */
-    margin-left: auto; /* Abstand zum linken Rand der Navbar */
-    margin-right: auto; /* Abstand zum rechten Rand der Navbar */
-  }
-
-  .darkmode_container {
-    margin-top: 20px;
-  }
-}
-
-
-
-/* Animation */
-@keyframes keyframes-fill {
-  0% {
-    transform: rotate(-360deg) scale(0);
-    opacity: 0;
-  }
-  75% {
-    transform: rotate(25deg);
-  }
+/* Hover-Effekte für WIP-Items deaktivieren */
+.albumitem:has(.wip-label):hover {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.5;
 }
 
 
