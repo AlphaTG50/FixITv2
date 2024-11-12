@@ -1,4 +1,4 @@
-![logo](https://github.com/user-attachments/assets/13eb8683-f43d-4804-a1b2-99cc98aa08e0)
+![128x128](https://github.com/user-attachments/assets/ce8ecbc3-07b3-47ab-bf6e-97f44dd40486)
 
 # 🔷 Hi, I'm AlphaTG050!
 
@@ -26,7 +26,7 @@ In the rapidly evolving field of IT, system integration specialists face the con
 System integration involves connecting different subsystems and ensuring they work together as a cohesive whole. This often requires the use of various tools, scripts, and platforms, each with its own set of functionalities and complexities. For an IT professional, juggling these multiple tools can be time-consuming and prone to errors, leading to decreased productivity and increased frustration.
 
 ## 📥 Download
-- [Latest Release](https://github.com/AlphaTG050/FixIT/releases/latest) - Download the latest version of FixIT.
+- [Latest Release](https://github.com/AlphaTG50/FixIT/releases/latest) - Download the latest version of FixIT.
 
 
 ## 📫 Contact
