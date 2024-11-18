@@ -23,6 +23,11 @@ let minimizeToTray = false;
 const currentVersion = `v${version}`;
 let licenseWindow;
 
+// Am Anfang der Datei, nach den imports
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.helpit.fixit');
+}
+
 // ------------------- Funktionen -------------------
 
 app.setPath('cache', path.join(app.getPath('userData'), 'cache'));

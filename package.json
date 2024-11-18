@@ -43,7 +43,8 @@
         "nsis"
       ],
       "icon": "src/assets/images/logo/win/icon.ico",
-      "artifactName": "FixIT.Portable.v${version}.zip"
+      "artifactName": "FixIT.Portable.v${version}.zip",
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,

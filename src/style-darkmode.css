@@ -98,20 +98,18 @@ body.dark-mode .section-header {
 
 /* Kategorie-Dropdown im Dark Mode */
 body.dark-mode #categoryFilter {
-    color: #fff;  /* Weiße Textfarbe */
+    color: rgba(255, 255, 255, 0.5);
     background-color: transparent;
-    border: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+body.dark-mode #categoryFilter:hover {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 body.dark-mode #categoryFilter option {
+    color: rgba(255, 255, 255, 0.5);
     background-color: var(--darkgrey);
-    color: #fff;  /* Weiße Textfarbe auch für die Optionen */
-}
-
-body.dark-mode #categoryFilter:hover,
-body.dark-mode #categoryFilter:focus {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
 }
 
 /* Aktualisiere Dark Mode Styles für die Suchleiste */
