@@ -5,19 +5,30 @@ const axios = require('axios');
 const path = require('path');
 const { type } = require('os');
 
+// Lizenzfenster-Erstellung
+// function createLicenseWindow() { ... }
+
+// Dynamischer Import von electron-store
+let store;
+(async () => {
+    const Store = (await import('electron-store')).default;
+    store = new Store();
+})();
+
 // Konstante Variablen und Initialisierungen
 let mainWindow;
 let tray = null;
 let autostartEnabled = false;
 let minimizeToTray = false;
 const currentVersion = `v${version}`;
+let licenseWindow;
 
 // ------------------- Funktionen -------------------
 
 app.setPath('cache', path.join(app.getPath('userData'), 'cache'));
 
 // Hauptfenster-Erstellung
-const createWindow = () => {
+function createMainWindow() {
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 768,
@@ -61,7 +72,7 @@ const createWindow = () => {
     mainWindow.webContents.on('did-finish-load', () => {
         loadUserPreferences();
     });
-};
+}
 
 // Benutzerpräferenzen laden
 const loadUserPreferences = () => {
@@ -126,11 +137,33 @@ ipcMain.handle('open-url', (event, url) => {
     shell.openExternal(url);
 });
 
+// Lizenz-IPC-Handler
+ipcMain.on('license-valid', () => {
+    store.set('licensed', true);
+    createMainWindow();
+    licenseWindow.close();
+});
+
+ipcMain.on('too-many-attempts', () => {
+    dialog.showMessageBox({
+        type: 'error',
+        title: 'Zu viele Versuche',
+        message: 'Sie haben zu oft einen falschen Lizenzschlüssel eingegeben. Die Anwendung wird beendet.',
+        buttons: ['OK']
+    }).then(() => {
+        app.quit();
+    });
+});
+
 // ------------------- Anwendung starten -------------------
-app.whenReady().then(() => {
-    createWindow();
+app.whenReady().then(async () => {
+    const Store = (await import('electron-store')).default;
+    store = new Store();
+    
+    createMainWindow();
+    
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+        if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
     });
 });
 

@@ -45,7 +45,7 @@ function initializeCategoryFilter() {
     categorySelect.innerHTML = `
         <option value="">Alle</option>
         <option value="portable">Portable</option>
-        <option value="wip">In Arbeit</option>
+        <option value="wip">In Progress</option>
     `;
 
     // Entferne das ursprüngliche Suchelement
