@@ -46,6 +46,8 @@ function createMainWindow() {
         minHeight: 300,
         title: "FixIT",
         icon: path.join(process.resourcesPath, 'src/assets/images/logo/win/icon.ico'),
+        backgroundColor: '#1a1a1a',
+        show: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -53,10 +55,13 @@ function createMainWindow() {
         }
     });
 
-    mainWindow.loadFile(path.join(__dirname, 'src', 'index.html')).then(() => {
-        mainWindow.webContents.on('did-finish-load', () => {
-            loadUserPreferences();
-        });
+    // Optimierte Ladesequenz
+    const loadPromise = mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
+    
+    // Zeige das Fenster sofort nach dem ersten Paint
+    mainWindow.once('ready-to-show', () => {
+        loadUserPreferences();
+        mainWindow.show();
     });
 
     mainWindow.on('close', (event) => {
@@ -76,10 +81,6 @@ function createMainWindow() {
             mainWindow = null;
             app.quit();
         }
-    });
-
-    mainWindow.webContents.on('did-finish-load', () => {
-        loadUserPreferences();
     });
 }
 
@@ -162,7 +163,7 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
                 console.log('Prozess erfolgreich gestartet mit PID:', childProcess.pid);
                 setTimeout(() => {
                     resolve(true);
-                }, 1000);
+                }, 300);
             } else {
                 reject(new Error('Prozess konnte nicht gestartet werden'));
             }
@@ -221,11 +222,14 @@ ipcMain.handle('execute', async (event, programName) => {
 
 // ------------------- Anwendung starten -------------------
 app.whenReady().then(async () => {
-    listPortableApps();
-    const Store = (await import('electron-store')).default;
-    store = new Store();
-    
-    createMainWindow();
+    // Führen Sie zeitintensive Operationen asynchron aus
+    Promise.all([
+        import('electron-store'),
+        listPortableApps()
+    ]).then(([{ default: Store }]) => {
+        store = new Store();
+        createMainWindow();
+    });
     
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createMainWindow();

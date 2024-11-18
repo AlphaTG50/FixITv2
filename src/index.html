@@ -350,6 +350,73 @@
   <script src="index.js"></script>
 
   <style>
+    /* Ersetzen Sie die bestehenden Light/Dark Mode Styles */
+    body {
+        background-color: #f0f0f0;  /* Ursprüngliche hellgraue Farbe */
+        color: #333333;
+    }
+
+    body.dark-mode {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    /* Ersetzen Sie die bestehenden Album-Item Styles */
+    .albumitem {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: opacity;
+    }
+
+    /* Gemeinsamer Hover-Effekt für beide Modi */
+    .albumitem:hover,
+    .not-found-hover {
+        opacity: 0.7;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Expliziter nicht-hover Zustand für smootheren Übergang */
+    .albumitem:not(:hover) {
+        opacity: 1;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Light Mode spezifisch */
+    body:not(.dark-mode) .albumitem {
+        background-color: #ffffff;
+    }
+
+    /* Dark Mode spezifisch */
+    body.dark-mode .albumitem {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Error Modal für Light Mode */
+    .error-modal {
+        background: #ffffff;
+        color: #333333;
+    }
+
+    /* Error Modal für Dark Mode bleibt unverändert */
+    .error-modal.dark-mode {
+        background: #2d2d2d;
+        color: #ffffff;
+    }
+
+    /* Loading Screen für Light Mode */
+    .loading-screen {
+        background-color: rgba(240, 240, 240, 0.9);  /* Hellerer Hintergrund */
+    }
+
+    .loading-screen p {
+        color: #333333;  /* Dunklerer Text */
+    }
+
+    /* Spinner für Light Mode */
+    .spinner {
+        border: 5px solid #e0e0e0;
+        border-top: 5px solid #3498db;
+    }
+
     .loading-screen {
       position: fixed;
       top: 0;
@@ -484,6 +551,66 @@
         opacity: 0.7;
         transition: opacity 0.2s ease;
     }
+
+    .startup-loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .startup-logo {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .startup-logo svg {
+        width: 100%;
+        height: 100%;
+        fill: #fff;
+        animation: pulse 2s infinite;
+    }
+
+    .startup-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px 0;
+    }
+
+    .startup-text {
+        color: #fff;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .startup-loading-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
   </style>
 
   <div class="error-modal-overlay" id="errorOverlay"></div>
@@ -494,6 +621,20 @@
       </div>
       <div class="error-modal-message" id="errorMessage"></div>
       <button class="error-modal-button" onclick="hideErrorModal()">OK</button>
+  </div>
+
+  <div id="startup-loading-screen" class="startup-loading-screen">
+      <div class="startup-logo">
+          <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150.000000 191.000000"
+              preserveAspectRatio="xMidYMid meet">
+              <g transform="translate(0.000000,191.000000) scale(0.100000,-0.100000)" stroke="none">
+                  <path d="M810 1866 c-124 -46 -300 -154 -358 -220 -26 -30 -44 -39 -99 -52 -38 -8 -77 -18 -88 -21 -25 -7 -130 -108 -155 -148 -25 -40 -111 -237 -106 -243 2 -2 27 8 55 22 47 25 81 33 81 20 0 -3 -18 -34 -39 -70 -49 -81 -73 -175 -79 -311 -4 -104 2 -122 27 -80 32 52 86 117 98 117 9 0 13 -16 13 -54 0 -109 39 -261 80 -314 l18 -23 6 53 c3 29 11 105 16 168 24 252 74 403 164 489 44 43 47 64 9 55 -58 -12 -151 -65 -211 -120 -35 -31 -66 -54 -69 -50 -14 14 85 181 153 255 20 23 34 44 31 47 -3 4 -40 -1 -82 -11 -42 -9 -79 -14 -82 -11 -3 3 6 23 21 44 42 61 83 78 234 96 184 21 232 50 232 141 0 19 -3 35 -6 35 -3 0 -28 -12 -54 -27 -102 -58 -58 6 57 82 62 42 89 46 78 13 -14 -39 -17 -168 -6 -182 6 -8 38 -19 71 -25 43 -9 73 -23 110 -52 49 -38 65 -69 36 -69 -8 0 -48 14 -89 30 -92 37 -154 39 -215 7 l-43 -23 23 -21 c59 -53 120 -63 263 -43 78 12 115 7 293 -42 122 -33 123 -34 135 -111 5 -32 1 -43 -24 -72 -42 -48 -94 -63 -239 -69 -143 -5 -209 -24 -285 -82 -49 -38 -61 -39 -50 -5 16 51 98 134 204 208 2 2 2 6 -1 9 -11 10 -130 -26 -189 -57 -32 -17 -87 -61 -122 -98 -116 -120 -168 -262 -168 -461 0 -127 15 -198 61 -297 44 -95 51 -86 65 72 16 169 59 325 91 325 7 0 16 -16 19 -37 41 -245 212 -497 409 -605 38 -21 72 -38 77 -38 12 0 1 24 -63 136 -79 136 -164 384 -132 384 3 0 36 -27 72 -60 51 -46 86 -67 146 -90 43 -17 81 -29 83 -26 2 2 -15 28 -39 57 -134 165 -198 312 -198 456 0 37 -4 63 -10 63 -22 0 -112 -52 -151 -87 -22 -20 -42 -33 -46 -30 -13 14 33 90 79 132 61 55 125 76 253 85 92 5 105 9 148 38 42 29 167 166 167 183 0 18 -47 62 -88 83 -26 13 -98 38 -161 55 -157 44 -165 49 -188 118 -21 63 -11 57 -170 103 -54 15 -73 25 -73 38 0 9 14 64 30 122 17 58 30 106 30 107 0 6 -27 1 -60 -11z" />
+                  <path d="M944 1736 c-67 -44 -73 -62 -29 -80 52 -22 73 -11 101 52 13 30 24 56 24 58 0 15 -53 -3 -96 -30z" />
+              </g>
+          </svg>
+      </div>
+      <div class="startup-spinner"></div>
+      <div class="startup-text">FixIT wird geladen...</div>
   </div>
 
 </body>

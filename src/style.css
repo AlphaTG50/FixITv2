@@ -137,11 +137,6 @@ transition: filter 0.3s; /* Sanfte Übergänge */
   transform-origin: top;
 }
 
-.albumitem:hover .albumartwork:before {
-  transform: rotate(45deg) translate(0px, -70%);
-  filter: blur(6px);
-}
-
 
 /* Album Title */
 .albumtitle h1 {
@@ -228,19 +223,6 @@ transition: filter 0.3s; /* Sanfte Übergänge */
   object-fit: contain;
   border-radius: 10px;
   transition: all 0.3s ease;
-}
-
-.albumartwork:before {
-  content: "";
-  transform: rotate(45deg) translate(0px, -90%);
-  filter: blur(4px);
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  transition: 0.4s;
 }
 
 .albuminfo {

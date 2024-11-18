@@ -30,17 +30,28 @@ async function executeExe(exeName) {
 // Event-Listener für Album-Elemente
 document.querySelectorAll('.albumitem').forEach(item => {
     // Click-Event für Programmstart
-    item.addEventListener('click', async function() {
+    item.addEventListener('click', async function(event) {
+        // Prüfen, ob das geklickte Element innerhalb der albuminfo oder albumartwork ist
+        const isClickInside = event.target.closest('.albuminfo') || 
+                            event.target.closest('.albumartwork') ||
+                            event.target === this;
+        
+        // Wenn der Klick außerhalb war, ignorieren
+        if (!isClickInside) return;
+        
+        // Prüfen, ob das Element ein Link ist
+        if (event.target.tagName === 'A' || event.target.closest('a')) return;
+        
+        // Prüfen, ob das Item aktiviert ist
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
             const exeName = this.getAttribute('data-search');
             await executeExe(exeName);
         }
     });
 
-    // Einfache mouseenter/mouseleave Events für jeden Album-Item
+    // Hover-Events bleiben unverändert
     item.addEventListener('mouseenter', function(event) {
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
-            // Entferne zuerst alle anderen Hover-Effekte
             document.querySelectorAll('.albumitem').forEach(otherItem => {
                 if (otherItem !== this) {
                     otherItem.classList.remove('not-found-hover');
@@ -51,7 +62,6 @@ document.querySelectorAll('.albumitem').forEach(item => {
     });
 
     item.addEventListener('mouseleave', function(event) {
-        // Prüfe, ob die Maus wirklich das Element verlassen hat
         const relatedTarget = event.relatedTarget;
         if (!this.contains(relatedTarget)) {
             this.classList.remove('not-found-hover');
@@ -170,6 +180,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const categoryFilter = initializeCategoryFilter();
+
+    // Startup Loading Screen
+    const startupLoadingScreen = document.getElementById('startup-loading-screen');
+    
+    // Verzögern Sie das Ausblenden des Loading Screens
+    setTimeout(() => {
+        startupLoadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+            startupLoadingScreen.style.display = 'none';
+        }, 500); // Warten Sie, bis die Fade-Animation abgeschlossen ist
+    }, 2000); // Zeigen Sie den Loading Screen für 2 Sekunden an
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
