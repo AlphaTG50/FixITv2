@@ -1509,10 +1509,10 @@ electron-store@^10.0.0:
     conf "^13.0.0"
     type-fest "^4.20.0"
 
-electron@^32.2.2:
-  version "32.2.2"
-  resolved "https://registry.npmjs.org/electron/-/electron-32.2.2.tgz"
-  integrity sha512-c7TRE42JcgEmJ4elJyCdKk/2os0UX7YMkRDeXBkxFEoM34iX1/2x+c5T9PgeroKz8FEG7omRU5TvjulqVtXvdw==
+electron@^32.2.5:
+  version "32.2.5"
+  resolved "https://registry.npmjs.org/electron/-/electron-32.2.5.tgz"
+  integrity sha512-8t5IGOvms/JTcLNnlOH7rFCAJIZJAazwYrF7kQsKQSLzDHh4z8mGFrU11NN3W4bIT6Yg5DJNniSWz3O5wJLmCw==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^20.9.0"
