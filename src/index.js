@@ -9,17 +9,31 @@ const MENU_IDS = {
 };
 
 // Funktion zum Ausführen einer exe-Datei
-function executeExe(exeName) {
-    ipcRenderer.invoke('execute-exe', exeName).catch(err => {
-        console.error('Error executing exe:', err); // Fehlerprotokollierung
-    });
+async function executeExe(exeName) {
+    try {
+        console.log('Starte Programm:', exeName);
+        showLoadingScreen();
+        await ipcRenderer.invoke('execute-exe', exeName);
+        hideLoadingScreen();
+    } catch (err) {
+        console.error('Detaillierter Fehler:', err);
+        hideLoadingScreen();
+        
+        const errorMessage = err.message.includes('nicht gefunden') 
+            ? `Das Programm "${exeName}" konnte nicht gefunden werden.\nPfad: @portable-apps/${exeName}.exe`
+            : `Fehler beim Starten von "${exeName}".\nFehlermeldung: ${err.message}`;
+            
+        alert(errorMessage);
+    }
 }
 
 // Event-Listener für Album-Elemente
 document.querySelectorAll('.albumitem').forEach(item => {
-    item.addEventListener('click', function () {
-        const exeName = this.getAttribute('data-search');
-        executeExe(exeName);
+    item.addEventListener('click', async function() {
+        if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
+            const exeName = this.getAttribute('data-search');
+            await executeExe(exeName);
+        }
     });
 
     // Hover-Effekte für nicht gefundene Alben
@@ -171,4 +185,38 @@ function handleAlbumNotFound(album) {
 // Dark Mode beim Laden wiederherstellen
 if (localStorage.getItem('darkMode') === 'true') {
   document.body.classList.add('dark-mode');
+}
+
+// Fügen Sie diese Funktionen am Anfang der Datei hinzu
+function showLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.remove('hidden');
+    }
+}
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+    }
+}
+
+// Modifizieren Sie die Funktion, die das Programm startet
+async function executeProgram(programName) {
+  try {
+    showLoadingScreen();
+    
+    // Programm starten
+    await window.electron.execute(programName);
+    
+    // Warten Sie einen kurzen Moment, um sicherzustellen, dass das Programm gestartet ist
+    setTimeout(() => {
+      hideLoadingScreen();
+    }, 1500);
+    
+  } catch (error) {
+    console.error('Fehler beim Starten des Programms:', error);
+    hideLoadingScreen();
+  }
 }

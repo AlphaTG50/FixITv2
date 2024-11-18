@@ -4,6 +4,7 @@ const { version, devDependencies, author } = require('./package.json');
 const axios = require('axios');
 const path = require('path');
 const { type } = require('os');
+const { spawn } = require('child_process');
 
 // Lizenzfenster-Erstellung
 // function createLicenseWindow() { ... }
@@ -27,6 +28,9 @@ let licenseWindow;
 if (process.platform === 'win32') {
   app.setAppUserModelId('com.helpit.fixit');
 }
+
+// Fügen Sie diese Zeile am Anfang der Datei hinzu
+const isDev = process.env.NODE_ENV === 'development';
 
 // ------------------- Funktionen -------------------
 
@@ -131,9 +135,42 @@ const showTrayIcon = () => {
 
 // IPC-Handler für .exe-Ausführung
 ipcMain.handle('execute-exe', async (event, exeName) => {
-    const exePath = path.join(process.resourcesPath, 'portable-apps', `${exeName}.exe`);    
-    exec(`"${exePath}"`, (error, stdout, stderr) => {
-        if (error) console.error(`Fehler beim Ausführen der .exe: ${error.message}`);
+    return new Promise((resolve, reject) => {
+        const exePath = isDev 
+            ? path.join(__dirname, 'resources', 'portable-apps', `${exeName}.exe`)
+            : path.join(process.resourcesPath, 'portable-apps', `${exeName}.exe`);
+        
+        console.log('Versuche Programm zu starten:', exePath);
+
+        // Prüfen ob die Datei existiert
+        if (!require('fs').existsSync(exePath)) {
+            console.error(`Exe nicht gefunden: ${exePath}`);
+            reject(new Error(`Programm ${exeName}.exe wurde nicht gefunden`));
+            return;
+        }
+
+        try {
+            const childProcess = exec(`"${exePath}"`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Fehler beim Ausführen der .exe: ${error.message}`);
+                    reject(error);
+                    return;
+                }
+            });
+
+            if (childProcess.pid) {
+                console.log('Prozess erfolgreich gestartet mit PID:', childProcess.pid);
+                setTimeout(() => {
+                    resolve(true);
+                }, 1000);
+            } else {
+                reject(new Error('Prozess konnte nicht gestartet werden'));
+            }
+
+        } catch (error) {
+            console.error('Fehler beim Ausführen:', error);
+            reject(error);
+        }
     });
 });
 
@@ -160,8 +197,31 @@ ipcMain.on('too-many-attempts', () => {
     });
 });
 
+// IPC-Handler für Programmstart
+ipcMain.handle('execute', async (event, programName) => {
+  try {
+    const child = spawn(programName, [], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    
+    return new Promise((resolve, reject) => {
+      child.on('spawn', () => {
+        resolve(true);
+      });
+      
+      child.on('error', (err) => {
+        reject(err);
+      });
+    });
+  } catch (error) {
+    throw error;
+  }
+});
+
 // ------------------- Anwendung starten -------------------
 app.whenReady().then(async () => {
+    listPortableApps();
     const Store = (await import('electron-store')).default;
     store = new Store();
     
@@ -248,7 +308,9 @@ const template = [
             {
                 label: 'TeamViewer QS',
                 click: () => {
-                    const exePath = path.join(process.resourcesPath,  'portable-apps', 'TeamViewerQS.exe');
+                    const exePath = isDev
+                        ? path.join(__dirname, 'resources', 'portable-apps', 'TeamViewerQS.exe')
+                        : path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe');
                     exec(`"${exePath}"`, (error) => {
                         if (error) console.error(`Fehler beim Öffnen von TeamViewer: ${error}`);
                     });
@@ -288,3 +350,24 @@ const template = [
 // Menü erstellen und setzen
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
+
+// Fügen Sie diese Funktion am Anfang der Datei hinzu
+function listPortableApps() {
+    const portableAppsPath = isDev
+        ? path.join(__dirname, 'resources', 'portable-apps')
+        : path.join(process.resourcesPath, 'portable-apps');
+        
+    try {
+        const files = require('fs').readdirSync(portableAppsPath);
+        console.log('Verfügbare portable Apps:', files);
+        
+        files.forEach(file => {
+            const filePath = path.join(portableAppsPath, file);
+            const stats = require('fs').statSync(filePath);
+            console.log(`${file}: ${stats.size} bytes`);
+        });
+    } catch (error) {
+        console.error('Fehler beim Lesen des portable-apps Ordners:', error);
+        console.error('Pfad:', portableAppsPath);
+    }
+}
