@@ -14,9 +14,7 @@ body.dark-mode {
 /* Logo Anpassungen */
 body.dark-mode .logo svg {
     fill: #fff;
-    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4))
-            drop-shadow(0 0 3px rgba(255, 255, 255, 0.2))
-            drop-shadow(0 0 5px rgba(255, 255, 255, 0.1));
+
     transition: all 0.3s ease;
 }
 
@@ -96,4 +94,33 @@ body.dark-mode .toggle-icon {
 
 body.dark-mode .section-header {
     color: #fff;
+}
+
+body.dark-mode #categoryFilter {
+    background-color: var(--darkgrey);
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode #categoryFilter:focus {
+    border-color: var(--darkblue);
+}
+
+/* Aktualisiere Dark Mode Styles für die Suchleiste */
+body.dark-mode .search-container #searchInput {
+    background-color: var(--darkgrey);
+    color: #fff;
+}
+
+body.dark-mode .search-container #categoryFilter {
+    color: #999;
+}
+
+body.dark-mode .search-container #categoryFilter:hover {
+    color: #fff;
+}
+
+/* Entferne Dark Mode Toggle Styles */
+body.dark-mode .dark-mode-toggle {
+    display: none;
 }

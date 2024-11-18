@@ -146,7 +146,7 @@ const template = [
             { label: 'Website', click: () => shell.openExternal('https://helpinformatik.de') },
             { label: 'Instagram', click: () => shell.openExternal('https://www.instagram.com/helpit.informatik') },
             { label: 'GitHub', click: () => shell.openExternal('https://github.com/alphatg050') },
-            { label: 'E-Mail', click: () => shell.openExternal('mailto:guerkan.cevik.privat@gmail.com') }
+            { label: 'E-Mail', click: () => shell.openExternal('mailto:guerkan.privat@gmail.com') }
         ]
     },
     {
@@ -235,7 +235,7 @@ const template = [
                     dialog.showMessageBox(mainWindow, {
                         type: "info",
                         title: 'FixIT',
-                        message: `Version: ${version}\n\nEntwickelt von ${author}\nKontakt: guerkan.cevik.privat@gmail.com`,
+                        message: `Version: ${version}\n\nEntwickelt von ${author}\nKontakt: guerkan.privat@gmail.com`,
                         buttons: ['OK'],
                         noLink: true
                     });

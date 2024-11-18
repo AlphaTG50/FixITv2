@@ -34,29 +34,60 @@ document.querySelectorAll('.albumitem').forEach(item => {
     });
 });
 
-// Funktion zum Filtern von Alben basierend auf dem Suchbegriff
+// Neue Funktion zur Initialisierung der Kategoriefilter
+function initializeCategoryFilter() {
+    const searchContainer = document.createElement('div');
+    searchContainer.className = 'search-container';
+    
+    const searchInput = document.getElementById('searchInput');
+    const categorySelect = document.createElement('select');
+    categorySelect.id = 'categoryFilter';
+    categorySelect.innerHTML = `
+        <option value="">Alle</option>
+        <option value="portable">Portable</option>
+        <option value="wip">In Arbeit</option>
+    `;
+
+    // Entferne das ursprüngliche Suchelement
+    searchInput.parentNode.removeChild(searchInput);
+    
+    // Füge die neue Struktur hinzu
+    document.body.insertBefore(searchContainer, document.querySelector('.albumlist'));
+    searchContainer.appendChild(searchInput);
+    searchContainer.appendChild(categorySelect);
+
+    // Füge die Event Listener hinzu
+    searchInput.addEventListener('input', filterAlbums);
+    categorySelect.addEventListener('change', filterAlbums);
+
+    return categorySelect;
+}
+
+// Aktualisierte Filteralben-Funktion
 function filterAlbums() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+    const selectedCategory = document.getElementById('categoryFilter').value;
     const albums = document.querySelectorAll('.albumitem');
 
     albums.forEach(album => {
         const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
         const description = album.querySelector('.albumtitle h2').textContent.toLowerCase();
         const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
+        const isPortable = album.querySelector('.albumtitle h3') !== null;
+        const isWip = album.querySelector('.wip-label') !== null;
         
-        if (searchTerm === '' || 
+        const matchesSearch = searchTerm === '' || 
             title.includes(searchTerm) || 
             description.includes(searchTerm) || 
-            searchData.includes(searchTerm)) {
-            album.style.display = 'flex'; // Geändert von 'block' zu 'flex'
-        } else {
-            album.style.display = 'none';
-        }
+            searchData.includes(searchTerm);
+            
+        const matchesCategory = selectedCategory === '' || 
+            (selectedCategory === 'portable' && isPortable) ||
+            (selectedCategory === 'wip' && isWip);
+
+        album.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
     });
 }
-
-// Event-Listener für die Eingabe in das Suchfeld
-document.getElementById('searchInput').addEventListener('input', filterAlbums);
 
 // Funktion zur Anpassung der Grid-Spalten
 function adjustGridColumns() {
@@ -112,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
             item.replaceWith(item.cloneNode(true));
         }
     });
+
+    const categoryFilter = initializeCategoryFilter();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -134,3 +167,8 @@ function handleAlbumNotFound(album) {
     albumList.innerHTML = '';
     items.forEach(item => albumList.appendChild(item));
   });
+
+// Dark Mode beim Laden wiederherstellen
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+}
