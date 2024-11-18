@@ -20,15 +20,16 @@ async function executeExe(exeName) {
         hideLoadingScreen();
         
         const errorMessage = err.message.includes('nicht gefunden') 
-            ? `Das Programm "${exeName}" konnte nicht gefunden werden.\nPfad: @portable-apps/${exeName}.exe`
+            ? `Das Programm "${exeName}" konnte nicht gefunden werden.`
             : `Fehler beim Starten von "${exeName}".\nFehlermeldung: ${err.message}`;
             
-        alert(errorMessage);
+        showErrorModal(errorMessage);
     }
 }
 
 // Event-Listener für Album-Elemente
 document.querySelectorAll('.albumitem').forEach(item => {
+    // Click-Event für Programmstart
     item.addEventListener('click', async function() {
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
             const exeName = this.getAttribute('data-search');
@@ -36,15 +37,25 @@ document.querySelectorAll('.albumitem').forEach(item => {
         }
     });
 
-    // Hover-Effekte für nicht gefundene Alben
-    item.addEventListener('mouseenter', function () {
-        if (!this.classList.contains('found')) {
+    // Einfache mouseenter/mouseleave Events für jeden Album-Item
+    item.addEventListener('mouseenter', function(event) {
+        if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
+            // Entferne zuerst alle anderen Hover-Effekte
+            document.querySelectorAll('.albumitem').forEach(otherItem => {
+                if (otherItem !== this) {
+                    otherItem.classList.remove('not-found-hover');
+                }
+            });
             this.classList.add('not-found-hover');
         }
     });
 
-    item.addEventListener('mouseleave', function () {
-        this.classList.remove('not-found-hover');
+    item.addEventListener('mouseleave', function(event) {
+        // Prüfe, ob die Maus wirklich das Element verlassen hat
+        const relatedTarget = event.relatedTarget;
+        if (!this.contains(relatedTarget)) {
+            this.classList.remove('not-found-hover');
+        }
     });
 });
 
@@ -220,3 +231,49 @@ async function executeProgram(programName) {
     hideLoadingScreen();
   }
 }
+
+// Fügen Sie diese Funktionen hinzu
+function showErrorModal(message) {
+    const errorModal = document.getElementById('errorModal');
+    const errorOverlay = document.getElementById('errorOverlay');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    // Prüfen Sie Dark Mode
+    if (document.body.classList.contains('dark-mode')) {
+        errorModal.classList.add('dark-mode');
+    }
+    
+    errorMessage.textContent = message;
+    errorModal.style.display = 'block';
+    errorOverlay.style.display = 'block';
+}
+
+function hideErrorModal() {
+    const errorModal = document.getElementById('errorModal');
+    const errorOverlay = document.getElementById('errorOverlay');
+    
+    // Entferne nur den Hover-Effekt vom aktuell gehoverten Element
+    const hoveredElement = document.querySelector('.not-found-hover');
+    if (hoveredElement) {
+        hoveredElement.classList.remove('not-found-hover');
+    }
+    
+    errorModal.style.display = 'none';
+    errorOverlay.style.display = 'none';
+}
+
+// Event-Listener für ESC-Taste zum Schließen des Modals
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        // Entferne alle hover Effekte
+        document.querySelectorAll('.albumitem').forEach(item => {
+            item.classList.remove('not-found-hover');
+        });
+        hideErrorModal();
+    }
+});
+
+// Fügen Sie einen Click-Handler für den Overlay hinzu
+document.getElementById('errorOverlay')?.addEventListener('click', () => {
+    hideErrorModal();
+});

@@ -386,7 +386,115 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Neues Error Modal Design */
+    .error-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        z-index: 10000;
+        min-width: 300px;
+        max-width: 450px;
+        display: none;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .error-modal.dark-mode {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    .error-modal-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .error-modal-icon {
+        color: #e74c3c;
+        font-size: 24px;
+        margin-right: 10px;
+    }
+
+    .error-modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .error-modal-message {
+        margin: 15px 0;
+        line-height: 1.4;
+    }
+
+    .error-modal-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        float: right;
+        transition: background 0.2s;
+    }
+
+    .error-modal-button:hover {
+        background: #c0392b;
+    }
+
+    .error-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        display: none;
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translate(-50%, -60%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, -50%);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Ersetzen Sie die Album-Item Hover-Styles mit dieser einfacheren Version */
+    .albumitem {
+        transition: opacity 0.2s ease;
+    }
+
+    .not-found-hover {
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+    }
   </style>
+
+  <div class="error-modal-overlay" id="errorOverlay"></div>
+  <div class="error-modal" id="errorModal">
+      <div class="error-modal-header">
+          <i class="fas fa-exclamation-circle error-modal-icon"></i>
+          <h3 class="error-modal-title">Fehler</h3>
+      </div>
+      <div class="error-modal-message" id="errorMessage"></div>
+      <button class="error-modal-button" onclick="hideErrorModal()">OK</button>
+  </div>
 
 </body>
 
