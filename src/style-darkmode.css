@@ -6,105 +6,62 @@
     --lightgrey: #ebebeb;
 }
 
-/* Grundlegende Dark Mode Anpassungen */
+/* Grundlegende Styles für Dark Mode */
 body.dark-mode {
     background-color: #111;
 }
 
-/* Logo Anpassungen */
-body.dark-mode .logo svg {
-    fill: #fff;
-
-    transition: all 0.3s ease;
-}
-
-/* Suchfeld und Container */
-body.dark-mode #searchInput {
-    background-color: var(--darkgrey);
-    color: #fff;
-    transition: all 0.3s ease;
-}
-
+/* Container Styles */
 body.dark-mode .albumlist {
     background-color: var(--darkgrey);
-    transition: all 0.3s ease;
 }
 
-/* Album Items */
+/* Album Styles */
 body.dark-mode .albumitem {
     background-color: #272727;
-    transition: all 0.3s ease;
 }
 
-/* Text Farben */
+/* Album Styles */
+body.dark-mode .albumitem:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .albumartwork img {
+    background-color: #272727;
+}
+
+/* Text Styles */
 body.dark-mode .albumtitle h1 {
     color: #fff;
-    transition: all 0.3s ease;
 }
 
 body.dark-mode .albumtitle h2 {
     color: rgba(255, 255, 255, 0.7);
-    transition: all 0.3s ease;
 }
 
-/* Portable Tag */
 body.dark-mode .albumtitle h3 {
     color: #fff;
-    background-color: var(--darkblue);
-    transition: all 0.3s ease;
 }
 
-/* Work in Progress Tag */
-body.dark-mode .wip-tag {
-    color: #ffeeba;
-    background-color: #856404;
-    transition: all 0.3s ease;
+/* UI Element Styles */
+body.dark-mode .logo svg {
+    fill: #ffffff;
 }
 
-/* Album Bilder */
-body.dark-mode .albumartwork img {
-    background-color: #272727;
-    transition: all 0.3s ease;
-}
-
-/* Dark Mode für WIP Section */
-body.dark-mode .wip-section-title {
-    color: #ffeeba;
-    background-color: #856404;
-}
-
-body.dark-mode .wip-list {
-    background-color: rgba(133, 100, 4, 0.1);
-}
-
-body.dark-mode .wip-list .albumitem {
-    background-color: rgba(39, 39, 39, 0.9);
-}
-
-/* Dark Mode für Portable Section */
-body.dark-mode .portable-section-title {
-    color: #fff;
-    background-color: var(--darkblue);
-}
-
-/* Dark Mode für Section Headers */
-body.dark-mode .toggle-icon {
+body.dark-mode #searchInput {
+    background-color: var(--darkgrey);
     color: #fff;
 }
 
-body.dark-mode .section-header {
-    color: #fff;
-}
-
-/* Kategorie-Dropdown im Dark Mode */
+/* Category Filter Dark Mode */
 body.dark-mode #categoryFilter {
     color: rgba(255, 255, 255, 0.5);
-    background-color: transparent;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 body.dark-mode #categoryFilter:hover {
     color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 body.dark-mode #categoryFilter option {
@@ -112,22 +69,8 @@ body.dark-mode #categoryFilter option {
     background-color: var(--darkgrey);
 }
 
-/* Aktualisiere Dark Mode Styles für die Suchleiste */
-body.dark-mode .search-container #searchInput {
-    background-color: var(--darkgrey);
+/* Modal Styles */
+body.dark-mode .error-modal {
+    background: #161616;
     color: #fff;
-}
-
-body.dark-mode .search-container #categoryFilter {
-    color: #fff;  /* Weiße Textfarbe */
-}
-
-body.dark-mode .search-container #categoryFilter:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Entferne Dark Mode Toggle Styles */
-body.dark-mode .dark-mode-toggle {
-    display: none;
 }
