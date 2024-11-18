@@ -13,64 +13,34 @@ async function executeExe(exeName) {
     try {
         console.log('Starte Programm:', exeName);
         showLoadingScreen();
-        
         await ipcRenderer.invoke('execute-exe', exeName);
-        
-        // Warten auf die Bestätigung, dass das Programm gestartet wurde
-        await new Promise((resolve) => {
-            const checkProcess = setInterval(async () => {
-                try {
-                    const isRunning = await ipcRenderer.invoke('check-process', exeName);
-                    if (isRunning) {
-                        clearInterval(checkProcess);
-                        resolve();
-                    }
-                } catch (error) {
-                    clearInterval(checkProcess);
-                    resolve();
-                }
-            }, 100);
-
-            setTimeout(() => {
-                clearInterval(checkProcess);
-                resolve();
-            }, 30000);
-        });
-
         hideLoadingScreen();
     } catch (err) {
-        console.error('Fehler:', err);
+        console.error('Detaillierter Fehler:', err);
         hideLoadingScreen();
-        // Vereinfachte Fehlermeldung mit Programmnamen
-        showErrorModal(`${exeName} wurde nicht gefunden.`);
+        
+        const errorMessage = err.message.includes('nicht gefunden') 
+            ? `Das Programm "${exeName}" konnte nicht gefunden werden.`
+            : `Fehler beim Starten von "${exeName}".\nFehlermeldung: ${err.message}`;
+            
+        showErrorModal(errorMessage);
     }
 }
 
 // Event-Listener für Album-Elemente
 document.querySelectorAll('.albumitem').forEach(item => {
     // Click-Event für Programmstart
-    item.addEventListener('click', async function(event) {
-        // Prüfen, ob das geklickte Element innerhalb der albuminfo oder albumartwork ist
-        const isClickInside = event.target.closest('.albuminfo') || 
-                            event.target.closest('.albumartwork') ||
-                            event.target === this;
-        
-        // Wenn der Klick außerhalb war, ignorieren
-        if (!isClickInside) return;
-        
-        // Prüfen, ob das Element ein Link ist
-        if (event.target.tagName === 'A' || event.target.closest('a')) return;
-        
-        // Prüfen, ob das Item aktiviert ist
+    item.addEventListener('click', async function() {
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
             const exeName = this.getAttribute('data-search');
             await executeExe(exeName);
         }
     });
 
-    // Hover-Events bleiben unverändert
+    // Einfache mouseenter/mouseleave Events für jeden Album-Item
     item.addEventListener('mouseenter', function(event) {
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
+            // Entferne zuerst alle anderen Hover-Effekte
             document.querySelectorAll('.albumitem').forEach(otherItem => {
                 if (otherItem !== this) {
                     otherItem.classList.remove('not-found-hover');
@@ -81,6 +51,7 @@ document.querySelectorAll('.albumitem').forEach(item => {
     });
 
     item.addEventListener('mouseleave', function(event) {
+        // Prüfe, ob die Maus wirklich das Element verlassen hat
         const relatedTarget = event.relatedTarget;
         if (!this.contains(relatedTarget)) {
             this.classList.remove('not-found-hover');
