@@ -13,17 +13,36 @@ async function executeExe(exeName) {
     try {
         console.log('Starte Programm:', exeName);
         showLoadingScreen();
+        
         await ipcRenderer.invoke('execute-exe', exeName);
+        
+        // Warten auf die Bestätigung, dass das Programm gestartet wurde
+        await new Promise((resolve) => {
+            const checkProcess = setInterval(async () => {
+                try {
+                    const isRunning = await ipcRenderer.invoke('check-process', exeName);
+                    if (isRunning) {
+                        clearInterval(checkProcess);
+                        resolve();
+                    }
+                } catch (error) {
+                    clearInterval(checkProcess);
+                    resolve();
+                }
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(checkProcess);
+                resolve();
+            }, 30000);
+        });
+
         hideLoadingScreen();
     } catch (err) {
-        console.error('Detaillierter Fehler:', err);
+        console.error('Fehler:', err);
         hideLoadingScreen();
-        
-        const errorMessage = err.message.includes('nicht gefunden') 
-            ? `Das Programm "${exeName}" konnte nicht gefunden werden.`
-            : `Fehler beim Starten von "${exeName}".\nFehlermeldung: ${err.message}`;
-            
-        showErrorModal(errorMessage);
+        // Vereinfachte Fehlermeldung mit Programmnamen
+        showErrorModal(`${exeName} wurde nicht gefunden.`);
     }
 }
 

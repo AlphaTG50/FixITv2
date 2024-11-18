@@ -220,6 +220,24 @@ ipcMain.handle('execute', async (event, programName) => {
   }
 });
 
+// Fügen Sie diesen Handler zu den anderen IPC-Handlern hinzu
+ipcMain.handle('check-process', async (event, exeName) => {
+    return new Promise((resolve, reject) => {
+        const command = process.platform === 'win32' 
+            ? `tasklist /FI "IMAGENAME eq ${exeName}.exe" /NH`
+            : `ps aux | grep ${exeName}`;
+
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                resolve(false);
+                return;
+            }
+            // Prüfen, ob der Prozess in der Liste gefunden wurde
+            resolve(stdout.toLowerCase().includes(exeName.toLowerCase()));
+        });
+    });
+});
+
 // ------------------- Anwendung starten -------------------
 app.whenReady().then(async () => {
     // Führen Sie zeitintensive Operationen asynchron aus
