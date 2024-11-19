@@ -25,6 +25,43 @@ const currentVersion = `v${version}`;
 let licenseWindow;
 
 // Am Anfang der Datei, nach den imports
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  // Wenn wir den Lock nicht bekommen, beende die neue Instanz
+  app.quit();
+} else {
+  // Wenn eine zweite Instanz gestartet wird, fokussiere das existierende Fenster
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+      mainWindow.focus();
+      
+      // Optional: Zeige eine Benachrichtigung
+      const notification = new Notification({
+        title: 'FixIT',
+        body: 'FixIT läuft bereits',
+        silent: true
+      });
+      notification.show();
+    }
+  });
+
+  // Normale App-Initialisierung
+  app.whenReady().then(async () => {
+    Promise.all([
+      import('electron-store'),
+      listPortableApps()
+    ]).then(([{ default: Store }]) => {
+      store = new Store();
+      createMainWindow();
+    });
+  });
+}
+
+// Am Anfang der Datei, nach den imports
 if (process.platform === 'win32') {
   app.setAppUserModelId('com.helpit.fixit');
 }
@@ -220,6 +257,27 @@ ipcMain.handle('execute', async (event, programName) => {
   }
 });
 
+// Füge diesen IPC-Handler hinzu
+ipcMain.handle('check-process', async (event, exeName) => {
+    return new Promise((resolve) => {
+        const command = process.platform === 'win32' 
+            ? `tasklist /FI "IMAGENAME eq ${exeName}.exe" /NH`
+            : `ps aux | grep ${exeName}`;
+            
+        exec(command, (error, stdout) => {
+            if (error) {
+                console.error(`Fehler beim Prüfen des Prozesses: ${error}`);
+                resolve(false);
+                return;
+            }
+            
+            // Prüfe ob der Prozess in der Ausgabe gefunden wurde
+            const isRunning = stdout.toLowerCase().includes(exeName.toLowerCase());
+            resolve(isRunning);
+        });
+    });
+});
+
 // ------------------- Anwendung starten -------------------
 app.whenReady().then(async () => {
     // Führen Sie zeitintensive Operationen asynchron aus
@@ -322,6 +380,45 @@ const template = [
             },
             { type: 'separator' },
             {
+                label: "Easter Eggs",
+                click: () => {
+                    const easterEggWindow = new BrowserWindow({
+                        width: 400,
+                        height: 500,
+                        title: "Easter Eggs",
+                        modal: false,
+                        parent: mainWindow,
+                        show: false,
+                        frame: false,
+                        webPreferences: {
+                            nodeIntegration: true,
+                            contextIsolation: false
+                        },
+                        backgroundColor: '#e3ffe3',
+                        minimizable: false,
+                        maximizable: false,
+                        resizable: false,
+                        autoHideMenuBar: true,
+                        menuBarVisible: false,
+                        alwaysOnTop: true
+                    });
+
+                    easterEggWindow.setMenu(null);
+
+                    easterEggWindow.once('ready-to-show', () => {
+                        easterEggWindow.show();
+                    });
+
+                    easterEggWindow.webContents.on('before-input-event', (event, input) => {
+                        if (input.key === 'Escape') {
+                            easterEggWindow.close();
+                        }
+                    });
+
+                    easterEggWindow.loadFile(path.join(__dirname, 'src', 'easter-eggs.html'));
+                }
+            },
+            {
                 label: "Lizenz",
                 click: () => {
                     dialog.showMessageBox(mainWindow, {
@@ -363,12 +460,10 @@ function listPortableApps() {
         
     try {
         const files = require('fs').readdirSync(portableAppsPath);
-        console.log('Verfügbare portable Apps:', files);
         
         files.forEach(file => {
             const filePath = path.join(portableAppsPath, file);
             const stats = require('fs').statSync(filePath);
-            console.log(`${file}: ${stats.size} bytes`);
         });
     } catch (error) {
         console.error('Fehler beim Lesen des portable-apps Ordners:', error);

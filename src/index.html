@@ -16,19 +16,31 @@
   <!-- LINK -->
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./style-darkmode.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  <!-- Async Font Loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  
+  <!-- Async Font Awesome Loading -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" media="print" onload="this.media='all'">
+  
+  <!-- Async Material Icons Loading -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" media="print" onload="this.media='all'">
+  
+  <!-- Firebase nur laden wenn benötigt -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js" defer></script>
 
 </head>
 
 <body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen hidden">
+    <div class="spinner"></div>
+    <p>Programm wird gestartet...</p>
+  </div>
+
   <div class="logo">
     <div id="svgContainer">
       <a>

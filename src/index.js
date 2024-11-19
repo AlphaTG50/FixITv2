@@ -8,13 +8,86 @@ const MENU_IDS = {
     ALWAYS_ON_TOP: 'alwaysOnTopToggle',
 };
 
+// Am Anfang der Datei nach den Konstanten
+let clickCount = 0;
+const logo = document.querySelector('.logo svg');
+
+// Easter Egg Event Listener
+logo.addEventListener('click', () => {
+    clickCount++;
+    
+    if (clickCount === 3) {
+        document.body.style.transition = 'transform 1s ease-in-out';
+        document.body.style.transform = 'rotate(180deg)';
+        
+        // Easter Egg als gefunden markieren
+        const foundEasterEggs = JSON.parse(localStorage.getItem('foundEasterEggs') || '[]');
+        if (!foundEasterEggs.includes('logo_rotation')) {
+            foundEasterEggs.push('logo_rotation');
+            localStorage.setItem('foundEasterEggs', JSON.stringify(foundEasterEggs));
+            
+            // Benachrichtigung mit angepasstem Titel
+            new Notification('Easter Egg', {
+                body: 'Logo Rotation freigeschaltet',
+                icon: './assets/images/logo/png/64x64.png',
+                silent: true
+            });
+        }
+        
+        setTimeout(() => {
+            document.body.style.transform = 'rotate(0deg)';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 1000);
+        }, 3000);
+        
+        clickCount = 0;
+    }
+    
+    setTimeout(() => {
+        if (clickCount < 3) clickCount = 0;
+    }, 2000);
+});
+
+// Funktion für Easter Egg Benachrichtigungen
+function showEasterEggNotification(title, message) {
+    const notification = new Notification(title, {
+        body: message,
+        icon: './assets/images/logo/png/64x64.png'
+    });
+}
+
 // Funktion zum Ausführen einer exe-Datei
 async function executeExe(exeName) {
     try {
-        console.log('Starte Programm:', exeName);
         showLoadingScreen();
+        
         await ipcRenderer.invoke('execute-exe', exeName);
-        hideLoadingScreen();
+        
+        // Warte und prüfe, ob das Programm läuft
+        await new Promise((resolve) => {
+            const checkInterval = setInterval(async () => {
+                try {
+                    // Prüfe ob der Prozess noch läuft
+                    const isRunning = await ipcRenderer.invoke('check-process', exeName);
+                    if (isRunning) {
+                        clearInterval(checkInterval);
+                        hideLoadingScreen();
+                        resolve();
+                    }
+                } catch (err) {
+                    console.error('Fehler beim Prüfen des Prozesses:', err);
+                }
+            }, 500); // Prüfe alle 500ms
+            
+            // Timeout nach 30 Sekunden
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                hideLoadingScreen();
+                resolve();
+            }, 30000);
+        });
+        
     } catch (err) {
         console.error('Detaillierter Fehler:', err);
         hideLoadingScreen();
@@ -288,3 +361,79 @@ document.addEventListener('keydown', (e) => {
 document.getElementById('errorOverlay')?.addEventListener('click', () => {
     hideErrorModal();
 });
+
+// Nach den bestehenden Easter Egg Definitionen
+let searchCode = '';
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', (e) => {
+    searchCode += e.target.value.toLowerCase();
+    
+    // Prüfe auf "matrix" und lösche dann den Suchtext
+    if (searchCode.includes('matrix')) {
+        searchInput.value = '';
+        createMatrixEffect();
+        
+        // Easter Egg als gefunden markieren
+        const foundEasterEggs = JSON.parse(localStorage.getItem('foundEasterEggs') || '[]');
+        if (!foundEasterEggs.includes('matrix_code')) {
+            foundEasterEggs.push('matrix_code');
+            localStorage.setItem('foundEasterEggs', JSON.stringify(foundEasterEggs));
+            
+            // Benachrichtigung
+            new Notification('Easter Egg', {
+                body: 'Matrix Code freigeschaltet',
+                icon: './assets/images/logo/png/64x64.png',
+                silent: true
+            });
+        }
+        
+        searchCode = '';
+    }
+    
+    // Reset nach 2 Sekunden
+    setTimeout(() => searchCode = '', 2000);
+});
+
+function createMatrixEffect() {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.zIndex = '9999';
+    canvas.style.opacity = '0.9';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = '0123456789ABCDEF';
+    const fontSize = 10;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = letters[Math.floor(Math.random() * letters.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+
+    const matrixInterval = setInterval(draw, 33);
+    setTimeout(() => {
+        clearInterval(matrixInterval);
+        canvas.remove();
+    }, 5000);
+}

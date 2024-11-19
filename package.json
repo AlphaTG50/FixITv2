@@ -1,6 +1,6 @@
 {
   "name": "fixit",
-  "version": "4.25.6",
+  "version": "5.25.6",
   "main": "main.js",
   "bin": "main.js",
   "author": "HelpIT",
@@ -39,11 +39,9 @@
     ],
     "win": {
       "target": [
-        "zip",
         "nsis"
       ],
       "icon": "src/assets/images/logo/win/icon.ico",
-      "artifactName": "FixIT.Portable.v${version}.zip",
       "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
