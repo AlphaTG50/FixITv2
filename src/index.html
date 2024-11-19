@@ -32,6 +32,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js" defer></script>
 
+  <!-- Fügen Sie diesen Stil hinzu, um den Timer oben rechts anzuzeigen -->
+  <style>
+    #timer {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      color: #000; /* Farbe anpassen, falls nötig */
+      background-color: rgba(255, 255, 255, 0.8); /* Hintergrundfarbe für bessere Lesbarkeit */
+      padding: 5px 10px; /* Polsterung für ein besseres Design */
+      border-radius: 5px; /* Abgerundete Ecken */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Schatten für Tiefe */
+    }
+  </style>
+
 </head>
 
 <body>
@@ -365,6 +380,26 @@
       <div class="error-modal-message" id="errorMessage"></div>
       <button class="error-modal-button" onclick="hideErrorModal()">OK</button>
   </div>
+
+  <!-- Fügen Sie dieses Element hinzu, um den Timer anzuzeigen -->
+  <div class="timer">0:00</div>
+
+  <script>
+    let startTime = Date.now(); // Startzeit speichern
+    let timerInterval;
+
+    // Funktion zur Aktualisierung des Timers
+    function updateTimer() {
+      const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Zeit in Sekunden
+      const minutes = Math.floor(elapsedTime / 60);
+      const seconds = elapsedTime % 60;
+      document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`; // Formatierung
+    }
+
+    // Timer sofort aktualisieren und dann jede Sekunde
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  </script>
 
 </body>
 

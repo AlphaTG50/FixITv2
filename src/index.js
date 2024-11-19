@@ -12,11 +12,11 @@ const MENU_IDS = {
 let clickCount = 0;
 const logo = document.querySelector('.logo svg');
 
-// Easter Egg Event Listener
+// Easter Egg Event Listener für das Logo
 logo.addEventListener('click', () => {
     clickCount++;
     
-    if (clickCount === 3) {
+    if (clickCount === 16) {
         document.body.style.transition = 'transform 1s ease-in-out';
         document.body.style.transform = 'rotate(180deg)';
         
@@ -26,7 +26,6 @@ logo.addEventListener('click', () => {
             foundEasterEggs.push('logo_rotation');
             localStorage.setItem('foundEasterEggs', JSON.stringify(foundEasterEggs));
             
-            // Benachrichtigung mit angepasstem Titel
             new Notification('Easter Egg', {
                 body: 'Logo Rotation freigeschaltet',
                 icon: './assets/images/logo/png/64x64.png',
@@ -44,9 +43,10 @@ logo.addEventListener('click', () => {
         clickCount = 0;
     }
     
+    // Reset nach 3 Sekunden wenn nicht genug Klicks
     setTimeout(() => {
-        if (clickCount < 3) clickCount = 0;
-    }, 2000);
+        if (clickCount < 16) clickCount = 0;
+    }, 3000);
 });
 
 // Funktion für Easter Egg Benachrichtigungen
@@ -254,6 +254,25 @@ document.addEventListener('DOMContentLoaded', () => {
             startupLoadingScreen.style.display = 'none';
         }, 500); // Warten Sie, bis die Fade-Animation abgeschlossen ist
     }, 2000); // Zeigen Sie den Loading Screen für 2 Sekunden an
+
+    let startTime = Date.now(); // Startzeit speichern
+    let timerInterval;
+
+    // Funktion zur Aktualisierung des Timers
+    function updateTimer() {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Zeit in Sekunden
+        const hours = Math.floor(elapsedTime / 3600);
+        const minutes = Math.floor((elapsedTime % 3600) / 60);
+        const seconds = elapsedTime % 60;
+
+        // Formatierung: 00:00:00
+        document.querySelector('.timer').textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Timer sofort aktualisieren und dann jede Sekunde
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -369,18 +388,16 @@ const searchInput = document.getElementById('searchInput');
 searchInput.addEventListener('input', (e) => {
     searchCode += e.target.value.toLowerCase();
     
-    // Prüfe auf "matrix" und lösche dann den Suchtext
     if (searchCode.includes('matrix')) {
         searchInput.value = '';
-        createMatrixEffect();
+        createMatrixEffect(); // Direkt die Funktion aufrufen
         
-        // Easter Egg als gefunden markieren
+        // Easter Egg Logik
         const foundEasterEggs = JSON.parse(localStorage.getItem('foundEasterEggs') || '[]');
         if (!foundEasterEggs.includes('matrix_code')) {
             foundEasterEggs.push('matrix_code');
             localStorage.setItem('foundEasterEggs', JSON.stringify(foundEasterEggs));
             
-            // Benachrichtigung
             new Notification('Easter Egg', {
                 body: 'Matrix Code freigeschaltet',
                 icon: './assets/images/logo/png/64x64.png',
@@ -391,10 +408,10 @@ searchInput.addEventListener('input', (e) => {
         searchCode = '';
     }
     
-    // Reset nach 2 Sekunden
     setTimeout(() => searchCode = '', 2000);
 });
 
+// Matrix-Effekt Funktion direkt in index.js
 function createMatrixEffect() {
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
@@ -411,29 +428,47 @@ function createMatrixEffect() {
     canvas.height = window.innerHeight;
 
     const letters = '0123456789ABCDEF';
-    const fontSize = 10;
+    const fontSize = 20; // Größere Buchstaben für bessere Sichtbarkeit
     const columns = canvas.width / fontSize;
     const drops = Array(Math.floor(columns)).fill(1);
+    let opacity = 1;
+    let fadeStarted = false;
 
     function draw() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillStyle = `rgba(0, 0, 0, ${fadeStarted ? 0.02 * opacity : 0.05})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = fontSize + 'px monospace';
+        
+        ctx.fillStyle = `rgba(0, 255, 0, ${opacity * 0.9})`;
+        ctx.font = `${fontSize}px monospace`; // Schriftgröße anpassen
 
         for (let i = 0; i < drops.length; i++) {
             const text = letters[Math.floor(Math.random() * letters.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
+            const yPos = drops[i] * fontSize; // Positionierung der Buchstaben
+            ctx.fillText(text, i * fontSize, yPos);
+            if (yPos > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0; // Reset der Tropfen
             }
             drops[i]++;
         }
     }
 
     const matrixInterval = setInterval(draw, 33);
+
     setTimeout(() => {
-        clearInterval(matrixInterval);
-        canvas.remove();
-    }, 5000);
+        fadeStarted = true;
+        const fadeInterval = setInterval(() => {
+            opacity -= 0.01;
+            
+            if (opacity <= 0.05) {
+                canvas.style.transition = 'opacity 0.5s ease-out';
+                canvas.style.opacity = '0';
+                
+                setTimeout(() => {
+                    clearInterval(matrixInterval);
+                    clearInterval(fadeInterval);
+                    canvas.remove();
+                }, 500);
+            }
+        }, 60);
+    }, 4000);
 }

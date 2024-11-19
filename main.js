@@ -89,6 +89,10 @@ function createMainWindow() {
             nodeIntegration: true,
             contextIsolation: false,
             devTools: true,
+            webSecurity: true,
+            allowRunningInsecureContent: false,
+            nodeIntegrationInWorker: true,
+            experimentalFeatures: true
         }
     });
 
@@ -367,6 +371,12 @@ const template = [
     {
         label: 'Hilfe',
         submenu: [
+            {
+                label: 'Entwicklertools öffnen',
+                click: () => {
+                    mainWindow.webContents.openDevTools();
+                }
+            },
             {
                 label: 'TeamViewer QS',
                 click: () => {
