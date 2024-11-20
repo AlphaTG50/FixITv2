@@ -273,6 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Timer sofort aktualisieren und dann jede Sekunde
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
+
+    // Starte das Tutorial
+    startTutorial();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -413,6 +416,10 @@ searchInput.addEventListener('input', (e) => {
 
 // Matrix-Effekt Funktion direkt in index.js
 function createMatrixEffect() {
+    // Suchleiste deaktivieren
+    const searchInput = document.getElementById('searchInput');
+    searchInput.disabled = true;
+    
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
     canvas.style.top = '0';
@@ -428,7 +435,7 @@ function createMatrixEffect() {
     canvas.height = window.innerHeight;
 
     const letters = '0123456789ABCDEF';
-    const fontSize = 20; // Größere Buchstaben für bessere Sichtbarkeit
+    const fontSize = 12; // Kleinere Schriftgröße (von 20 auf 12 geändert)
     const columns = canvas.width / fontSize;
     const drops = Array(Math.floor(columns)).fill(1);
     let opacity = 1;
@@ -439,14 +446,13 @@ function createMatrixEffect() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.fillStyle = `rgba(0, 255, 0, ${opacity * 0.9})`;
-        ctx.font = `${fontSize}px monospace`; // Schriftgröße anpassen
+        ctx.font = `${fontSize}px monospace`; // Kleinere Schriftgröße wird hier verwendet
 
         for (let i = 0; i < drops.length; i++) {
             const text = letters[Math.floor(Math.random() * letters.length)];
-            const yPos = drops[i] * fontSize; // Positionierung der Buchstaben
-            ctx.fillText(text, i * fontSize, yPos);
-            if (yPos > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0; // Reset der Tropfen
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
             }
             drops[i]++;
         }
@@ -454,6 +460,7 @@ function createMatrixEffect() {
 
     const matrixInterval = setInterval(draw, 33);
 
+    // Nach 4 Sekunden mit dem Ausblenden beginnen
     setTimeout(() => {
         fadeStarted = true;
         const fadeInterval = setInterval(() => {
@@ -467,8 +474,180 @@ function createMatrixEffect() {
                     clearInterval(matrixInterval);
                     clearInterval(fadeInterval);
                     canvas.remove();
+                    // Suchleiste wieder aktivieren
+                    searchInput.disabled = false;
                 }, 500);
             }
         }, 60);
     }, 4000);
 }
+
+// Nach den bestehenden Konstanten
+const TUTORIAL_STEPS = [
+    {
+        element: '.search-container',
+        title: 'Suche',
+        text: 'Hier kannst du nach Programmen suchen',
+        position: 'bottom'
+    },
+    {
+        element: '#categoryFilter',
+        title: 'Filter',
+        text: 'Filtere nach Kategorien',
+        position: 'bottom'
+    },
+    {
+        element: '.albumitem:first-child',
+        title: 'Programme',
+        text: 'Klicke auf ein Programm um es zu starten',
+        position: 'center'
+    }
+];
+
+// Tutorial-Funktion prüft, ob es bereits gezeigt wurde
+function startTutorial() {
+    if (localStorage.getItem('tutorialShown')) return;
+
+    let currentStep = 0;
+    
+    function createTutorialOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = 'tutorial-overlay';
+        document.body.appendChild(overlay);
+        return overlay;
+    }
+
+    function createTutorialBox() {
+        const box = document.createElement('div');
+        box.className = 'tutorial-box';
+        box.innerHTML = `
+            <div class="tutorial-content">
+                <h3></h3>
+                <p></p>
+            </div>
+            <div class="tutorial-buttons">
+                <button class="tutorial-skip">Überspringen</button>
+                <button class="tutorial-next">Weiter</button>
+            </div>
+        `;
+        document.body.appendChild(box);
+        return box;
+    }
+
+    const overlay = createTutorialOverlay();
+    const tutorialBox = createTutorialBox();
+
+    function showStep(step) {
+        const targetElement = document.querySelector(step.element);
+        if (!targetElement) return;
+
+        const rect = targetElement.getBoundingClientRect();
+        
+        // Präzisere Hervorhebung für die Suchleiste
+        if (step.element === '.search-container') {
+            const searchInput = document.querySelector('#searchInput');
+            if (searchInput) {
+                searchInput.style.outline = '2px solid var(--darkblue)';
+                searchInput.style.outlineOffset = '2px';
+            }
+        } else {
+            targetElement.style.outline = '2px solid var(--darkblue)';
+            targetElement.style.outlineOffset = '2px';
+        }
+
+        tutorialBox.querySelector('h3').textContent = step.title;
+        tutorialBox.querySelector('p').textContent = step.text;
+
+        // Position the tutorial box
+        switch(step.position) {
+            case 'bottom':
+                tutorialBox.style.top = `${rect.bottom + 10}px`;
+                tutorialBox.style.left = `${rect.left + (rect.width / 2) - (tutorialBox.offsetWidth / 2)}px`;
+                break;
+            case 'right':
+                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
+                tutorialBox.style.left = `${rect.right + 10}px`;
+                break;
+            case 'left':
+                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
+                tutorialBox.style.left = `${rect.left - tutorialBox.offsetWidth - 10}px`;
+                break;
+            case 'center':
+                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
+                tutorialBox.style.left = `${rect.left + (rect.width / 2) - (tutorialBox.offsetWidth / 2)}px`;
+                break;
+            case 'bottom-left':
+                tutorialBox.style.top = `${rect.bottom + 10}px`;
+                tutorialBox.style.left = `${rect.left}px`;
+                break;
+        }
+    }
+
+    function nextStep() {
+        // Entferne das Highlight vom aktuellen Element
+        const currentElement = document.querySelector(TUTORIAL_STEPS[currentStep].element);
+        if (currentElement) {
+            if (TUTORIAL_STEPS[currentStep].element === '.search-container') {
+                const searchInput = document.querySelector('#searchInput');
+                if (searchInput) {
+                    searchInput.style.outline = '';
+                    searchInput.style.outlineOffset = '';
+                }
+            } else {
+                currentElement.style.outline = '';
+                currentElement.style.outlineOffset = '';
+            }
+        }
+
+        if (currentStep < TUTORIAL_STEPS.length - 1) {
+            currentStep++;
+            showStep(TUTORIAL_STEPS[currentStep]);
+        } else {
+            endTutorial();
+        }
+    }
+
+    function endTutorial() {
+        // Entferne alle Highlights
+        TUTORIAL_STEPS.forEach(step => {
+            if (step.element === '.search-container') {
+                const searchInput = document.querySelector('#searchInput');
+                if (searchInput) {
+                    searchInput.style.outline = '';
+                    searchInput.style.outlineOffset = '';
+                }
+            } else {
+                const element = document.querySelector(step.element);
+                if (element) {
+                    element.style.outline = '';
+                    element.style.outlineOffset = '';
+                }
+            }
+        });
+
+        overlay.remove();
+        tutorialBox.remove();
+        localStorage.setItem('tutorialShown', 'true');
+    }
+
+    tutorialBox.querySelector('.tutorial-next').addEventListener('click', nextStep);
+    tutorialBox.querySelector('.tutorial-skip').addEventListener('click', endTutorial);
+
+    showStep(TUTORIAL_STEPS[0]);
+}
+
+// Nach den bestehenden Event Listenern
+document.addEventListener('keydown', (e) => {
+    // Prüfe auf Strg+S (Windows) oder Cmd+S (Mac)
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault(); // Verhindert das Standard-Speichern-Verhalten
+        
+        // Fokussiere die Suchleiste
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.focus();
+            // Optional: Selektiere den gesamten Text in der Suchleiste
+            searchInput.select();
+        }
+    }
+});

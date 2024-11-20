@@ -371,10 +371,53 @@ const template = [
     {
         label: 'Hilfe',
         submenu: [
+            // Hilfe & Support Gruppe
             {
-                label: 'Entwicklertools öffnen',
+                label: 'Tutorial starten',
                 click: () => {
-                    mainWindow.webContents.openDevTools();
+                    mainWindow.webContents.executeJavaScript(`
+                        localStorage.removeItem('tutorialShown');
+                        startTutorial();
+                    `);
+                }
+            },
+            {
+                label: 'Shortcuts anzeigen',
+                click: () => {
+                    const shortcutsWindow = new BrowserWindow({
+                        width: 400,
+                        height: 500,
+                        title: "Shortcuts",
+                        modal: false,
+                        parent: mainWindow,
+                        show: false,
+                        frame: false,
+                        webPreferences: {
+                            nodeIntegration: true,
+                            contextIsolation: false
+                        },
+                        backgroundColor: '#ffffff',
+                        minimizable: false,
+                        maximizable: false,
+                        resizable: false,
+                        autoHideMenuBar: true,
+                        menuBarVisible: false,
+                        alwaysOnTop: true
+                    });
+
+                    shortcutsWindow.setMenu(null);
+
+                    shortcutsWindow.once('ready-to-show', () => {
+                        shortcutsWindow.show();
+                    });
+
+                    shortcutsWindow.webContents.on('before-input-event', (event, input) => {
+                        if (input.key === 'Escape') {
+                            shortcutsWindow.close();
+                        }
+                    });
+
+                    shortcutsWindow.loadFile(path.join(__dirname, 'src', 'shortcuts.html'));
                 }
             },
             {
@@ -389,8 +432,75 @@ const template = [
                 }
             },
             { type: 'separator' },
+
+            // Entwickler Tools
             {
-                label: "Easter Eggs",
+                label: 'Entwickler',
+                submenu: [
+                    {
+                        label: 'DevTools öffnen',
+                        click: () => mainWindow.webContents.openDevTools()
+                    },
+                    {
+                        label: 'Logs exportieren',
+                        click: async () => {
+                            try {
+                                const { filePath } = await dialog.showSaveDialog(mainWindow, {
+                                    title: 'Logs speichern',
+                                    defaultPath: path.join(app.getPath('desktop'), 'FixIT-Logs.txt'),
+                                    filters: [
+                                        { name: 'Text Files', extensions: ['txt'] },
+                                        { name: 'All Files', extensions: ['*'] }
+                                    ]
+                                });
+
+                                if (filePath) {
+                                    // Sammle Systeminformationen
+                                    const os = require('os');
+                                    const logContent = [
+                                        `FixIT Logs - ${new Date().toLocaleString()}`,
+                                        '----------------------------------------',
+                                        'System Informationen:',
+                                        `Hostname: ${os.hostname()}`,
+                                        `Betriebssystem: ${os.type()} ${os.release()} ${os.arch()}`,
+                                        `CPU: ${os.cpus()[0].model}`,
+                                        `CPU Kerne: ${os.cpus().length}`,
+                                        `Arbeitsspeicher: ${Math.round(os.totalmem() / 1024 / 1024 / 1024)} GB`,
+                                        `Benutzer: ${os.userInfo().username}`,
+                                        `Home Directory: ${os.homedir()}`,
+                                        '----------------------------------------',
+                                        'FixIT Informationen:',
+                                        `Version: ${version}`,
+                                        `Electron Version: ${process.versions.electron}`,
+                                        `Chrome Version: ${process.versions.chrome}`,
+                                        `Node Version: ${process.versions.node}`,
+                                        `V8 Version: ${process.versions.v8}`,
+                                        '----------------------------------------'
+                                    ].join('\n');
+
+                                    require('fs').writeFileSync(filePath, logContent);
+
+                                    dialog.showMessageBox(mainWindow, {
+                                        type: 'info',
+                                        title: 'Logs exportiert',
+                                        message: 'Die Logs wurden erfolgreich exportiert.',
+                                        buttons: ['OK']
+                                    });
+                                }
+                            } catch (error) {
+                                dialog.showErrorBox('Fehler', 
+                                    'Beim Exportieren der Logs ist ein Fehler aufgetreten: ' + error.message
+                                );
+                            }
+                        }
+                    }
+                ]
+            },
+            { type: 'separator' },
+
+            // Extras & Features
+            {
+                label: 'Easter Eggs',
                 click: () => {
                     const easterEggWindow = new BrowserWindow({
                         width: 400,
@@ -429,7 +539,7 @@ const template = [
                 }
             },
             {
-                label: "Lizenz",
+                label: 'Lizenz',
                 click: () => {
                     dialog.showMessageBox(mainWindow, {
                         type: "warning",
@@ -440,8 +550,11 @@ const template = [
                     });
                 }
             },
+            { type: 'separator' },
+
+            // Info
             {
-                label: "Über FixIT",
+                label: 'Über FixIT',
                 click: () => {
                     dialog.showMessageBox(mainWindow, {
                         type: "info",
@@ -451,9 +564,7 @@ const template = [
                         noLink: true
                     });
                 }
-            },
-            { type: 'separator' },
-            { label: 'Exit', click: () => app.quit() },
+            }
         ]
     }
 ];

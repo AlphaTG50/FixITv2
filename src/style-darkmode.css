@@ -87,3 +87,22 @@ body.dark-mode .timer {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
+
+/* Dark Mode Tutorial */
+body.dark-mode .tutorial-box {
+    background: #272727;
+    color: #fff;
+}
+
+body.dark-mode .tutorial-content h3 {
+    color: var(--lightblue);
+}
+
+body.dark-mode .tutorial-skip {
+    background: #333;
+    color: #fff;
+}
+
+body.dark-mode .tutorial-skip:hover {
+    background: #444;
+}
