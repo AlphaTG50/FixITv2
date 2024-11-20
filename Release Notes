@@ -13,3 +13,29 @@ Reset-Button: Ein Button wurde hinzugefügt, um alle gefundenen Easter Eggs zur�
 Dark Mode Unterstützung: Das Fenster unterstützt jetzt den Dark Mode, um die Lesbarkeit in dunklen Umgebungen zu verbessern.
 Allgemeine Fehlerbehebungen
 Behebung von Anzeigeproblemen: Probleme mit der Sichtbarkeit und dem Verhalten des Easter Egg-Fensters wurden behoben, um eine reibungslose Benutzererfahrung zu gewährleisten.
+
+
+- Tutorial-Fenster 
+- Shortcuts-Fenster
+- Logs exportieren
+
+
+Release Notes - Version 1.3.3
+Verbesserungen
+Matrix-Effekt
+Optimierung der Schriftgröße: Die Schriftgröße wurde auf 20px erhöht, um die Sichtbarkeit der Buchstaben zu verbessern.
+Sanfter Übergang: Der Übergang der Buchstaben wurde so angepasst, dass sie allmählich verblassen, während sie fallen, was zu einem weicheren visuellen Effekt führt.
+Kürzere Dauer: Die Gesamtdauer des Effekts wurde auf 4 Sekunden reduziert, um die Animation dynamischer zu gestalten.
+Easter Egg-Funktionalität
+Erhöhung der Klickanzahl: Die Anzahl der erforderlichen Klicks auf das Logo wurde auf 16 erhöht, um das Easter Egg zu aktivieren.
+Aktualisierte Hinweise: Die Beschreibungen und Hinweise für die Easter Eggs wurden überarbeitet, um die Benutzererfahrung zu verbessern und die Interaktivität zu fördern.
+Easter Egg-Fenster
+Verbesserte Benutzeroberfläche: Das Design des Easter Egg-Fensters wurde optimiert, um eine klarere Struktur und ansprechende visuelle Elemente zu bieten.
+Reset-Button: Ein Button wurde hinzugefügt, um alle gefundenen Easter Eggs zurückzusetzen, was die Benutzerfreundlichkeit erhöht.
+Dark Mode Unterstützung: Das Fenster unterstützt jetzt den Dark Mode, um die Lesbarkeit in dunklen Umgebungen zu verbessern.
+Neue Features
+Tutorial-Fenster: Ein neues Tutorial-Fenster wurde implementiert, das Nutzern die grundlegenden Funktionen der Anwendung erklärt.
+Shortcuts-Fenster: Ein dediziertes Fenster für Tastaturkürzel wurde hinzugefügt, das alle verfügbaren Shortcuts übersichtlich darstellt.
+Log-Export: Neue Funktion zum Exportieren von Anwendungslogs für verbesserte Fehleranalyse und Debugging.
+Allgemeine Fehlerbehebungen
+Behebung von Anzeigeproblemen: Probleme mit der Sichtbarkeit und dem Verhalten des Easter Egg-Fensters wurden behoben, um eine reibungslose Benutzererfahrung zu gewährleisten.
