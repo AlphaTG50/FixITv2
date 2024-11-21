@@ -636,11 +636,11 @@ function startTutorial() {
     showStep(TUTORIAL_STEPS[0]);
 }
 
-// Nach den bestehenden Event Listenern
+// Ersetze den bestehenden Event Listener für STRG+S
 document.addEventListener('keydown', (e) => {
-    // Prüfe auf Strg+S (Windows) oder Cmd+S (Mac)
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault(); // Verhindert das Standard-Speichern-Verhalten
+    // Prüfe auf Strg+F (Windows) oder Cmd+F (Mac)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault(); // Verhindert das Standard-Suchen-Verhalten des Browsers
         
         // Fokussiere die Suchleiste
         const searchInput = document.getElementById('searchInput');

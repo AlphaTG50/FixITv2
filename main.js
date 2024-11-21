@@ -5,6 +5,7 @@ const axios = require('axios');
 const path = require('path');
 const { type } = require('os');
 const { spawn } = require('child_process');
+const fs = require('fs');
 
 // Lizenzfenster-Erstellung
 // function createLicenseWindow() { ... }
@@ -73,8 +74,26 @@ const isDev = process.env.NODE_ENV === 'development';
 
 app.setPath('cache', path.join(app.getPath('userData'), 'cache'));
 
-// Hauptfenster-Erstellung
+// Hauptfenster-Erstellung anpassen
 function createMainWindow() {
+    // Splash Screen erstellen
+    const splash = new BrowserWindow({
+        width: 400,
+        height: 300,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    splash.loadFile(path.join(__dirname, 'src', 'splash.html'));
+    splash.center();
+
+    // Hauptfenster im Hintergrund laden
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 768,
@@ -97,12 +116,14 @@ function createMainWindow() {
     });
 
     // Optimierte Ladesequenz
-    const loadPromise = mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
-    
-    // Zeige das Fenster sofort nach dem ersten Paint
-    mainWindow.once('ready-to-show', () => {
+    mainWindow.loadFile(path.join(__dirname, 'src', 'index.html')).then(() => {
         loadUserPreferences();
-        mainWindow.show();
+        // Kurze Verzögerung für smootheren Übergang
+        setTimeout(() => {
+            splash.destroy();
+            mainWindow.show();
+            mainWindow.focus();
+        }, 1500);
     });
 
     mainWindow.on('close', (event) => {
@@ -175,17 +196,18 @@ const showTrayIcon = () => {
     tray.on('click', () => mainWindow.show());
 };
 
-// IPC-Handler für .exe-Ausführung
+// IPC-Handler für .exe-Ausführung anpassen
 ipcMain.handle('execute-exe', async (event, exeName) => {
     return new Promise((resolve, reject) => {
-        const exePath = isDev 
-            ? path.join(__dirname, 'resources', 'portable-apps', `${exeName}.exe`)
-            : path.join(process.resourcesPath, 'portable-apps', `${exeName}.exe`);
+        // Korrigierter Pfad für portable Apps
+        const exePath = app.isPackaged 
+            ? path.join(process.resourcesPath, 'portable-apps', `${exeName}.exe`)
+            : path.join(__dirname, 'src', 'portable-apps', `${exeName}.exe`);
         
         console.log('Versuche Programm zu starten:', exePath);
 
         // Prüfen ob die Datei existiert
-        if (!require('fs').existsSync(exePath)) {
+        if (!fs.existsSync(exePath)) {
             console.error(`Exe nicht gefunden: ${exePath}`);
             reject(new Error(`Programm ${exeName}.exe wurde nicht gefunden`));
             return;
@@ -423,12 +445,25 @@ const template = [
             {
                 label: 'TeamViewer QS',
                 click: () => {
-                    const exePath = isDev
-                        ? path.join(__dirname, 'resources', 'portable-apps', 'TeamViewerQS.exe')
-                        : path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe');
-                    exec(`"${exePath}"`, (error) => {
-                        if (error) console.error(`Fehler beim Öffnen von TeamViewer: ${error}`);
-                    });
+                    const exePath = app.isPackaged
+                        ? path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe')
+                        : path.join(__dirname, 'src', 'portable-apps', 'TeamViewerQS.exe');
+
+                    if (fs.existsSync(exePath)) {
+                        exec(`"${exePath}"`, (error) => {
+                            if (error) {
+                                console.error(`Fehler beim Öffnen von TeamViewer: ${error}`);
+                                dialog.showErrorBox('Fehler', 
+                                    'TeamViewer QS konnte nicht gestartet werden.'
+                                );
+                            }
+                        });
+                    } else {
+                        console.error('TeamViewer QS nicht gefunden:', exePath);
+                        dialog.showErrorBox('Fehler', 
+                            'TeamViewer QS wurde nicht gefunden.'
+                        );
+                    }
                 }
             },
             { type: 'separator' },
@@ -564,6 +599,12 @@ const template = [
                         noLink: true
                     });
                 }
+            },
+            {
+                label: 'Updates prüfen',
+                click: async () => {
+                    checkForUpdates();
+                }
             }
         ]
     }
@@ -575,19 +616,162 @@ Menu.setApplicationMenu(menu);
 
 // Fügen Sie diese Funktion am Anfang der Datei hinzu
 function listPortableApps() {
-    const portableAppsPath = isDev
-        ? path.join(__dirname, 'resources', 'portable-apps')
-        : path.join(process.resourcesPath, 'portable-apps');
+    const portableAppsPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'portable-apps')
+        : path.join(__dirname, 'src', 'portable-apps');
         
     try {
-        const files = require('fs').readdirSync(portableAppsPath);
+        if (!fs.existsSync(portableAppsPath)) {
+            console.error('Portable-Apps Ordner existiert nicht:', portableAppsPath);
+            return;
+        }
+
+        const files = fs.readdirSync(portableAppsPath);
+        console.log('Gefundene portable Apps:', files);
         
         files.forEach(file => {
             const filePath = path.join(portableAppsPath, file);
-            const stats = require('fs').statSync(filePath);
+            const stats = fs.statSync(filePath);
+            console.log(`App: ${file}, Größe: ${stats.size} bytes`);
         });
     } catch (error) {
         console.error('Fehler beim Lesen des portable-apps Ordners:', error);
         console.error('Pfad:', portableAppsPath);
     }
+}
+
+// Update-Funktion aktualisieren
+async function checkForUpdates() {
+    try {
+        const { data } = await axios.get('https://api.github.com/repos/AlphaTG50/FixIT/releases/latest');
+        
+        const latestVersion = data.tag_name.replace('v', '');
+        const currentVersion = version;
+
+        if (compareVersions(latestVersion, currentVersion) > 0) {
+            const { response, checkboxChecked } = await dialog.showMessageBox({
+                type: 'info',
+                buttons: ['Jetzt installieren', 'Später'],
+                title: 'Update verfügbar',
+                message: `Eine neue Version (${data.tag_name}) ist verfügbar.`,
+                detail: `Aktuelle Version: v${currentVersion}`,
+                cancelId: 1,
+                noLink: true
+            });
+
+            if (response === 0) {
+                await downloadUpdate(data.assets[0].browser_download_url);
+            }
+        } else {
+            dialog.showMessageBox({
+                type: 'info',
+                title: 'Keine Updates verfügbar',
+                message: `Sie verwenden bereits die neueste Version.`
+            });
+        }
+    } catch (error) {
+        dialog.showErrorBox('Update-Fehler', 
+            'Beim Prüfen auf Updates ist ein Fehler aufgetreten.\n' +
+            'Bitte überprüfen Sie Ihre Internetverbindung.'
+        );
+        console.error('Update-Fehler:', error);
+    }
+}
+
+async function downloadUpdate(downloadUrl) {
+    const progressWindow = new BrowserWindow({
+        width: 400,
+        height: 150,
+        frame: false,
+        resizable: false,
+        parent: mainWindow,
+        modal: true,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    progressWindow.loadFile(path.join(__dirname, 'src', 'update-progress.html'));
+    progressWindow.once('ready-to-show', () => progressWindow.show());
+
+    progressWindow.on('close', () => {
+        progressWindow.destroy();
+    });
+
+    try {
+        // Download-Pfad für die Setup.exe
+        const downloadPath = path.join(app.getPath('temp'), 'FixIT.Setup.exe');
+        
+        // Download durchführen
+        const response = await axios({
+            method: 'get',
+            url: downloadUrl,
+            responseType: 'stream',
+            onDownloadProgress: (progressEvent) => {
+                if (!progressWindow.isDestroyed()) {
+                    const progress = (progressEvent.loaded / progressEvent.total) * 100;
+                    progressWindow.webContents.send('download-progress', progress);
+                }
+            }
+        });
+
+        if (progressWindow.isDestroyed()) return;
+
+        // Setup.exe speichern
+        const writer = fs.createWriteStream(downloadPath);
+        response.data.pipe(writer);
+
+        await new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+        });
+
+        if (!progressWindow.isDestroyed()) {
+            progressWindow.close();
+            
+            const installChoice = dialog.showMessageBoxSync({
+                type: 'info',
+                buttons: ['Jetzt installieren', 'Später'],
+                title: 'Update bereit',
+                message: 'Das Update wurde heruntergeladen. Die Anwendung wird geschlossen und das Update gestartet.'
+            });
+
+            if (installChoice === 0) {
+                // Setup.exe ausführen und App beenden
+                exec(`"${downloadPath}"`, (error) => {
+                    if (error) {
+                        dialog.showErrorBox('Update-Fehler', 
+                            'Beim Starten des Updates ist ein Fehler aufgetreten.'
+                        );
+                        console.error('Update-Fehler:', error);
+                        return;
+                    }
+                    app.quit();
+                });
+            }
+        }
+
+    } catch (error) {
+        if (!progressWindow.isDestroyed()) {
+            progressWindow.close();
+            dialog.showErrorBox('Download-Fehler', 
+                'Beim Herunterladen des Updates ist ein Fehler aufgetreten.'
+            );
+        }
+        console.error('Download-Fehler:', error);
+    }
+}
+
+// Hilfsfunktion zum Vergleichen von Versionen
+function compareVersions(v1, v2) {
+    const v1Parts = v1.split('.').map(Number);
+    const v2Parts = v2.split('.').map(Number);
+    
+    for (let i = 0; i < 3; i++) {
+        if (v1Parts[i] > v2Parts[i]) return 1;
+        if (v1Parts[i] < v2Parts[i]) return -1;
+    }
+    return 0;
 }
