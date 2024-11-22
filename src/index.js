@@ -142,6 +142,7 @@ function initializeCategoryFilter() {
     categorySelect.id = 'categoryFilter';
     categorySelect.innerHTML = `
         <option value="">Alle</option>
+        <option value="favorites">Favoriten</option>
         <option value="portable">Portable</option>
         <option value="wip">In Progress</option>
     `;
@@ -166,6 +167,10 @@ function filterAlbums() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
     const selectedCategory = document.getElementById('categoryFilter').value;
     const albums = document.querySelectorAll('.albumitem');
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const albumList = document.querySelector('.albumlist');
+    
+    let hasVisibleItems = false;
 
     albums.forEach(album => {
         const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
@@ -173,6 +178,7 @@ function filterAlbums() {
         const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
         const isPortable = album.querySelector('.albumtitle h3') !== null;
         const isWip = album.querySelector('.wip-label') !== null;
+        const isFavorite = favorites.includes(album.getAttribute('data-search'));
         
         const matchesSearch = searchTerm === '' || 
             title.includes(searchTerm) || 
@@ -181,10 +187,19 @@ function filterAlbums() {
             
         const matchesCategory = selectedCategory === '' || 
             (selectedCategory === 'portable' && isPortable) ||
-            (selectedCategory === 'wip' && isWip);
+            (selectedCategory === 'wip' && isWip) ||
+            (selectedCategory === 'favorites' && isFavorite);
 
-        album.style.display = (matchesSearch && matchesCategory) ? 'flex' : 'none';
+        const isVisible = matchesSearch && matchesCategory;
+        album.style.display = isVisible ? 'flex' : 'none';
+        
+        if (isVisible) {
+            hasVisibleItems = true;
+        }
     });
+
+    // Zeige oder verstecke die albumlist basierend auf den Suchergebnissen
+    albumList.style.display = hasVisibleItems ? 'flex' : 'none';
 }
 
 // Funktion zur Anpassung der Grid-Spalten
@@ -198,7 +213,7 @@ function adjustGridColumns() {
 // Event-Listener für das Fenstergrößen-Ändern
 window.addEventListener('resize', adjustGridColumns);
 
-// Initialisierung der Anwendung nach dem Laden der DOM-Inhalte
+// Event-Listener für das Laden der DOM-Inhalte anpassen
 document.addEventListener('DOMContentLoaded', () => {
     containerWidth = document.documentElement.clientWidth;
     adjustGridColumns();
@@ -217,70 +232,41 @@ document.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.send('alwaysOnTopToggle', true);
     }
 
-    // Dark Mode Toggle Listener
-    ipcRenderer.on('toggle-dark-mode', (event, isDarkMode) => {
-        document.body.classList.toggle('dark-mode', isDarkMode);
-    });
-
-    // Fehlerbehandlung für IPC
-    ipcRenderer.on('error', (event, errorMessage) => {
-        console.error('IPC Error:', errorMessage); // Fehlerprotokollierung
-        alert('Ein Fehler ist aufgetreten: ' + errorMessage); // Benutzerbenachrichtigung
-    });
-
-    // Work in Progress Items deaktivieren
-    document.querySelectorAll('.albumitem').forEach(item => {
-        const description = item.querySelector('.albumtitle h2');
-        if (description && description.textContent.includes('🚧')) {
-            item.style.opacity = '0.5';
-            item.style.filter = 'grayscale(100%)';
-            item.style.pointerEvents = 'none';
-            item.style.cursor = 'not-allowed';
-            
-            // Entferne alle Event Listener
-            item.replaceWith(item.cloneNode(true));
-        }
-    });
-
     const categoryFilter = initializeCategoryFilter();
+
+    // Warte einen kurzen Moment, bis das DOM vollständig geladen ist
+    setTimeout(() => {
+        // Initialisiere Favoriten und sortiere
+        initializeFavorites();
+        
+        // Führe die Sortierung explizit durch
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        if (favorites.length > 0) {
+            sortAlbumItems();
+        }
+        
+        // Füge Favoriten-Buttons hinzu
+        addFavoriteButtonsToAll();
+    }, 100);
 
     // Startup Loading Screen
     const startupLoadingScreen = document.getElementById('startup-loading-screen');
     
-    // Verzögern Sie das Ausblenden des Loading Screens
     setTimeout(() => {
-        startupLoadingScreen.classList.add('fade-out');
+        startupLoadingScreen?.classList.add('fade-out');
         setTimeout(() => {
-            startupLoadingScreen.style.display = 'none';
-        }, 500); // Warten Sie, bis die Fade-Animation abgeschlossen ist
-    }, 2000); // Zeigen Sie den Loading Screen für 2 Sekunden an
+            if (startupLoadingScreen) {
+                startupLoadingScreen.style.display = 'none';
+            }
+        }, 500);
+    }, 2000);
 
-    let startTime = Date.now(); // Startzeit speichern
-    let timerInterval;
-
-    // Funktion zur Aktualisierung des Timers
-    function updateTimer() {
-        const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Zeit in Sekunden
-        const hours = Math.floor(elapsedTime / 3600);
-        const minutes = Math.floor((elapsedTime % 3600) / 60);
-        const seconds = elapsedTime % 60;
-
-        // Formatierung: 00:00:00
-        document.querySelector('.timer').textContent = 
-            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    // Timer sofort aktualisieren und dann jede Sekunde
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
-
-    // Starte das Tutorial
     startTutorial();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
 function handleAlbumNotFound(album) {
-    console.warn('Album nicht gefunden:', album);
+    // console.warn entfernt
 }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -324,10 +310,8 @@ async function executeProgram(programName) {
   try {
     showLoadingScreen();
     
-    // Programm starten
     await window.electron.execute(programName);
     
-    // Warten Sie einen kurzen Moment, um sicherzustellen, dass das Programm gestartet ist
     setTimeout(() => {
       hideLoadingScreen();
     }, 1500);
@@ -651,3 +635,186 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Füge diese neuen Funktionen hinzu
+function initializeFavorites() {
+    addFavoriteButtonsToAll();
+    
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    
+    document.querySelectorAll('.albumitem').forEach(item => {
+        const favBtn = item.querySelector('.favorite-btn');
+        if (!favBtn) return;
+        
+        const programId = item.getAttribute('data-search');
+        
+        if (favorites.includes(programId)) {
+            favBtn.classList.add('active');
+        }
+        
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(programId, favBtn);
+            // Verzögere die Sortierung leicht für bessere Animation
+            requestAnimationFrame(() => {
+                sortAlbumItems();
+            });
+        });
+    });
+    
+    // Führe die initiale Sortierung durch
+    sortAlbumItems();
+}
+
+function toggleFavorite(programId, btn) {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(programId);
+    const item = btn.closest('.albumitem');
+    
+    if (index === -1) {
+        favorites.push(programId);
+        btn.classList.add('active');
+        
+        // Sanfte Animation beim Hinzufügen zu Favoriten
+        item.style.transition = 'all 0.3s ease';
+    } else {
+        favorites.splice(index, 1);
+        btn.classList.remove('active');
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    
+    // Verzögere die Sortierung leicht
+    requestAnimationFrame(() => {
+        sortAlbumItems();
+    });
+}
+
+// Sortier-Funktion optimieren
+function sortAlbumItems() {
+    const albumList = document.querySelector('.albumlist');
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const items = Array.from(albumList.children);
+    
+    // Speichere die ursprünglichen Positionen und Scroll-Position
+    const originalPositions = new Map();
+    items.forEach(item => {
+        originalPositions.set(item, item.getBoundingClientRect().top);
+    });
+    const scrollPosition = window.scrollY;
+    
+    // Sortiere die Items
+    items.sort((a, b) => {
+        const aIsFav = favorites.includes(a.getAttribute('data-search'));
+        const bIsFav = favorites.includes(b.getAttribute('data-search'));
+        
+        if (aIsFav && !bIsFav) return -1;
+        if (!aIsFav && bIsFav) return 1;
+        
+        const titleA = a.querySelector('.albumtitle h1').textContent.toLowerCase();
+        const titleB = b.querySelector('.albumtitle h1').textContent.toLowerCase();
+        return titleA.localeCompare(titleB);
+    });
+
+    // Entferne alle Items temporär
+    const fragment = document.createDocumentFragment();
+    items.forEach(item => {
+        // Setze die ursprüngliche Position als Startpunkt
+        const originalTop = originalPositions.get(item);
+        item.style.position = 'relative';
+        item.style.top = '0';
+        item.style.transition = 'none';
+        fragment.appendChild(item);
+    });
+
+    // Füge die sortierten Items wieder ein
+    albumList.appendChild(fragment);
+
+    // Trigger reflow
+    albumList.offsetHeight;
+
+    // Aktiviere Transitions und bewege Items an ihre finalen Positionen
+    items.forEach(item => {
+        item.style.transition = 'all 0.3s ease';
+        item.style.top = '0';
+    });
+
+    // Stelle die Scroll-Position wieder her
+    window.scrollTo(0, scrollPosition);
+}
+
+// Funktion zum Hinzufügen der Favoriten-Buttons
+function addFavoriteButtonsToAll() {
+    document.querySelectorAll('.albumitem').forEach(item => {
+        // Überspringe Items mit WIP-Label
+        if (item.querySelector('.wip-label')) return;
+        
+        // Prüfe ob bereits ein Favoriten-Button existiert
+        if (!item.querySelector('.favorite-btn')) {
+            const favBtn = document.createElement('button');
+            favBtn.className = 'favorite-btn';
+            favBtn.title = 'Als Favorit markieren';
+            favBtn.innerHTML = '<i class="fas fa-star"></i>';
+            
+            // Füge den Button als erstes Element im albumitem ein
+            item.insertBefore(favBtn, item.firstChild);
+        }
+    });
+}
+
+// Event-Listener für IPC
+ipcRenderer.on('error', (event, errorMessage) => {
+    console.error('IPC Error:', errorMessage);
+    alert('Ein Fehler ist aufgetreten: ' + errorMessage);
+});
+
+// Entferne alle Debug-Logs
+function listPortableApps() {
+    const portableAppsPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'portable-apps')
+        : path.join(__dirname, 'src', 'portable-apps');
+        
+    try {
+        if (!fs.existsSync(portableAppsPath)) {
+            return;
+        }
+
+        const files = fs.readdirSync(portableAppsPath);
+        
+        files.forEach(file => {
+            const filePath = path.join(portableAppsPath, file);
+            fs.statSync(filePath);
+        });
+    } catch (error) {
+        console.error('Kritischer Fehler beim Lesen des portable-apps Ordners:', error);
+    }
+}
+
+// Update-Funktion aktualisieren
+async function checkForUpdates() {
+    try {
+        // ... bestehender Code ...
+    } catch (error) {
+        console.error('Kritischer Update-Fehler:', error);
+        dialog.showErrorBox('Update-Fehler', 
+            'Beim Prüfen auf Updates ist ein Fehler aufgetreten.\n' +
+            'Bitte überprüfen Sie Ihre Internetverbindung.'
+        );
+    }
+}
+
+// Download-Funktion aktualisieren
+async function downloadUpdate(downloadUrl) {
+    // ... bestehender Code ...
+    try {
+        // ... Download-Logik ...
+    } catch (error) {
+        console.error('Kritischer Download-Fehler:', error);
+        if (!progressWindow.isDestroyed()) {
+            progressWindow.close();
+            dialog.showErrorBox('Download-Fehler', 
+                'Beim Herunterladen des Updates ist ein Fehler aufgetreten.'
+            );
+        }
+    }
+}

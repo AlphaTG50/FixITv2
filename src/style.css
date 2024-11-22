@@ -112,9 +112,15 @@ figure {
   border-radius: 15px;
   opacity: 0.8;
   cursor: pointer;
+  position: relative;
   transform: translateX(0);
-  transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
-  will-change: transform, opacity;
+  transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
+  will-change: transform, opacity, top;
+}
+
+/* Fügen Sie diese neue Klasse hinzu */
+.albumitem.sorting {
+  transition: none;
 }
 
 /* Wenn ein Element ausgeblendet werden soll */
@@ -156,21 +162,22 @@ figure {
 }
 
 .albumtitle h3 {
-  font-size: 0.70rem;
-  font-weight: 600;
-  display: inline-flex;
+  font-size: 0.70rem !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
   align-items: center;
-  padding: 5px 12px;
+  padding: 5px 12px !important;
   border-radius: 12px;
   margin-top: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(20, 115, 168, 0.2);
   transform: translateX(0);
-  transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
+  transition: all 0.3s ease;
   color: #fff;
   background-color: var(--darkblue);
   will-change: transform;
+  margin: 0 !important;
 }
 
 .albumtitle h3::before {
@@ -951,206 +958,110 @@ body.dark-mode .albumitem {
   }
 }
 
-.timer {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  color: #444;
-  background-color: var(--lightgrey);
-  padding: 5px 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
-}
-
-/* Tutorial Styles */
-.tutorial-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-}
-
-.tutorial-box {
+.favorite-btn {
     position: absolute;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 10001;
-    min-width: 250px;
-    max-width: 300px;
-    animation: tutorialFadeIn 0.3s ease-out;
-}
-
-.tutorial-content h3 {
-    margin: 0 0 10px 0;
-    color: var(--darkblue);
-}
-
-.tutorial-content p {
-    margin: 0 0 15px 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.tutorial-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.tutorial-buttons button {
-    padding: 8px 15px;
+    top: 10px;
+    right: 10px;
+    background: none;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.tutorial-next {
-    background: var(--darkblue);
-    color: white;
-}
-
-.tutorial-skip {
-    background: #f0f0f0;
+    font-size: 1.2rem;
     color: #666;
-}
-
-.tutorial-next:hover {
-    background: var(--lightblue);
-}
-
-.tutorial-skip:hover {
-    background: #e0e0e0;
-}
-
-@keyframes tutorialFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive Design für kleinere Bildschirme */
-@media screen and (max-width: 1024px) {
-  .albumitem {
+    transition: all 0.2s ease;
+    z-index: 1;
     padding: 8px;
-  }
-
-  .albumartwork {
-    width: 90px;
-    height: 90px;
-    min-width: 90px;
-    margin-right: 15px;
-  }
-
-  .albumtitle h1 {
-    font-size: 0.95rem;
-  }
-
-  .albumtitle h2 {
-    font-size: 0.75rem;
-  }
-
-  .albumtitle h3 {
-    font-size: 0.65rem;
-    padding: 4px 10px;
-  }
+    opacity: 0;
+    transform: scale(0.9);
 }
 
-@media screen and (max-width: 768px) {
-  .search-container {
-    width: 90%;
-  }
-
-  #searchInput {
-    font-size: 0.9rem;
-    padding: 8px 80px 8px 8px;
-  }
-
-  .albumitem {
-    padding: 6px;
-  }
-
-  .albumartwork {
-    width: 80px;
-    height: 80px;
-    min-width: 80px;
-    margin-right: 12px;
-  }
-
-  .albumtitle h1 {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-
-  .albumtitle h2 {
-    font-size: 0.7rem;
-    margin-bottom: 6px;
-  }
-
-  .albumtitle h3 {
-    font-size: 0.6rem;
-    padding: 3px 8px;
-  }
-
-  .timer {
-    font-size: 16px;
-    padding: 4px 8px;
-  }
+.albumitem:hover .favorite-btn {
+    opacity: 1;
+    transform: scale(1);
 }
 
-@media screen and (max-width: 480px) {
-  .search-container {
-    width: 95%;
-  }
+/* Hover-Effekt für nicht-aktive Sterne */
+.favorite-btn:not(.active):hover {
+    transform: scale(1);
+    color: #FFD700;
+}
 
-  #searchInput {
-    font-size: 0.85rem;
-    padding: 6px 70px 6px 6px;
-  }
+/* Aktiver Zustand */
+.favorite-btn.active {
+    color: #FFD700;
+    opacity: 1;
+    transform: scale(1);
+}
 
-  .albumitem {
-    padding: 5px;
-  }
+/* Hover-Effekt für aktive Sterne - wird grau beim Hover */
+.favorite-btn.active:hover {
+    transform: scale(1);
+    color: #666 !important;
+}
 
-  .albumartwork {
-    width: 70px;
-    height: 70px;
-    min-width: 70px;
-    margin-right: 10px;
-  }
+/* Anpassung für "In Progress" Items */
+.albumitem:has(.wip-label) .favorite-btn {
+    display: none;
+}
 
-  .albumtitle h1 {
-    font-size: 0.85rem;
-    margin-bottom: 3px;
-  }
+/* Admin Badge Styling aktualisieren */
+.admin-badge {
+    font-size: 0.70rem !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    display: inline-flex !important;
+    align-items: center;
+    padding: 5px 12px !important;
+    border-radius: 12px;
+    margin-top: 8px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    transform: translateX(0);
+    transition: all 0.3s ease;
+    vertical-align: middle;
+    line-height: normal;
+    will-change: transform;
+}
 
-  .albumtitle h2 {
-    font-size: 0.65rem;
-    margin-bottom: 5px;
-  }
+/* Shield-Icon nach dem Text */
+.admin-badge::after {
+    content: "\f505";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 8px;
+    font-size: 0.8rem;
+}
 
-  .albumtitle h3 {
-    font-size: 0.55rem;
-    padding: 2px 6px;
-  }
+/* Hover-Effekt für Admin Badge - gleich wie Portable Badge */
+.albumitem:hover .admin-badge {
+    transform: translateX(5px);
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
+}
 
-  .timer {
-    font-size: 14px;
-    padding: 3px 6px;
-  }
+/* Responsive Anpassungen für kleine Bildschirme */
+@media screen and (max-width: 525px) {
+    .admin-badge {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .admin-badge::after {
+        margin-left: 10px;
+    }
+}
 
-  .logo svg {
-    width: 60px;
-  }
+/* Noch kleinere Anpassung für sehr kleine Bildschirme */
+@media screen and (max-width: 390px) {
+    .admin-badge,
+    .albumtitle h3 {
+        font-size: 0.60rem !important;
+        padding: 3px 8px !important;
+    }
+    
+    .admin-badge::after {
+        font-size: 0.65rem;
+        margin-left: 6px;
+    }
 }

@@ -1,6 +1,8 @@
-21.11.2024
-- Update System
-- Ladebildschirm vom Programm beim Start zum optimalen Laden des Programm
-- Download-Fortschritt
-- Shortcuts von Strg + F auf Strg + S geändert
+22.11.2024
+Release Notes
 
+Favoriten-System mit Filterfunktion (Favoriten) und eine Favoriten-Löschfunktion (Favoriten löschen) im Hilfe-Menü mit Sortierung.
+Log Datei Detaillierte Systemanalyse für bessere Fehlerbehebung
+Admin Badge für Programme die Admin-Rechte benötigen
+Keine erfolgreiche Suche wird nichts mehr angezeigt
+Entfernte Timer

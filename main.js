@@ -404,6 +404,18 @@ const template = [
                 }
             },
             {
+                label: 'Alle Favoriten entfernen',
+                click: () => {
+                    mainWindow.webContents.executeJavaScript(`
+                        localStorage.setItem('favorites', '[]');
+                        document.querySelectorAll('.favorite-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        sortAlbumItems();
+                    `);
+                }
+            },
+            {
                 label: 'Shortcuts anzeigen',
                 click: () => {
                     const shortcutsWindow = new BrowserWindow({
@@ -482,7 +494,7 @@ const template = [
                             try {
                                 const { filePath } = await dialog.showSaveDialog(mainWindow, {
                                     title: 'Logs speichern',
-                                    defaultPath: path.join(app.getPath('desktop'), 'FixIT-Logs.txt'),
+                                    defaultPath: path.join(app.getPath('desktop'), `FixIT-Logs_${new Date().toISOString().split('T')[0]}.txt`),
                                     filters: [
                                         { name: 'Text Files', extensions: ['txt'] },
                                         { name: 'All Files', extensions: ['*'] }
@@ -490,35 +502,64 @@ const template = [
                                 });
 
                                 if (filePath) {
-                                    // Sammle Systeminformationen
                                     const os = require('os');
-                                    const logContent = [
-                                        `FixIT Logs - ${new Date().toLocaleString()}`,
-                                        '----------------------------------------',
-                                        'System Informationen:',
+                                    let logContent = [
+                                        `FixIT Diagnostik-Log - Erstellt am ${new Date().toLocaleString()}`,
+                                        '==========================================================',
+                                        'SYSTEM INFORMATIONEN:',
+                                        '---------------------------------------------------------',
                                         `Hostname: ${os.hostname()}`,
-                                        `Betriebssystem: ${os.type()} ${os.release()} ${os.arch()}`,
-                                        `CPU: ${os.cpus()[0].model}`,
+                                        `Betriebssystem: ${os.type()} ${os.release()}`,
+                                        `OS Build: ${os.version()}`,
+                                        `Architektur: ${os.arch()}`,
+                                        `Platform: ${process.platform}`,
+                                        '',
+                                        'HARDWARE INFORMATIONEN:',
+                                        '---------------------------------------------------------',
+                                        `CPU Modell: ${os.cpus()[0].model}`,
                                         `CPU Kerne: ${os.cpus().length}`,
-                                        `Arbeitsspeicher: ${Math.round(os.totalmem() / 1024 / 1024 / 1024)} GB`,
-                                        `Benutzer: ${os.userInfo().username}`,
-                                        `Home Directory: ${os.homedir()}`,
-                                        '----------------------------------------',
-                                        'FixIT Informationen:',
-                                        `Version: ${version}`,
+                                        `CPU Geschwindigkeit: ${os.cpus()[0].speed} MHz`,
+                                        `Gesamter RAM: ${Math.round(os.totalmem() / 1024 / 1024 / 1024)} GB`,
+                                        `Freier RAM: ${Math.round(os.freemem() / 1024 / 1024 / 1024)} GB`,
+                                        '',
+                                        'BENUTZER & SYSTEM DETAILS:',
+                                        '---------------------------------------------------------',
+                                        `Benutzername: ${os.userInfo().username}`,
+                                        `Home Verzeichnis: ${os.homedir()}`,
+                                        `Temp Verzeichnis: ${os.tmpdir()}`,
+                                        `System Uptime: ${Math.floor(os.uptime() / 3600)} Stunden`,
+                                        `Netzwerk Interfaces: ${Object.keys(os.networkInterfaces()).join(', ')}`,
+                                        '',
+                                        'FIXIT PROGRAMM INFORMATIONEN:',
+                                        '---------------------------------------------------------',
+                                        `FixIT Version: ${version}`,
                                         `Electron Version: ${process.versions.electron}`,
                                         `Chrome Version: ${process.versions.chrome}`,
                                         `Node Version: ${process.versions.node}`,
                                         `V8 Version: ${process.versions.v8}`,
-                                        '----------------------------------------'
+                                        '',
+                                        'UMGEBUNGSVARIABLEN:',
+                                        '---------------------------------------------------------',
+                                        `App Pfad: ${app.getPath('exe')}`,
+                                        `User Data Pfad: ${app.getPath('userData')}`,
+                                        `Temp Pfad: ${app.getPath('temp')}`
                                     ].join('\n');
+
+                                    // Hinweise anhängen
+                                    logContent += '\n\nHINWEIS:';
+                                    logContent += '\n---------------------------------------------------------';
+                                    logContent += '\nDiese Log-Datei enthält wichtige System- und Programminformationen,';
+                                    logContent += '\ndie für die Fehlerdiagnose benötigt werden. Bitte senden Sie diese';
+                                    logContent += '\nDatei an den Support, wenn Sie technische Probleme mit FixIT haben.';
+                                    logContent += '\n\nKontakt: guerkan.privat@gmail.com';
 
                                     require('fs').writeFileSync(filePath, logContent);
 
                                     dialog.showMessageBox(mainWindow, {
                                         type: 'info',
                                         title: 'Logs exportiert',
-                                        message: 'Die Logs wurden erfolgreich exportiert.',
+                                        message: 'Die Diagnose-Logs wurden erfolgreich exportiert.',
+                                        detail: 'Sie finden die Log-Datei am ausgewählten Speicherort.',
                                         buttons: ['OK']
                                     });
                                 }
