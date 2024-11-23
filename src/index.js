@@ -100,34 +100,91 @@ async function executeExe(exeName) {
     }
 }
 
-// Event-Listener für Album-Elemente
+// Füge diese Funktion nach der executeExe Funktion hinzu
+async function executePowerShellScript(scriptName) {
+    try {
+        showLoadingScreen();
+        
+        const scriptPath = app.isPackaged 
+            ? path.join(process.resourcesPath, 'src', 'portable-scripts', scriptName)
+            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
+
+        const command = `powershell.exe -ExecutionPolicy Bypass -File "${scriptPath}"`;
+        
+        await new Promise((resolve, reject) => {
+            exec(command, { windowsHide: true }, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`PowerShell Fehler: ${error}`);
+                    reject(error);
+                    return;
+                }
+                resolve(stdout);
+            });
+        });
+
+        hideLoadingScreen();
+        
+    } catch (err) {
+        console.error('PowerShell Script Fehler:', err);
+        hideLoadingScreen();
+        showErrorModal(`Fehler beim Ausführen des Scripts: ${err.message}`);
+    }
+}
+
+// Füge diese Funktion nach executePowerShellScript hinzu
+async function executeBatchScript(scriptName) {
+    try {
+        showLoadingScreen();
+        
+        // Starte das Batch-Skript
+        await ipcRenderer.invoke('execute-batch', scriptName);
+        
+        // Warte eine kurze Zeit für das UAC-Fenster
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Warte und prüfe, ob der OneDrive-Prozess läuft
+        await new Promise((resolve) => {
+            let checkCount = 0;
+            const maxChecks = 10; // 5 Sekunden maximale Wartezeit
+            
+            const checkInterval = setInterval(async () => {
+                try {
+                    checkCount++;
+                    const isRunning = await ipcRenderer.invoke('check-onedrive-process');
+                    console.log('OneDrive Prozess Status:', isRunning);
+                    
+                    if (!isRunning || checkCount >= maxChecks) {
+                        clearInterval(checkInterval);
+                        hideLoadingScreen();
+                        resolve();
+                    }
+                } catch (err) {
+                    console.error('Fehler beim Prüfen des Prozesses:', err);
+                    clearInterval(checkInterval);
+                    hideLoadingScreen();
+                    resolve();
+                }
+            }, 500);
+        });
+        
+    } catch (err) {
+        console.error('Batch Script Fehler:', err);
+        hideLoadingScreen();
+        showErrorModal(`Fehler beim Ausführen des Scripts: ${err.message}`);
+    }
+}
+
+// Modifiziere den Event-Listener für Album-Items
 document.querySelectorAll('.albumitem').forEach(item => {
-    // Click-Event für Programmstart
     item.addEventListener('click', async function() {
         if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
-            const exeName = this.getAttribute('data-search');
-            await executeExe(exeName);
-        }
-    });
-
-    // Einfache mouseenter/mouseleave Events für jeden Album-Item
-    item.addEventListener('mouseenter', function(event) {
-        if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
-            // Entferne zuerst alle anderen Hover-Effekte
-            document.querySelectorAll('.albumitem').forEach(otherItem => {
-                if (otherItem !== this) {
-                    otherItem.classList.remove('not-found-hover');
-                }
-            });
-            this.classList.add('not-found-hover');
-        }
-    });
-
-    item.addEventListener('mouseleave', function(event) {
-        // Prüfe, ob die Maus wirklich das Element verlassen hat
-        const relatedTarget = event.relatedTarget;
-        if (!this.contains(relatedTarget)) {
-            this.classList.remove('not-found-hover');
+            const programName = this.getAttribute('data-search');
+            
+            if (programName === 'OneDriveUninstaller') {
+                await executeBatchScript('OneDriveUninstaller.bat');
+            } else {
+                await executeExe(programName);
+            }
         }
     });
 });
@@ -144,6 +201,7 @@ function initializeCategoryFilter() {
         <option value="">Alle</option>
         <option value="favorites">Favoriten</option>
         <option value="portable">Portable</option>
+        <option value="tool">Tool</option>
         <option value="wip">In Progress</option>
     `;
 
@@ -179,6 +237,7 @@ function filterAlbums() {
         const isPortable = album.querySelector('.albumtitle h3') !== null;
         const isWip = album.querySelector('.wip-label') !== null;
         const isFavorite = favorites.includes(album.getAttribute('data-search'));
+        const isTool = album.querySelector('.tool-badge') !== null;
         
         const matchesSearch = searchTerm === '' || 
             title.includes(searchTerm) || 
@@ -188,6 +247,7 @@ function filterAlbums() {
         const matchesCategory = selectedCategory === '' || 
             (selectedCategory === 'portable' && isPortable) ||
             (selectedCategory === 'wip' && isWip) ||
+            (selectedCategory === 'tool' && isTool) ||
             (selectedCategory === 'favorites' && isFavorite);
 
         const isVisible = matchesSearch && matchesCategory;
@@ -198,7 +258,6 @@ function filterAlbums() {
         }
     });
 
-    // Zeige oder verstecke die albumlist basierend auf den Suchergebnissen
     albumList.style.display = hasVisibleItems ? 'flex' : 'none';
 }
 
@@ -215,22 +274,11 @@ window.addEventListener('resize', adjustGridColumns);
 
 // Event-Listener für das Laden der DOM-Inhalte anpassen
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialisiere Dark Mode als erstes
+    initializeDarkMode();
+    
     containerWidth = document.documentElement.clientWidth;
     adjustGridColumns();
-
-    // Dark Mode Status abrufen und initialisieren
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode !== null) {
-        const isDarkModeActive = savedDarkMode === 'true';
-        document.body.classList.toggle('dark-mode', isDarkModeActive);
-        ipcRenderer.send('toggle-dark-mode', isDarkModeActive);
-    }
-
-    // Immer im Vordergrund Status abrufen
-    const savedAlwaysOnTop = localStorage.getItem('alwaysOnTop');
-    if (savedAlwaysOnTop === 'true') {
-        ipcRenderer.send('alwaysOnTopToggle', true);
-    }
 
     const categoryFilter = initializeCategoryFilter();
 
@@ -817,4 +865,24 @@ async function downloadUpdate(downloadUrl) {
             );
         }
     }
+}
+
+// Ersetze den bestehenden Dark Mode Event Listener mit diesem aktualisierten Code
+ipcRenderer.on('toggle-dark-mode', (event, isDarkMode) => {
+    // Sofort den Dark Mode im Body togglen
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    
+    // Dark Mode Status im localStorage speichern
+    localStorage.setItem('darkMode', isDarkMode);
+    
+    // Optional: Benachrichtige andere Teile der App über die Änderung
+    document.dispatchEvent(new CustomEvent('darkModeChanged', { 
+        detail: { isDarkMode } 
+    }));
+});
+
+// Füge diese Funktion hinzu, um den Dark Mode Status beim Start zu laden
+function initializeDarkMode() {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark-mode', savedDarkMode);
 }

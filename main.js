@@ -148,18 +148,22 @@ function createMainWindow() {
 
 // Benutzerpräferenzen laden
 const loadUserPreferences = () => {
+    mainWindow.webContents.executeJavaScript(`
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        document.body.classList.toggle('dark-mode', darkMode);
+        darkMode;
+    `).then((isDarkMode) => {
+        const darkModeMenuItem = menu.getMenuItemById('darkModeToggle');
+        if (darkModeMenuItem) {
+            darkModeMenuItem.checked = isDarkMode;
+        }
+    });
+
     mainWindow.webContents.executeJavaScript(`localStorage.getItem('alwaysOnTop')`).then((result) => {
         const savedAlwaysOnTop = result === 'true';
         mainWindow.setAlwaysOnTop(savedAlwaysOnTop);
         const alwaysOnTopMenuItem = menu.getMenuItemById('alwaysOnTopToggle');
         alwaysOnTopMenuItem.checked = savedAlwaysOnTop;
-    });
-
-    mainWindow.webContents.executeJavaScript(`localStorage.getItem('darkMode')`).then((result) => {
-        const savedDarkMode = result === 'true';
-        mainWindow.webContents.send('toggle-dark-mode', savedDarkMode);
-        const darkModeMenuItem = menu.getMenuItemById('darkModeToggle');
-        darkModeMenuItem.checked = savedDarkMode;
     });
 
     mainWindow.webContents.executeJavaScript(`localStorage.getItem('minimizeToTray')`).then((result) => {
@@ -284,11 +288,11 @@ ipcMain.handle('execute', async (event, programName) => {
 });
 
 // Füge diesen IPC-Handler hinzu
-ipcMain.handle('check-process', async (event, exeName) => {
+ipcMain.handle('check-process', async (event, processName) => {
     return new Promise((resolve) => {
-        const command = process.platform === 'win32' 
-            ? `tasklist /FI "IMAGENAME eq ${exeName}.exe" /NH`
-            : `ps aux | grep ${exeName}`;
+        const command = process.platform === 'win32'
+            ? `tasklist /FI "IMAGENAME eq ${processName}.exe" /NH`
+            : `ps aux | grep ${processName}`;
             
         exec(command, (error, stdout) => {
             if (error) {
@@ -298,8 +302,87 @@ ipcMain.handle('check-process', async (event, exeName) => {
             }
             
             // Prüfe ob der Prozess in der Ausgabe gefunden wurde
-            const isRunning = stdout.toLowerCase().includes(exeName.toLowerCase());
+            // Ignoriere den PowerShell-Prozess selbst
+            const isRunning = stdout.toLowerCase().includes(processName.toLowerCase()) &&
+                            !stdout.toLowerCase().includes('powershell');
             resolve(isRunning);
+        });
+    });
+});
+
+// Füge diese IPC-Handler in main.js hinzu
+ipcMain.handle('execute-powershell', async (event, scriptName) => {
+    return new Promise((resolve, reject) => {
+        const scriptPath = app.isPackaged 
+            ? path.join(process.resourcesPath, 'src', 'portable-scripts', scriptName)
+            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
+
+        if (!fs.existsSync(scriptPath)) {
+            reject(new Error(`Script nicht gefunden: ${scriptName}`));
+            return;
+        }
+
+        const command = `powershell.exe -ExecutionPolicy Bypass -File "${scriptPath}"`;
+        
+        exec(command, { windowsHide: true }, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`PowerShell Fehler: ${error}`);
+                reject(error);
+                return;
+            }
+            resolve(stdout);
+        });
+    });
+});
+
+// Ersetze den check-batch-process Handler mit diesem neuen Handler
+ipcMain.handle('check-onedrive-process', async () => {
+    return new Promise((resolve) => {
+        const command = process.platform === 'win32'
+            ? `tasklist /FI "IMAGENAME eq OneDrive.exe" /NH`
+            : `ps aux | grep OneDrive`;
+            
+        exec(command, (error, stdout) => {
+            if (error) {
+                console.error(`Fehler beim Prüfen des OneDrive-Prozesses: ${error}`);
+                resolve(false);
+                return;
+            }
+            
+            // Prüfe ob der OneDrive-Prozess läuft
+            const isRunning = stdout.toLowerCase().includes('onedrive.exe');
+            console.log('OneDrive Prozess gefunden:', isRunning);
+            resolve(isRunning);
+        });
+    });
+});
+
+// Aktualisiere den execute-batch Handler
+ipcMain.handle('execute-batch', async (event, scriptName) => {
+    return new Promise((resolve, reject) => {
+        const scriptPath = app.isPackaged 
+            ? path.join(process.resourcesPath, 'portable-scripts', scriptName)
+            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
+
+        console.log('Versuche Batch-Datei auszuführen:', scriptPath);
+
+        if (!fs.existsSync(scriptPath)) {
+            console.error('Skript nicht gefunden:', scriptPath);
+            reject(new Error(`Skript nicht gefunden: ${scriptName}`));
+            return;
+        }
+
+        // Führe das Batch-Script mit erhöhten Rechten aus
+        const command = `powershell.exe -Command "Start-Process cmd -ArgumentList '/c """${scriptPath}"""' -Verb RunAs -WindowStyle Normal"`;
+        
+        exec(command, { windowsHide: false }, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Batch Script Fehler: ${error}`);
+                reject(error);
+                return;
+            }
+            console.log('Batch-Skript gestartet');
+            resolve(stdout);
         });
     });
 });
@@ -346,7 +429,10 @@ const template = [
                 click: (menuItem) => {
                     const isDarkMode = menuItem.checked;
                     mainWindow.webContents.send('toggle-dark-mode', isDarkMode);
-                    mainWindow.webContents.executeJavaScript(`localStorage.setItem('darkMode', ${isDarkMode});`);
+                    mainWindow.webContents.executeJavaScript(`
+                        localStorage.setItem('darkMode', ${isDarkMode});
+                        document.body.classList.toggle('dark-mode', ${isDarkMode});
+                    `);
                 }
             },
             {

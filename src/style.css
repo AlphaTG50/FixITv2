@@ -570,7 +570,7 @@ body.dark-mode .albumitem {
     line-height: 1.4;
     max-height: 60vh; /* Maximale Höhe relativ zur Viewport-Höhe */
     overflow-y: auto; /* Scrollbar bei Bedarf */
-    word-wrap: break-word; /* Lange Wörter umbrechen */
+    word-wrap: break-word; /* Lange Wrter umbrechen */
 }
 
 .error-modal-button {
@@ -958,6 +958,7 @@ body.dark-mode .albumitem {
   }
 }
 
+/* Favoriten Button Style */
 .favorite-btn {
     position: absolute;
     top: 10px;
@@ -967,7 +968,7 @@ body.dark-mode .albumitem {
     cursor: pointer;
     font-size: 1.2rem;
     color: #666;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     z-index: 1;
     padding: 8px;
     opacity: 0;
@@ -1003,12 +1004,11 @@ body.dark-mode .albumitem {
     display: none;
 }
 
-/* Admin Badge Styling aktualisieren */
-.admin-badge {
+.tool-badge {
     font-size: 0.70rem !important;
     font-weight: 600 !important;
     color: #fff !important;
-    background-color: #dc3545 !important;
+    background-color: #f0ad4e !important;
     display: inline-flex !important;
     align-items: center;
     padding: 5px 12px !important;
@@ -1017,7 +1017,7 @@ body.dark-mode .albumitem {
     margin-left: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    box-shadow: 0 2px 4px rgba(240, 173, 78, 0.2);
     transform: translateX(0);
     transition: all 0.3s ease;
     vertical-align: middle;
@@ -1025,43 +1025,60 @@ body.dark-mode .albumitem {
     will-change: transform;
 }
 
-/* Shield-Icon nach dem Text */
-.admin-badge::after {
+.albumitem:hover .tool-badge {
+    transform: translateX(5px);
+    box-shadow: 0 3px 6px rgba(240, 173, 78, 0.3);
+}
+
+/* Admin Icon Style */
+.admin-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.admin-icon::after {
     content: "\f505";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
-    margin-left: 8px;
-    font-size: 0.8rem;
+    font-size: 1.2rem !important;
+    color: #dc3545;
+    margin-left: 10px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    vertical-align: middle;
 }
 
-/* Hover-Effekt für Admin Badge - gleich wie Portable Badge */
-.albumitem:hover .admin-badge {
-    transform: translateX(5px);
-    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
+.albumitem:hover .admin-icon::after {
+    opacity: 1;
 }
 
-/* Responsive Anpassungen für kleine Bildschirme */
-@media screen and (max-width: 525px) {
-    .admin-badge {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    
-    .admin-badge::after {
-        margin-left: 10px;
+/* Responsive Anpassungen für Admin Icon */
+@media screen and (min-width: 1400px) {
+    .admin-icon::after {
+        font-size: 1.3rem !important;
+        margin-left: 12px;
     }
 }
 
-/* Noch kleinere Anpassung für sehr kleine Bildschirme */
-@media screen and (max-width: 390px) {
-    .admin-badge,
-    .albumtitle h3 {
-        font-size: 0.60rem !important;
-        padding: 3px 8px !important;
+@media screen and (min-width: 1800px) {
+    .admin-icon::after {
+        font-size: 1.4rem !important;
+        margin-left: 14px;
     }
-    
-    .admin-badge::after {
-        font-size: 0.65rem;
+}
+
+/* Für kleine Bildschirme */
+@media screen and (max-width: 768px) {
+    .admin-icon::after {
+        font-size: 1.1rem !important;
+        margin-left: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .admin-icon::after {
+        font-size: 1rem !important;
         margin-left: 6px;
     }
 }

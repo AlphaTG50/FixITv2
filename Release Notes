@@ -1,8 +1,20 @@
-22.11.2024
-Release Notes
+Release Notes - 23.11.2024
 
-Favoriten-System mit Filterfunktion (Favoriten) und eine Favoriten-Löschfunktion (Favoriten löschen) im Hilfe-Menü mit Sortierung.
-Log Datei Detaillierte Systemanalyse für bessere Fehlerbehebung
-Admin Badge für Programme die Admin-Rechte benötigen
-Keine erfolgreiche Suche wird nichts mehr angezeigt
-Entfernte Timer
+Bugfixes:
+- Der Darkmode wurde repariert und funktioniert jetzt wieder einwandfrei
+
+Features:
+- OneDriveUninstaller wurde als neue ausführbare Anwendung hinzugefügt
+  • Ermöglicht die vollständige Deinstallation von OneDrive
+  • Entfernt alle Überreste und Registry-Einträge
+- Neues "Tool" Badge zur besseren Kategorisierung von Programmen
+  • Visuell ansprechende Kennzeichnung von Tools
+  • Verbesserte Übersichtlichkeit der Programmsammlung
+
+Verbesserungen:
+- Die Überprüfung von laufenden Prozessen beim Programmstart wurde optimiert
+  • Schnellere Erkennung bereits laufender Programme
+  • Zuverlässigere Vermeidung von Doppelstarts
+- Neuer Filter für die Kategorie "Tools" implementiert
+  • Einfachere Navigation durch die Programmsammlung
+  • Schnelleres Auffinden relevanter Werkzeuge

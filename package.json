@@ -1,6 +1,6 @@
 {
   "name": "fixit",
-  "version": "1.5.3",
+  "version": "1.7.4",
   "main": "main.js",
   "bin": "main.js",
   "author": "HelpIT",
@@ -35,6 +35,14 @@
           "**/*.ps1",
           "**/*.bat"
         ]
+      },
+      {
+        "from": "src/portable-scripts",
+        "to": "portable-scripts",
+        "filter": [
+          "**/*.bat",
+          "**/*.ps1"
+        ]
       }
     ],
     "win": {
@@ -61,6 +69,7 @@
     "rcedit": "^4.0.1"
   },
   "dependencies": {
+    "@electron/remote": "^2.1.2",
     "auto-launch": "^5.0.6",
     "axios": "^1.7.7",
     "electron-icon-maker": "^0.0.5",

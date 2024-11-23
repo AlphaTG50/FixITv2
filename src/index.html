@@ -32,30 +32,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js" defer></script>
 
-  <!-- Füge diesen Style-Block im Head-Bereich hinzu -->
-  <style>
-    .favorite-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #666;
-      transition: color 0.3s ease;
-      z-index: 1;
-    }
-
-    .favorite-btn.active {
-      color: #FFD700;
-    }
-
-    .albumitem {
-      position: relative;
-    }
-  </style>
-
 </head>
 
 <body>
@@ -176,10 +152,9 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>CrystalDiskInfo</h1>
+          <h1 class="admin-icon">CrystalDiskInfo</h1>
           <h2>Überwacht Festplattenzustand</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>
@@ -203,17 +178,19 @@
       </div>
     </div>
 
-    <!-- OneDriveUninstaller -->
+    <!-- OneDrive Uninstaller -->
     <div class="albumitem" data-search="OneDriveUninstaller" data-category="tools">
+      <button class="favorite-btn" title="Als Favorit markieren">
+        <i class="fas fa-star"></i>
+      </button>
       <figure class="albumartwork">
-        <a href="portable-apps/OneDriveUninstaller.bat">
-          <img src="./assets/images/programs/onedriveunistaller.png" alt="OneDriveUninstaller">
-        </a>
+        <img src="./assets/images/programs/onedriveunistaller.png" alt="OneDriveUninstaller">
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>OneDriveUninstaller</h1>
-          <h2 class="wip-label">In Progress</h2>
+          <h1 class="admin-icon">OneDrive Uninstaller</h1>
+          <h2>Deinstalliert OneDrive vollständig</h2>
+          <span class="tool-badge">Tool</span>
         </div>
       </div>
     </div>
@@ -274,10 +251,9 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>HiBit Uninstaller</h1>
+          <h1 class="admin-icon">HiBit Uninstaller</h1>
           <h2>Entfernen von Programme und Restdaten</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>
@@ -291,15 +267,14 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>Hibit Systeminfo</h1>
+          <h1 class="admin-icon">Hibit Systeminfo</h1>
           <h2>Detailansicht aller Systemkomponenten</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>
 
-    <!-- HWiNfo -->
+    <!-- HWiNFO -->
     <div class="albumitem" data-search="HWiNFO" data-category="tools">
       <figure class="albumartwork">
         <a>
@@ -308,10 +283,9 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>HWiNFO</h1>
+          <h1 class="admin-icon">HWiNFO</h1>
           <h2>Detaillierte Hardwareinformationen</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>
@@ -341,10 +315,9 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>WirelessKeyView</h1>
+          <h1 class="admin-icon">WirelessKeyView</h1>
           <h2>Anzeige gespeicherter WLAN-Schlüssel</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>
@@ -358,10 +331,9 @@
       </figure>
       <div class="albuminfo">
         <div class="albumtitle">
-          <h1>Defender Control</h1>
+          <h1 class="admin-icon">Defender Control</h1>
           <h2>Aktivieren oder Deaktivieren des Antivirus</h2>
           <h3>Portable</h3>
-          <span class="admin-badge">Admin</span>
         </div>
       </div>
     </div>

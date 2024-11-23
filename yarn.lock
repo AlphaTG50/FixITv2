@@ -82,6 +82,11 @@
     tar "^6.0.5"
     yargs "^17.0.1"
 
+"@electron/remote@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.npmjs.org/@electron/remote/-/remote-2.1.2.tgz"
+  integrity sha512-EPwNx+nhdrTBxyCqXt/pftoQg/ybtWDW3DUWHafejvnB1ZGGfMpv6e15D8KeempocjXe78T7WreyGGb3mlZxdA==
+
 "@electron/universal@2.0.1":
   version "2.0.1"
   resolved "https://registry.npmjs.org/@electron/universal/-/universal-2.0.1.tgz"
@@ -1495,7 +1500,7 @@ electron-store@^8.1.0:
     conf "^10.2.0"
     type-fest "^2.17.0"
 
-electron@^32.2.5:
+electron@^32.2.5, "electron@>= 13.0.0":
   version "32.2.5"
   resolved "https://registry.npmjs.org/electron/-/electron-32.2.5.tgz"
   integrity sha512-8t5IGOvms/JTcLNnlOH7rFCAJIZJAazwYrF7kQsKQSLzDHh4z8mGFrU11NN3W4bIT6Yg5DJNniSWz3O5wJLmCw==
