@@ -1,18 +1,19 @@
 Release Notes - 23.11.2024 & 24.11.2024
 
-Verbesserungen:
-- Hintergrundfarbe von Suchleiste und Background wurden angepasst
-- Texte wurden eindeutiger gemacht
-- Die Suchleiste wurde etwas vergrößert
-- Die Kategorieauswahl wurde etwas vergrößert
-- Die Hintergrundfarbe der Kategorieauswahl wurde etwas dunkler gemacht
-- Die Hintergrundfarbe der Kategorieauswahl wurde etwas dunkler gemacht
-- Logo neue Design mit Animation
-- Tutorial wurde entfernt
-- Code Struktur wurde überarbeitet
-- Ins Systemtray wurde Update-Check hinzugefügt
-- Neues Icons für Programm
+Neue Funktionen:
+- Implementierung eines Update-Checks im Systemtray
+- Neues animiertes Logo-Design
+- Überarbeitetes Icon-Set für die Anwendung
 
-Bugs:
-- Lightmode und Darkmode sind nicht perfekt getestet
-- Lightmode funktioniert nicht mehr so wie erwartet
+Design-Verbesserungen:
+- Optimierte Farbgebung für Suchleiste und Hintergrund
+- Vergrößerte und besser lesbare Suchleiste
+- Angepasstes Design der Kategorieauswahl mit dunklerer Farbgebung
+- Klarere und präzisere Texte in der gesamten Anwendung
+- Anpassung der Farben für die Badges
+- Anpassung des Darkmode und Lightmode
+
+Technische Änderungen:
+- Umfassende Überarbeitung der Code-Struktur für bessere Performance
+- Entfernung des Tutorial-Systems
+- Optimierung der Benutzeroberfläche

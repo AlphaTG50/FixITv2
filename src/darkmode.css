@@ -83,8 +83,8 @@ body.dark-mode .albumtitle h2 {
 /* Badge Styling                    */
 /* --------------------------------- */
 body.dark-mode .albumtitle .Entwicklung-Badge {
-  color: #fff;
-  border: 2px solid #fff;
+  color: #b6b6b6;
+  border: 2px solid #b6b6b6;
 }
 
 body.dark-mode .albumtitle .Tool-Badge {

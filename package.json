@@ -1,6 +1,6 @@
 {
   "name": "fixit",
-  "version": "1.7.4",
+  "version": "1.9.5",
   "main": "main.js",
   "bin": "main.js",
   "author": "HelpIT",

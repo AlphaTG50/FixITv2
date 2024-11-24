@@ -229,54 +229,77 @@ function filterAlbums() {
     
     let hasVisibleItems = false;
 
-    // Verstecke alle Items ohne Animation
+    // Entferne alle bestehenden Hover-Effekte
     albums.forEach(album => {
-        album.style.opacity = '0';
-        album.style.transform = 'translateY(-20px)';
-        album.style.transition = 'none';
+        album.classList.remove('not-found-hover');
     });
 
-    // Force reflow
-    albumList.offsetHeight;
+    // Erste Phase: Ausblenden mit Animation
+    const hidePromises = Array.from(albums).map(album => {
+        return new Promise(resolve => {
+            album.style.transition = 'all 0.3s ease-out';
+            album.style.opacity = '0';
+            album.style.transform = 'translateY(-20px)';
+            setTimeout(resolve, 300); // Warte auf Animation
+        });
+    });
 
-    // Filtere und zeige Items
-    albums.forEach(album => {
-        const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
-        const description = album.querySelector('.albumtitle h2')?.textContent.toLowerCase() || '';
-        const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
-        const isPortable = album.querySelector('.Portable-Badge') !== null;
-        const isWip = album.querySelector('.Entwicklung-Badge') !== null;
-        const isFavorite = favorites.includes(album.getAttribute('data-search'));
-        const isTool = album.querySelector('.Tool-Badge') !== null;
-        
-        const matchesSearch = searchTerm === '' || 
-            title.includes(searchTerm) || 
-            description.includes(searchTerm) || 
-            searchData.includes(searchTerm);
+    // Zweite Phase: Filtern und Einblenden
+    Promise.all(hidePromises).then(() => {
+        albums.forEach(album => {
+            const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
+            const description = album.querySelector('.albumtitle h2')?.textContent.toLowerCase() || '';
+            const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
+            const isPortable = album.querySelector('.Portable-Badge') !== null;
+            const isWip = album.querySelector('.Entwicklung-Badge') !== null;
+            const isFavorite = favorites.includes(album.getAttribute('data-search'));
+            const isTool = album.querySelector('.Tool-Badge') !== null;
             
-        const matchesCategory = selectedCategory === '' || 
-            (selectedCategory === 'portable' && isPortable) ||
-            (selectedCategory === 'wip' && isWip) ||
-            (selectedCategory === 'tool' && isTool) ||
-            (selectedCategory === 'favorites' && isFavorite);
+            const matchesSearch = searchTerm === '' || 
+                title.includes(searchTerm) || 
+                description.includes(searchTerm) || 
+                searchData.includes(searchTerm);
+                
+            const matchesCategory = selectedCategory === '' || 
+                (selectedCategory === 'portable' && isPortable) ||
+                (selectedCategory === 'wip' && isWip) ||
+                (selectedCategory === 'tool' && isTool) ||
+                (selectedCategory === 'favorites' && isFavorite);
 
-        const isVisible = matchesSearch && matchesCategory;
-        
-        if (isVisible) {
-            album.style.display = 'flex';
-            hasVisibleItems = true;
-            // Aktiviere Transition und setze Styles für sichtbare Items
-            requestAnimationFrame(() => {
-                album.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                album.style.opacity = '1';
-                album.style.transform = 'translateY(0)';
-            });
-        } else {
-            album.style.display = 'none';
-        }
+            const isVisible = matchesSearch && matchesCategory;
+            
+            if (isVisible) {
+                album.style.display = 'flex';
+                hasVisibleItems = true;
+                
+                // Verzögerte Einblend-Animation
+                requestAnimationFrame(() => {
+                    album.style.opacity = '0.8';
+                    album.style.transform = 'translateY(0)';
+                });
+                
+                // Hover-Effekte
+                album.onmouseenter = () => {
+                    if (!album.querySelector('.Entwicklung-Badge')) {
+                        album.style.opacity = '1';
+                        album.style.transform = 'translateX(10px)';
+                    }
+                };
+                
+                album.onmouseleave = () => {
+                    album.style.opacity = '0.8';
+                    album.style.transform = 'translateX(0)';
+                };
+                
+            } else {
+                album.style.display = 'none';
+                album.onmouseenter = null;
+                album.onmouseleave = null;
+            }
+        });
+
+        albumList.style.display = hasVisibleItems ? 'flex' : 'none';
     });
-
-    albumList.style.display = hasVisibleItems ? 'flex' : 'none';
 }
 
 // Funktion zur Anpassung der Grid-Spalten
@@ -326,6 +349,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 500);
     }, 2000);
+
+    // Initialisiere Hover-Effekte für alle Album-Items
+    document.querySelectorAll('.albumitem').forEach(album => {
+        if (!album.querySelector('.Entwicklung-Badge')) {
+            album.onmouseenter = () => {
+                album.style.opacity = '1';
+                album.style.transform = 'translateX(10px)';
+            };
+            
+            album.onmouseleave = () => {
+                album.style.opacity = '0.8';
+                album.style.transform = 'translateX(0)';
+            };
+        }
+    });
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben

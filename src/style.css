@@ -78,6 +78,9 @@ figure {
   animation-delay: 0.4s;
   opacity: 0;
   margin-top: 30px;
+  will-change: contents;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* ---------------------------------- */
