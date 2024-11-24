@@ -1,17 +1,149 @@
-body {
-  background-color: #f0f0f0;
-  background: linear-gradient(
-    135deg, 
-    #f0f0f0 0%,    /* Hellgrau */
-    #e5e5e5 25%,   /* Mittleres Grau */
-    #d9d9d9 50%,   /* Dunkleres Grau */
-    #cccccc 75%,   /* Noch dunkleres Grau */
-    #c0c0c0 100%   /* Dunkelstes Grau */
-  );
-  background-attachment: fixed;
+/* --------------------------------- */
+/* Root Variablen für Farbdefinition */
+/* --------------------------------- */
+:root {
+  /* Colors */
+  --lightblue: #8AD0F1;
+  --darkblue: #1473A8;
+  --darkgrey: #161616;
+  --lightgrey: #ebebeb;
 }
 
+/* --------------------------------- */
+/* Grundlegende Light Mode Styles    */
+/* --------------------------------- */
+body {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(138, 208, 241, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(20, 115, 168, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(235, 235, 235, 0.2) 0%, transparent 50%),
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f8f8f8 25%,
+      #f0f0f0 50%, 
+      #e8e8e8 75%,
+      #e0e0e0 100%
+    );
+  background-attachment: fixed;
+  animation: gradientShift 15s ease-in-out infinite alternate;
+}
 
+/* --------------------------------- */
+/* Logo Anpassungen                  */
+/* --------------------------------- */
 .logo svg {
-    fill: #000000;
+  fill: #000000;
+}
+
+/* --------------------------------- */
+/* Albumlisten Styling              */
+/* --------------------------------- */
+.albumlist {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --------------------------------- */
+/* Album Item Gestaltung            */
+/* --------------------------------- */
+.albumitem {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.albumitem:hover {
+  background: #f8f8f8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --------------------------------- */
+/* Text Formatierung                */
+/* --------------------------------- */
+.albumtitle h1 {
+  color: #333333;
+}
+
+.albumtitle h2 {
+  color: #666666;
+}
+
+/* --------------------------------- */
+/* Badge Styling                    */
+/* --------------------------------- */
+.albumtitle .Entwicklung-Badge {
+  color: #ff8c00;
+  border: 2px solid #ff8c00;
+}
+
+.albumtitle .Tool-Badge {
+  color: #4CAF50;
+  border: 2px solid #4CAF50;
+}
+
+.albumtitle .Admin-Badge {
+  color: #ff4444;
+  border: 2px solid #ff4444;
+}
+
+.albumtitle .Portable-Badge {
+  color: #1473A8;
+  border: 2px solid #1473A8;
+}
+
+/* --------------------------------- */
+/* Suchleisten Design               */
+/* --------------------------------- */
+.search-container {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+#searchInput {
+  color: #333333;
+}
+
+#searchInput::placeholder {
+  color: #999999;
+}
+
+/* --------------------------------- */
+/* Kategorie Filter                 */
+/* --------------------------------- */
+#categoryFilter {
+  color: #333333;
+}
+
+#categoryFilter:hover {
+  background: rgba(138, 208, 241, 0.25);
+  box-shadow: 0 2px 4px rgba(20, 115, 168, 0.1);
+}
+
+#categoryFilter option {
+  background-color: #ffffff;
+  color: #1473A8;
+}
+
+/* --------------------------------- */
+/* Favoriten Button                 */
+/* --------------------------------- */
+.favorite-btn:hover {
+  background: linear-gradient(45deg, #1473A8, #2b8fc1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --------------------------------- */
+/* Error Modal                      */
+/* --------------------------------- */
+.error-modal {
+  background: #ffffff;
+  color: #333333;
 }

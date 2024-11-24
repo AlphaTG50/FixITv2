@@ -1,0 +1,43 @@
+
+[2024-11-24T22:02:06.491Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-24T22:02:14.285Z]
+Typ: Error Modal
+Kontext: Error Modal
+Fehlermeldung: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
+Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
+Benutzer abgebrochen.
+In Zeile:1 Zeichen:1
++ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
+    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
+ 
+
+Benutzeraktion: BODY
+Seite: file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.html
+Stack: Error: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
+Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
+Benutzer abgebrochen.
+In Zeile:1 Zeichen:1
++ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
+    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
+ 
+
+    at showErrorModal (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:397:16)
+    at executeBatchScript (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:172:9)
+    at async HTMLDivElement.<anonymous> (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:183:17)
+--------------------------------------------------

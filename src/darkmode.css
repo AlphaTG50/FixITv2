@@ -1,3 +1,6 @@
+/* --------------------------------- */
+/* Root Variablen für Farbdefinition */
+/* --------------------------------- */
 :root {
   /* Colors */
   --lightblue: #8AD0F1;
@@ -6,97 +9,68 @@
   --lightgrey: #ebebeb;
 }
 
-/* Grundlegende Styles für Dark Mode */
+/* --------------------------------- */
+/* Grundlegende Dark Mode Styles     */
+/* --------------------------------- */
 body.dark-mode {
-  background: linear-gradient(
-    135deg,
-    #1a1d21 0%,
-    #1c1f24 25%,
-    #1e2228 50%,
-    #20242b 75%,
-    #22272e 100%
-  );
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(20, 115, 168, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(138, 208, 241, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(30, 34, 39, 0.2) 0%, transparent 50%),
+    linear-gradient(
+      135deg,
+      #1a1d21 0%,
+      #1c1f24 25%, 
+      #1e2228 50%,
+      #20242b 75%,
+      #22272e 100%
+    );
   background-attachment: fixed;
+  animation: gradientShift 15s ease-in-out infinite alternate;
 }
 
-
-/* Anpassung der Albumliste für besseren Kontrast mit neuem Hintergrund */
-.albumlist {
-background: rgba(255, 255, 255, 0.8);
-backdrop-filter: blur(10px);
-border: 1px solid rgba(255, 255, 255, 0.3);
+/* --------------------------------- */
+/* Logo Anpassungen für Dark Mode    */
+/* --------------------------------- */
+body.dark-mode .logo svg {
+  fill: #ffffff;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.8));
 }
 
-.albumitem {
-background: rgba(255, 255, 255, 0.9);
-backdrop-filter: blur(5px);
-border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-
-
-body.dark-mode::before {
-content: '';
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: 
-  radial-gradient(circle at 15% 15%, rgba(20, 115, 168, 0.15) 0%, transparent 40%),
-  radial-gradient(circle at 85% 85%, rgba(138, 208, 241, 0.15) 0%, transparent 40%),
-  radial-gradient(circle at 50% 50%, rgba(30, 34, 39, 0.2) 0%, transparent 50%);
-pointer-events: none;
-z-index: -1;
-animation: gradientShift 15s ease-in-out infinite alternate;
-}
-
-/* Animation für sanfte Bewegung */
-@keyframes gradientShift {
-0% {
-  background-position: 0% 0%;
-}
-100% {
-  background-position: 100% 100%;
-}
-}
-
-/* Anpassung der Albumliste für Dark Mode */
+/* --------------------------------- */
+/* Albumlisten Styling              */
+/* --------------------------------- */
 body.dark-mode .albumlist {
-background: rgba(30, 34, 39, 0.8);
-backdrop-filter: blur(10px);
-border: 1px solid rgba(255, 255, 255, 0.1);
-box-shadow: 
-  0 10px 30px rgba(0, 0, 0, 0.3),
-  0 4px 6px rgba(0, 0, 0, 0.2),
-  0 1px 3px rgba(0, 0, 0, 0.2),
-  inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: rgba(30, 34, 39, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 4px 6px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
+/* --------------------------------- */
+/* Album Item Gestaltung            */
+/* --------------------------------- */
 body.dark-mode .albumitem {
-background: rgba(35, 39, 45, 0.8);
-backdrop-filter: blur(5px);
-border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(35, 39, 45, 0.8);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 body.dark-mode .albumitem:hover {
   background: rgba(40, 44, 50, 0.9);
   box-shadow: 
-      0 4px 8px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.1);
-  transform: translateX(10px);
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
-/* Album Styles */
-body.dark-mode .albumitem:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-body.dark-mode .albumartwork img {
-  background-color: transparent;
-}
-
-/* Text Styles */
+/* --------------------------------- */
+/* Text Formatierung                */
+/* --------------------------------- */
 body.dark-mode .albumtitle h1 {
   color: rgba(255, 255, 255, 0.95);
 }
@@ -105,43 +79,46 @@ body.dark-mode .albumtitle h2 {
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* UI Element Styles */
-body.dark-mode .logo svg {
-  fill: #ffffff;
-  opacity: 0.9;
-  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.8));
-}
-
-
-
-
-/* Modal Styles */
-body.dark-mode .error-modal {
-  background: #161616;
+/* --------------------------------- */
+/* Badge Styling                    */
+/* --------------------------------- */
+body.dark-mode .albumtitle .Entwicklung-Badge {
   color: #fff;
+  border: 2px solid #fff;
 }
 
-/* Favoriten Button Dark Mode */
-body.dark-mode .favorite-btn {
-  color: #999;
+body.dark-mode .albumtitle .Tool-Badge {
+  color: #4CAF50;
+  border: 2px solid #4CAF50;
 }
 
-body.dark-mode .favorite-btn.active, body.dark-mode .favorite-btn:hover {
-  background: linear-gradient(45deg, #1473A8, #2b8fc1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+body.dark-mode .albumtitle .Admin-Badge {
+  color: #ff4444;
+  border: 2px solid #ff4444;
 }
 
+body.dark-mode .albumtitle .Portable-Badge {
+  color: #8AD0F1;
+  border: 2px solid #8AD0F1;
+}
 
-/* Dark Mode Suchleiste */
+body.dark-mode .albumtitle .Portable-Badge, 
+body.dark-mode .albumtitle .Entwicklung-Badge, 
+body.dark-mode .albumtitle .Tool-Badge,
+body.dark-mode .albumtitle .Admin-Badge {
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 8));
+}
+
+/* --------------------------------- */
+/* Suchleisten Design               */
+/* --------------------------------- */
 body.dark-mode .search-container {
-background: rgba(30, 34, 39, 0.8);
-border: 1px solid rgba(255, 255, 255, 0.1);
-box-shadow: 
-  0 10px 30px rgba(0, 0, 0, 0.2),
-  0 4px 6px rgba(0, 0, 0, 0.1),
-  inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: rgba(30, 34, 39, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 body.dark-mode #searchInput {
@@ -149,33 +126,14 @@ body.dark-mode #searchInput {
 }
 
 body.dark-mode #searchInput::placeholder {
-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
-
-body.dark-mode .albumtitle .Entwicklung-Badge {
-color: var(--yellow);
-border: 1px solid var(--yellow);
-background-color: rgba(224, 188, 0, 0.1);
-}
-
-body.dark-mode .albumtitle .Tool-Badge {
-color: #4CAF50;
-border: 1px solid #4CAF50;
-background-color: rgba(76, 175, 80, 0.1);
-}
-
-body.dark-mode .albumtitle .Admin-Badge {
-color: #ff4444;
-border: 1px solid #ff4444;
-background-color: rgba(255, 68, 68, 0.1);
-}
-
-
-/* Dark Mode Anpassungen */
+/* --------------------------------- */
+/* Kategorie Filter Anpassungen     */
+/* --------------------------------- */
 body.dark-mode #categoryFilter {
-background: transparent;
-color: #a4a8ac;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 body.dark-mode #categoryFilter::before,
@@ -192,25 +150,22 @@ body.dark-mode #categoryFilter option {
   color: #8AD0F1;
 }
 
-/* Dark Mode Anpassung für kleine Bildschirme */
-@media screen and (max-width: 300px) {
-  body.dark-mode {
-    background-color: #111 !important;
-  }
-  
-  body.dark-mode .logo::after {
-    color: #999 !important;
-  }
+/* --------------------------------- */
+/* Favoriten Button Gestaltung      */
+/* --------------------------------- */
 
-  body.dark-mode .logo svg {
-    fill: #fff !important;
-  }
+body.dark-mode .favorite-btn.active, 
+body.dark-mode .favorite-btn:hover {
+  background: linear-gradient(45deg, #1473A8, #2b8fc1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-
-body.dark-mode .albumtitle .Portable-Badge, 
-body.dark-mode .albumtitle .Entwicklung-Badge, 
-body.dark-mode .albumtitle .Tool-Badge,
-body.dark-mode .albumtitle .Admin-Badge {
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 8));
+/* --------------------------------- */
+/* Error Modal Design               */
+/* --------------------------------- */
+body.dark-mode .error-modal {
+  background: #161616;
+  color: #fff;
 }

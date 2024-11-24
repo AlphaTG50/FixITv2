@@ -90,7 +90,7 @@ function createMainWindow() {
         }
     });
 
-    splash.loadFile(path.join(__dirname, 'src', 'splash.html'));
+    splash.loadFile(path.join(__dirname, 'src', 'sites', 'loading-screen', 'loading-screen.html'));
     splash.center();
 
     // Hauptfenster im Hintergrund laden
@@ -147,57 +147,139 @@ function createMainWindow() {
 }
 
 // Benutzerpräferenzen laden
-const loadUserPreferences = () => {
-    mainWindow.webContents.executeJavaScript(`
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        document.body.classList.toggle('dark-mode', darkMode);
-        darkMode;
-    `).then((isDarkMode) => {
+const loadUserPreferences = async () => {
+    try {
+        // Dark Mode
+        const isDarkMode = await mainWindow.webContents.executeJavaScript(`
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            document.body.classList.toggle('dark-mode', darkMode);
+            darkMode;
+        `);
+        
         const darkModeMenuItem = menu.getMenuItemById('darkModeToggle');
         if (darkModeMenuItem) {
             darkModeMenuItem.checked = isDarkMode;
         }
-    });
 
-    mainWindow.webContents.executeJavaScript(`localStorage.getItem('alwaysOnTop')`).then((result) => {
-        const savedAlwaysOnTop = result === 'true';
+        // Always on Top
+        const alwaysOnTop = await mainWindow.webContents.executeJavaScript(
+            `localStorage.getItem('alwaysOnTop')`
+        );
+        const savedAlwaysOnTop = alwaysOnTop === 'true';
         mainWindow.setAlwaysOnTop(savedAlwaysOnTop);
         const alwaysOnTopMenuItem = menu.getMenuItemById('alwaysOnTopToggle');
-        alwaysOnTopMenuItem.checked = savedAlwaysOnTop;
-    });
+        if (alwaysOnTopMenuItem) {
+            alwaysOnTopMenuItem.checked = savedAlwaysOnTop;
+        }
 
-    mainWindow.webContents.executeJavaScript(`localStorage.getItem('minimizeToTray')`).then((result) => {
-        minimizeToTray = result === 'true';
+        // Minimize to Tray
+        const minimizeToTrayValue = await mainWindow.webContents.executeJavaScript(
+            `localStorage.getItem('minimizeToTray')`
+        );
+        minimizeToTray = minimizeToTrayValue === 'true';
         const minimizeToTrayMenuItem = menu.getMenuItemById('minimizeToTrayToggle');
-        minimizeToTrayMenuItem.checked = minimizeToTray;
-    });
+        if (minimizeToTrayMenuItem) {
+            minimizeToTrayMenuItem.checked = minimizeToTray;
+        }
 
-    mainWindow.webContents.executeJavaScript(`localStorage.getItem('autostart')`).then((result) => {
-        autostartEnabled = result === 'true';
+        // Autostart
+        const autostart = await mainWindow.webContents.executeJavaScript(
+            `localStorage.getItem('autostart')`
+        );
+        autostartEnabled = autostart === 'true';
         const autostartMenuItem = menu.getMenuItemById('autostartToggle');
-        autostartMenuItem.checked = autostartEnabled;
+        if (autostartMenuItem) {
+            autostartMenuItem.checked = autostartEnabled;
+        }
         
         app.setLoginItemSettings({
             openAtLogin: autostartEnabled,
             path: process.execPath,
             args: ['--hidden']
         });
-    });
+
+    } catch (error) {
+        logError(error, 'Fehler beim Laden der Benutzereinstellungen');
+    }
 };
 
 // Tray-Icon anzeigen
 const showTrayIcon = () => {
     if (tray) return;
-    tray = new Tray(path.join(__dirname, './src/assets/images/logo/png/32x32.png'));
+    try {
+        tray = new Tray(path.join(__dirname, './src/assets/images/logo/png/32x32.png'));
 
-    const contextMenu = Menu.buildFromTemplate([
-        { label: 'Anzeigen', click: () => mainWindow.show() },
-        { label: 'Beenden', click: () => { app.isQuiting = true; app.quit(); } }
-    ]);
+        const contextMenu = Menu.buildFromTemplate([
+            { label: 'Anzeigen', click: () => mainWindow.show() },
+            { 
+                label: 'Updates prüfen', 
+                click: async () => {
+                    try {
+                        const { data } = await axios.get('https://api.github.com/repos/AlphaTG50/FixIT/releases/latest');
+                        const latestVersion = data.tag_name.replace('v', '');
+                        const currentVersion = version;
 
-    tray.setToolTip('FixIT');
-    tray.setContextMenu(contextMenu);
-    tray.on('click', () => mainWindow.show());
+                        if (compareVersions(latestVersion, currentVersion) > 0) {
+                            // Zeige Benachrichtigung statt Dialog
+                            const notification = new Notification({
+                                title: 'Update verfügbar',
+                                body: `Eine neue Version (${data.tag_name}) ist verfügbar.\nKlicken Sie hier zum Installieren.`,
+                                icon: path.join(__dirname, './src/assets/images/logo/png/64x64.png'),
+                                silent: true
+                            });
+
+                            notification.on('click', () => {
+                                mainWindow.show();
+                                downloadUpdate(data.assets[0].browser_download_url);
+                            });
+
+                            notification.show();
+                        } else {
+                            // Zeige Benachrichtigung für "Kein Update verfügbar"
+                            new Notification({
+                                title: 'Keine Updates verfügbar',
+                                body: 'Sie verwenden bereits die neueste Version.',
+                                icon: path.join(__dirname, './src/assets/images/logo/png/64x64.png'),
+                                silent: true
+                            }).show();
+                        }
+                    } catch (error) {
+                        logError(error, 'Update-Prüfung fehlgeschlagen');
+                        new Notification({
+                            title: 'Update-Fehler',
+                            body: 'Beim Prüfen auf Updates ist ein Fehler aufgetreten.',
+                            icon: path.join(__dirname, './src/assets/images/logo/png/64x64.png'),
+                            silent: true
+                        }).show();
+                    }
+                } 
+            },
+            { type: 'separator' },
+            { 
+                label: 'Logs anzeigen',
+                click: () => {
+                    const logDir = app.isPackaged 
+                        ? path.join(process.resourcesPath, 'logs')
+                        : path.join(__dirname, 'logs');
+                    shell.openPath(logDir);
+                }
+            },
+            { type: 'separator' },
+            { 
+                label: 'Beenden', 
+                click: () => { 
+                    app.isQuiting = true; 
+                    app.quit(); 
+                } 
+            }
+        ]);
+
+        tray.setToolTip('FixIT');
+        tray.setContextMenu(contextMenu);
+        tray.on('click', () => mainWindow.show());
+    } catch (error) {
+        logError(error, 'Tray-Icon Erstellung fehlgeschlagen');
+    }
 };
 
 // IPC-Handler für .exe-Ausführung anpassen
@@ -206,9 +288,8 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
         // Korrigierter Pfad für portable Apps
         const exePath = app.isPackaged 
             ? path.join(process.resourcesPath, 'portable-apps', `${exeName}.exe`)
-            : path.join(__dirname, 'src', 'portable-apps', `${exeName}.exe`);
+            : path.join(__dirname, 'src', 'assets', 'portable-apps', `${exeName}.exe`);
         
-        console.log('Versuche Programm zu starten:', exePath);
 
         // Prüfen ob die Datei existiert
         if (!fs.existsSync(exePath)) {
@@ -227,7 +308,6 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
             });
 
             if (childProcess.pid) {
-                console.log('Prozess erfolgreich gestartet mit PID:', childProcess.pid);
                 setTimeout(() => {
                     resolve(true);
                 }, 300);
@@ -314,8 +394,8 @@ ipcMain.handle('check-process', async (event, processName) => {
 ipcMain.handle('execute-powershell', async (event, scriptName) => {
     return new Promise((resolve, reject) => {
         const scriptPath = app.isPackaged 
-            ? path.join(process.resourcesPath, 'src', 'portable-scripts', scriptName)
-            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
+            ? path.join(process.resourcesPath,'portable-scripts', scriptName)
+            : path.join(__dirname, 'src', 'assets', 'portable-scripts', scriptName);
 
         if (!fs.existsSync(scriptPath)) {
             reject(new Error(`Script nicht gefunden: ${scriptName}`));
@@ -351,7 +431,6 @@ ipcMain.handle('check-onedrive-process', async () => {
             
             // Prüfe ob der OneDrive-Prozess läuft
             const isRunning = stdout.toLowerCase().includes('onedrive.exe');
-            console.log('OneDrive Prozess gefunden:', isRunning);
             resolve(isRunning);
         });
     });
@@ -362,9 +441,8 @@ ipcMain.handle('execute-batch', async (event, scriptName) => {
     return new Promise((resolve, reject) => {
         const scriptPath = app.isPackaged 
             ? path.join(process.resourcesPath, 'portable-scripts', scriptName)
-            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
+            : path.join(__dirname, 'src', 'assets', 'portable-scripts', scriptName);
 
-        console.log('Versuche Batch-Datei auszuführen:', scriptPath);
 
         if (!fs.existsSync(scriptPath)) {
             console.error('Skript nicht gefunden:', scriptPath);
@@ -381,7 +459,6 @@ ipcMain.handle('execute-batch', async (event, scriptName) => {
                 reject(error);
                 return;
             }
-            console.log('Batch-Skript gestartet');
             resolve(stdout);
         });
     });
@@ -481,7 +558,7 @@ const template = [
         submenu: [
             // Hilfe & Support Gruppe
             {
-                label: 'Alle Favoriten entfernen',
+                label: 'Meine Favoriten entfernen',
                 click: () => {
                     mainWindow.webContents.executeJavaScript(`
                         localStorage.setItem('favorites', '[]');
@@ -493,50 +570,11 @@ const template = [
                 }
             },
             {
-                label: 'Shortcuts anzeigen',
-                click: () => {
-                    const shortcutsWindow = new BrowserWindow({
-                        width: 400,
-                        height: 500,
-                        title: "Shortcuts",
-                        modal: false,
-                        parent: mainWindow,
-                        show: false,
-                        frame: false,
-                        webPreferences: {
-                            nodeIntegration: true,
-                            contextIsolation: false
-                        },
-                        backgroundColor: '#ffffff',
-                        minimizable: false,
-                        maximizable: false,
-                        resizable: false,
-                        autoHideMenuBar: true,
-                        menuBarVisible: false,
-                        alwaysOnTop: true
-                    });
-
-                    shortcutsWindow.setMenu(null);
-
-                    shortcutsWindow.once('ready-to-show', () => {
-                        shortcutsWindow.show();
-                    });
-
-                    shortcutsWindow.webContents.on('before-input-event', (event, input) => {
-                        if (input.key === 'Escape') {
-                            shortcutsWindow.close();
-                        }
-                    });
-
-                    shortcutsWindow.loadFile(path.join(__dirname, 'src', 'shortcuts.html'));
-                }
-            },
-            {
                 label: 'TeamViewer QS',
                 click: () => {
                     const exePath = app.isPackaged
                         ? path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe')
-                        : path.join(__dirname, 'src', 'portable-apps', 'TeamViewerQS.exe');
+                        : path.join(__dirname, 'src', 'assets', 'portable-apps', 'TeamViewerQS.exe');
 
                     if (fs.existsSync(exePath)) {
                         exec(`"${exePath}"`, (error) => {
@@ -653,7 +691,7 @@ const template = [
 
             // Extras & Features
             {
-                label: 'Easter Eggs',
+                label: 'Easter Eggs Menü',
                 click: () => {
                     const easterEggWindow = new BrowserWindow({
                         width: 400,
@@ -688,7 +726,55 @@ const template = [
                         }
                     });
 
-                    easterEggWindow.loadFile(path.join(__dirname, 'src', 'easter-eggs.html'));
+                    easterEggWindow.loadFile(path.join(__dirname, 'src', 'sites', 'easter-eggs', 'easter-eggs.html'));
+                }
+            },
+            {
+                label: 'Shortcuts Menü',
+                click: () => {
+                    const shortcutsWindow = new BrowserWindow({
+                        width: 400,
+                        height: 500,
+                        title: "Shortcuts",
+                        modal: false,
+                        parent: mainWindow,
+                        show: false,
+                        frame: false,
+                        webPreferences: {
+                            nodeIntegration: true,
+                            contextIsolation: false
+                        },
+                        backgroundColor: '#ffffff',
+                        minimizable: false,
+                        maximizable: false,
+                        resizable: false,
+                        autoHideMenuBar: true,
+                        menuBarVisible: false,
+                        alwaysOnTop: true
+                    });
+
+                    shortcutsWindow.setMenu(null);
+
+                    shortcutsWindow.once('ready-to-show', () => {
+                        shortcutsWindow.show();
+                    });
+
+                    shortcutsWindow.webContents.on('before-input-event', (event, input) => {
+                        if (input.key === 'Escape') {
+                            shortcutsWindow.close();
+                        }
+                    });
+
+                    shortcutsWindow.loadFile(path.join(__dirname, 'src', 'sites', 'shortcuts', 'shortcuts.html'));
+                }
+            },
+            { type: 'separator' },
+
+            // Info
+            {
+                label: 'Updates prüfen',
+                click: async () => {
+                    checkForUpdates();
                 }
             },
             {
@@ -703,9 +789,6 @@ const template = [
                     });
                 }
             },
-            { type: 'separator' },
-
-            // Info
             {
                 label: 'Über FixIT',
                 click: () => {
@@ -716,12 +799,6 @@ const template = [
                         buttons: ['OK'],
                         noLink: true
                     });
-                }
-            },
-            {
-                label: 'Updates prüfen',
-                click: async () => {
-                    checkForUpdates();
                 }
             }
         ]
@@ -736,7 +813,7 @@ Menu.setApplicationMenu(menu);
 function listPortableApps() {
     const portableAppsPath = app.isPackaged
         ? path.join(process.resourcesPath, 'portable-apps')
-        : path.join(__dirname, 'src', 'portable-apps');
+        : path.join(__dirname, 'src', 'assets', 'portable-apps');
         
     try {
         if (!fs.existsSync(portableAppsPath)) {
@@ -745,12 +822,10 @@ function listPortableApps() {
         }
 
         const files = fs.readdirSync(portableAppsPath);
-        console.log('Gefundene portable Apps:', files);
         
         files.forEach(file => {
             const filePath = path.join(portableAppsPath, file);
             const stats = fs.statSync(filePath);
-            console.log(`App: ${file}, Größe: ${stats.size} bytes`);
         });
     } catch (error) {
         console.error('Fehler beim Lesen des portable-apps Ordners:', error);
@@ -811,7 +886,7 @@ async function downloadUpdate(downloadUrl) {
         }
     });
 
-    progressWindow.loadFile(path.join(__dirname, 'src', 'update-progress.html'));
+    progressWindow.loadFile(path.join(__dirname, 'src', 'sites', 'update-progress', 'update-progress.html'));
     progressWindow.once('ready-to-show', () => progressWindow.show());
 
     progressWindow.on('close', () => {
@@ -893,3 +968,68 @@ function compareVersions(v1, v2) {
     }
     return 0;
 }
+
+// Logger-Funktion hinzufügen
+function logError(error, context = '', additionalInfo = {}) {
+    const logDir = app.isPackaged 
+        ? path.join(process.resourcesPath, 'logs')
+        : path.join(__dirname, 'logs');
+    
+    if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir, { recursive: true });
+    }
+
+    const date = new Date();
+    const logFile = path.join(logDir, `error_modal_log_${date.getFullYear()}-${(date.getMonth() + 1)}.txt`);
+    
+    const logEntry = `
+[${additionalInfo.timestamp || date.toISOString()}]
+Typ: Error Modal
+Kontext: ${context}
+Fehlermeldung: ${error.message}
+Benutzeraktion: ${additionalInfo.userAction || 'Nicht verfügbar'}
+Seite: ${additionalInfo.location || 'Nicht verfügbar'}
+Stack: ${error.stack || 'Kein Stack Trace verfügbar'}
+--------------------------------------------------
+`;
+
+    fs.appendFileSync(logFile, logEntry);
+    cleanOldLogs(logDir);
+}
+
+// Funktion zum Aufräumen alter Logs
+function cleanOldLogs(logDir) {
+    const files = fs.readdirSync(logDir);
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    
+    files.forEach(file => {
+        const filePath = path.join(logDir, file);
+        const stats = fs.statSync(filePath);
+        
+        if (stats.mtime < threeMonthsAgo) {
+            fs.unlinkSync(filePath);
+        }
+    });
+}
+
+// Globaler Error Handler
+process.on('uncaughtException', (error) => {
+    logError(error, 'Unbehandelter Fehler');
+});
+
+process.on('unhandledRejection', (error) => {
+    logError(error, 'Unbehandelte Promise Rejection');
+});
+
+// Aktualisiere den IPC-Handler für Error Modal Logs
+ipcMain.on('log-error', (event, { error, context, timestamp, userAction, location }) => {
+    const errorObj = error instanceof Error ? error : new Error(error.message || error.toString());
+    errorObj.stack = error.stack || errorObj.stack;
+    
+    logError(errorObj, context, {
+        timestamp,
+        userAction,
+        location
+    });
+});

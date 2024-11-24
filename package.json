@@ -28,7 +28,7 @@
     ],
     "extraResources": [
       {
-        "from": "src/portable-apps",
+        "from": "src/assets/portable-apps",
         "to": "portable-apps",
         "filter": [
           "**/*.exe",
@@ -37,7 +37,7 @@
         ]
       },
       {
-        "from": "src/portable-scripts",
+        "from": "src/assets/portable-scripts",
         "to": "portable-scripts",
         "filter": [
           "**/*.bat",

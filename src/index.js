@@ -106,7 +106,7 @@ async function executePowerShellScript(scriptName) {
         showLoadingScreen();
         
         const scriptPath = app.isPackaged 
-            ? path.join(process.resourcesPath, 'src', 'portable-scripts', scriptName)
+            ? path.join(process.resourcesPath, 'portable-scripts', scriptName)
             : path.join(__dirname, 'src', 'portable-scripts', scriptName);
 
         const command = `powershell.exe -ExecutionPolicy Bypass -File "${scriptPath}"`;
@@ -151,7 +151,6 @@ async function executeBatchScript(scriptName) {
                 try {
                     checkCount++;
                     const isRunning = await ipcRenderer.invoke('check-onedrive-process');
-                    console.log('OneDrive Prozess Status:', isRunning);
                     
                     if (!isRunning || checkCount >= maxChecks) {
                         clearInterval(checkInterval);
@@ -230,6 +229,17 @@ function filterAlbums() {
     
     let hasVisibleItems = false;
 
+    // Verstecke alle Items ohne Animation
+    albums.forEach(album => {
+        album.style.opacity = '0';
+        album.style.transform = 'translateY(-20px)';
+        album.style.transition = 'none';
+    });
+
+    // Force reflow
+    albumList.offsetHeight;
+
+    // Filtere und zeige Items
     albums.forEach(album => {
         const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
         const description = album.querySelector('.albumtitle h2')?.textContent.toLowerCase() || '';
@@ -251,10 +261,18 @@ function filterAlbums() {
             (selectedCategory === 'favorites' && isFavorite);
 
         const isVisible = matchesSearch && matchesCategory;
-        album.style.display = isVisible ? 'flex' : 'none';
         
         if (isVisible) {
+            album.style.display = 'flex';
             hasVisibleItems = true;
+            // Aktiviere Transition und setze Styles für sichtbare Items
+            requestAnimationFrame(() => {
+                album.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                album.style.opacity = '1';
+                album.style.transform = 'translateY(0)';
+            });
+        } else {
+            album.style.display = 'none';
         }
     });
 
@@ -368,13 +386,22 @@ async function executeProgram(programName) {
   }
 }
 
-// Fügen Sie diese Funktionen hinzu
+// Aktualisiere die showErrorModal Funktion
 function showErrorModal(message) {
     const errorModal = document.getElementById('errorModal');
     const errorOverlay = document.getElementById('errorOverlay');
     const errorMessage = document.getElementById('errorMessage');
     
-    // Prüfen Sie Dark Mode
+    // Protokolliere den Fehler
+    ipcRenderer.send('log-error', {
+        error: new Error(message),
+        context: 'Error Modal',
+        timestamp: new Date().toISOString(),
+        userAction: document.activeElement?.tagName || 'Unknown',
+        location: window.location.href
+    });
+    
+    // Prüfe Dark Mode
     if (document.body.classList.contains('dark-mode')) {
         errorModal.classList.add('dark-mode');
     }

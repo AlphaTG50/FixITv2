@@ -1,4 +1,4 @@
 node_modules
 dist
-src/portable-apps
-src/portable-scripts
+src/assets/portable-apps
+src/assets/portable-scripts

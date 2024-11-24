@@ -1,4 +1,4 @@
-Release Notes - 23.11.2024
+Release Notes - 23.11.2024 & 24.11.2024
 
 Verbesserungen:
 - Hintergrundfarbe von Suchleiste und Background wurden angepasst
@@ -10,6 +10,8 @@ Verbesserungen:
 - Logo neue Design mit Animation
 - Tutorial wurde entfernt
 - Code Struktur wurde überarbeitet
+- Ins Systemtray wurde Update-Check hinzugefügt
+- Neues Icons für Programm
 
 Bugs:
 - Lightmode und Darkmode sind nicht perfekt getestet
