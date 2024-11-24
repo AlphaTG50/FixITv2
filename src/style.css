@@ -6,6 +6,10 @@
   --darkblue: #1473A8;
   --darkgrey: #161616;
   --lightgrey: #ebebeb;
+  --yellow: #e0bc00;
+  --orange: #ff8a00;
+  --red: #ff0000;
+  --green: #3dbd3d;
 
   /* Others */
   --container-width: 1600px;
@@ -19,6 +23,7 @@
 
 
 body {
+  /* Grundlegende Stile */
   font-family: 'Circular', 'Helvetica Neue', 'Arial', sans-serif;
   margin: 0;
   padding: 40px 0;
@@ -28,25 +33,14 @@ body {
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
+  position: relative;
   transition: background-color 0.3s ease;
-  background-color: #fff;
 }
-
 
 html {
   box-sizing: border-box;
   height: 100%;
   user-select: none;
-}
-
-
-h1, h2 {
-  font-weight: normal;
-  margin: 0;
-}
-
-.albumartwork img {
-  pointer-events: none; /* Verhindert, dass Bilder markierbar sind */
 }
 
 figure {
@@ -55,34 +49,34 @@ figure {
 }
 
 
-/* Search */
-#searchInput {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 10px;
-  width: 500px;
-  border: 0.0px solid #ccc;
-  border-radius: 5px;
-  background-color: var(--lightgrey);
-  color: #000;
-  font-size: 1rem;
-  box-shadow: 0 4px 2px rgba(0, 0, 0, 0.2);
-  outline: none;
-  transition: all 0.3s ease;
-}
-
 
 .logo {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .logo svg {
   width: 75px;
-  transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
-  fill: #000000;
+}
+
+
+
+/* Animation beim Laden */
+@keyframes logoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo {
+  animation: logoFadeIn 0.8s ease-out forwards;
 }
 
 
@@ -94,11 +88,18 @@ figure {
   flex-direction: column;
   gap: 15px;
   padding: 40px;
-  background-color: var(--lightgrey);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
   width: 80%;
   max-width: 1200px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  will-change: transform, opacity; /* Optimiert die Animation-Performance */
 }
 
 
@@ -108,7 +109,8 @@ figure {
   align-items: center;
   width: 100%;
   padding: 10px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
   border-radius: 15px;
   opacity: 0.8;
   cursor: pointer;
@@ -116,6 +118,7 @@ figure {
   transform: translateX(0);
   transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
   will-change: transform, opacity, top;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Fügen Sie diese neue Klasse hinzu */
@@ -134,10 +137,6 @@ figure {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.albumitem:hover .albumtitle h3 {
-  transform: translateX(5px);
-  box-shadow: 0 3px 6px rgba(20, 115, 168, 0.3);
-}
 
 .albumitem img {
   background-color: #fff;
@@ -146,59 +145,106 @@ figure {
 }
 
 /* Album Title */
-.albumtitle h1 {
-  font-size: 1rem;
-  margin-bottom: 5px;
-  font-weight: 700;
+.albumtitle h1, .albumtitle h2 {
   padding-left: 5px;
   transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
+  margin: 0;
+  font-weight: normal;
+}
+
+.albumtitle h1 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #444444;
 }
 
 .albumtitle h2 {
-  font-size: 0.8rem;
-  padding-left: 5px;
+  font-size: 0.9rem;
   margin-bottom: 8px;
-  transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
+  color: #444444;
 }
 
-.albumtitle h3 {
-  font-size: 0.70rem !important;
+/* Light Mode Badge Styles */
+.albumtitle .Portable-Badge, .albumtitle .Entwicklung-Badge, .albumtitle .Tool-Badge, .albumtitle .Admin-Badge {
+  font-size: 0.60rem !important;
   font-weight: 600 !important;
   display: inline-flex !important;
   align-items: center;
-  padding: 5px 12px !important;
+  padding: 5px 10px !important;
   border-radius: 12px;
-  margin-top: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(20, 115, 168, 0.2);
   transform: translateX(0);
   transition: all 0.3s ease;
-  color: #fff;
-  background-color: var(--darkblue);
-  will-change: transform;
-  margin: 0 !important;
+  margin: 10px 5px 5px 7px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
 }
 
-.albumtitle h3::before {
-  content: "";
-  margin-right: 0;
+.albumtitle .Portable-Badge {
+  color: var(--lightblue);
+  border: 1px solid var(--lightblue);
+
 }
 
-.albumitem:hover .albumtitle h3 {
-  transform: translateX(5px);
-  box-shadow: 0 3px 6px rgba(20, 115, 168, 0.3);
+.albumtitle .Entwicklung-Badge {
+  color: var(--orange);
+  border: 1px solid var(--orange);
 }
+
+.albumtitle .Tool-Badge {
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+
+.albumtitle .Admin-Badge {
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+/* Füge das Icon hinzu */
+.Admin-Badge::after {
+  content: "\f505"; /* FontAwesome Shield Icon */
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-left: 5px;
+  font-size: 0.7rem;
+}
+
+/* Ausgrauen der WIP Items */
+.albumitem:has(.Entwicklung-Badge) {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .albumtitle h1, .albumtitle h2{
   padding-left: 5px;
   color: #444444;
 }
 
-.albumitem:hover .albumtitle h3 {
-  transform: translateX(5px);
-  box-shadow: 0 3px 6px rgba(20, 115, 168, 0.3);
-}
+
 /* Album Artwork */
 .albumartwork {
   width: 100px;
@@ -230,10 +276,7 @@ figure {
   margin-bottom: 8px;
 }
 
-/* Anpassung für Dark Mode */
-body.dark-mode .albumitem {
-  background-color: #272727;
-}
+
 
 /* Work in Progress Items ausgrauen und deaktivieren */
 .albumitem:has(h2:contains('🚧')) {
@@ -243,54 +286,12 @@ body.dark-mode .albumitem {
     cursor: not-allowed;
 }
 
-/* Hover-Effekte für WIP-Items deaktivieren */
-.albumitem:has(h2:contains('🚧')):hover {
-    transform: none;
-    box-shadow: none;
-    opacity: 0.5;
-}
-
-/* WIP-Tag Styling anpassen */
-.wip-tag {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
 
 
-/* WIP Section Styling */
-.wip-section {
-  width: 80%;
-  max-width: 1200px;
-  margin: 20px auto;
-}
 
-.wip-section-title {
-  font-size: 1.2rem;
-  color: #856404;
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: #fff3cd;
-  border-radius: 10px;
-  display: inline-block;
-}
 
-.wip-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 20px;
-  background-color: rgba(255, 243, 205, 0.3);
-  border-radius: 20px;
-  margin-bottom: 30px;
-}
 
-/* WIP Items in der WIP-Section */
-.wip-list .albumitem {
-  opacity: 1;
-  filter: none;
-  pointer-events: none;
-  background-color: rgba(255, 255, 255, 0.9);
-}
+
 
 /* Portable Section Title */
 .portable-section {
@@ -327,158 +328,193 @@ body.dark-mode .albumitem {
   transform: rotate(-90deg);
 }
 
-/* Collapsible Content */
-.wip-list, 
-.portable-section .albumlist {
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  overflow: hidden;
-  max-height: 2000px; /* Anpassen je nach Inhalt */
-  opacity: 1;
-  /* Initial versteckt */
-  max-height: 0;
-  opacity: 0;
-  padding: 0;
-  margin: 0;
-}
 
-.wip-list.collapsed, 
-.portable-section .albumlist.collapsed {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin: 0;
-}
 
-/* Wenn die .visible Klasse hinzugefügt wird */
-.wip-list.visible, 
-.portable-section .albumlist.visible {
-  max-height: 2000px;
-  opacity: 1;
-  padding: 20px;
-  margin-bottom: 30px;
-}
 
-/* Work in Progress Label neu gestalten */
-.wip-label {
-    font-size: 0.70rem !important;
-    font-weight: 600 !important;
-    color: #fff !important;
-    background-color: #856404; /* Einfarbiger Hintergrund in Gelb/Orange */
-    display: inline-flex !important;
-    align-items: center;
-    padding: 5px 12px !important;
-    border-radius: 12px;
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(133, 100, 4, 0.2);
-    transition: all 0.3s ease;
-}
 
-.wip-label::before {
-    content: "";
-    margin-right: 0;
-}
 
-.albumitem:hover .wip-label {
-    transform: translateX(5px);
-    box-shadow: 0 3px 6px rgba(133, 100, 4, 0.3);
-}
 
-/* Ausgrauen der WIP Items */
-.albumitem:has(.wip-label) {
-    opacity: 0.5;
-    filter: grayscale(100%);
-    pointer-events: none;
-    cursor: not-allowed;
-}
 
-/* Hover-Effekte für WIP-Items deaktivieren */
-.albumitem:has(.wip-label):hover {
-    transform: none;
-    box-shadow: none;
-    opacity: 0.5;
-}
+
+
 
 .filter-container {
     display: none;
 }
-
 #categoryFilter {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding-right: 28px;
-    padding-left: 8px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    margin-right: 8px;
+    padding: 8px 35px 8px 35px;
     border: none;
-    border-radius: 4px;
-    background-color: transparent;
-    color: #757575;
+    border-radius: 8px;
     font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    outline: none;
-    transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 12px;
+    transition: all 0.3s ease;
+    position: relative;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    min-width: 90px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
 }
 
+/* Filter Icon links */
+#categoryFilter::before {
+    content: '\f0b0';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1473A8;
+    font-size: 0.9rem;
+}
+
+/* Pfeil-Icon rechts */
+#categoryFilter::after {
+    content: '\f0d7';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1473A8;
+    font-size: 0.9rem;
+}
+
+/* Hover-Effekt */
 #categoryFilter:hover {
-    color: #444444;
-    background-color: rgba(0, 0, 0, 0.05);
+    background: rgba(138, 208, 241, 0.25);
+    box-shadow: 0 2px 4px rgba(20, 115, 168, 0.1);
 }
 
+/* Dropdown-Optionen stylen */
 #categoryFilter option {
-    color: #757575;
+    padding: 10px;
     background-color: white;
-    transition: all 0.3s ease;
+    color: #1473A8;
+    font-weight: 500;
 }
+
+/* Spezifische Icons für jede Option */
+#categoryFilter option[value=""]::before {
+    content: '\f0b0'; /* Filter-Icon für "Alle" */
+    font-family: 'Font Awesome 5 Free';
+    margin-right: 8px;
+}
+
+#categoryFilter option[value="favorites"]::before {
+    content: '\f005'; /* Stern-Icon für Favoriten */
+    font-family: 'Font Awesome 5 Free';
+    margin-right: 8px;
+}
+
+#categoryFilter option[value="portable"]::before {
+    content: '\f0c2'; /* Cloud-Icon für Portable */
+    font-family: 'Font Awesome 5 Free';
+    margin-right: 8px;
+}
+
+#categoryFilter option[value="tool"]::before {
+    content: '\f7d9'; /* Werkzeug-Icon für Tools */
+    font-family: 'Font Awesome 5 Free';
+    margin-right: 8px;
+}
+
+#categoryFilter option[value="wip"]::before {
+    content: '\f252'; /* Uhr-Icon für Work in Progress */
+    font-family: 'Font Awesome 5 Free';
+    margin-right: 8px;
+}
+
+
+
+
 
 /* Suchcontainer Styling aktualisieren */
 .search-container {
     position: relative;
     width: 500px;
     margin: 40px auto;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1),
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    animation: searchBarFadeIn 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
 }
 
-#searchInput {
-    width: 100%;
-    padding: 10px 100px 10px 10px; /* Rechts mehr Padding für den Select */
-    border: 0.0px solid #ccc;
-    border-radius: 5px;
-    background-color: var(--lightgrey);
-    color: #000;
-    font-size: 1rem;
-    box-shadow: 0 4px 2px rgba(0, 0, 0, 0.2);
-    outline: none;
-    transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
-}
 
-#categoryFilter {
+
+
+
+/* Filter Icon links */
+#categoryFilter::before {
+    content: '\f0b0';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
     position: absolute;
-    right: 5px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    padding: 5px;
-    border: none;
-    background-color: transparent;
-    color: #666;
+    color: #1473A8;
     font-size: 0.9rem;
-    cursor: pointer;
-    outline: none;
-    transition: all 0.6s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Pfeil-Icon rechts */
+#categoryFilter::after {
+    content: '\f0d7';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #1473A8;
+    font-size: 0.9rem;
+}
+
+/* Hover-Effekt */
+#categoryFilter:hover {
+    background: rgba(138, 208, 241, 0.25);
+    box-shadow: 0 2px 4px rgba(20, 115, 168, 0.1);
+}
+
+/* Animationen */
+@keyframes searchBarFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes albumListFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Albumlisten Animation */
+.albumlist {
+    animation: albumListFadeIn 0.8s ease-out forwards;
+    animation-delay: 0.4s;
+    opacity: 0;
 }
 
 /* Entferne alte Styles */
@@ -773,30 +809,16 @@ body.dark-mode .albumitem {
 @media screen and (max-width: 768px) {
     #categoryFilter {
         min-width: 80px;
+        max-width: 150px;
         font-size: 0.85rem;
-        padding-right: 28px;
     }
 }
 
 @media screen and (max-width: 480px) {
     #categoryFilter {
         min-width: 70px;
+        max-width: 120px;
         font-size: 0.8rem;
-        padding-right: 28px;
-    }
-}
-
-@media screen and (min-width: 1400px) {
-    #categoryFilter {
-        font-size: 1rem;
-        padding-right: 28px;
-    }
-}
-
-@media screen and (min-width: 1800px) {
-    #categoryFilter {
-        font-size: 1.1rem;
-        padding-right: 28px;
     }
 }
 
@@ -943,20 +965,7 @@ body.dark-mode .albumitem {
   }
 }
 
-/* Dark Mode Anpassung für kleine Bildschirme */
-@media screen and (max-width: 300px) {
-  body.dark-mode {
-    background-color: #111 !important;
-  }
-  
-  body.dark-mode .logo::after {
-    color: #999 !important;
-  }
 
-  body.dark-mode .logo svg {
-    fill: #fff !important;
-  }
-}
 
 /* Favoriten Button Style */
 .favorite-btn {
@@ -997,11 +1006,6 @@ body.dark-mode .albumitem {
 .favorite-btn.active:hover {
     transform: scale(1);
     color: #666 !important;
-}
-
-/* Anpassung für "In Progress" Items */
-.albumitem:has(.wip-label) .favorite-btn {
-    display: none;
 }
 
 .tool-badge {
@@ -1052,7 +1056,6 @@ body.dark-mode .albumitem {
 .albumitem:hover .admin-icon::after {
     opacity: 1;
 }
-
 /* Responsive Anpassungen für Admin Icon */
 @media screen and (min-width: 1400px) {
     .admin-icon::after {
@@ -1082,3 +1085,107 @@ body.dark-mode .albumitem {
         margin-left: 6px;
     }
 }
+
+/* Search Container */
+.search-container {
+  position: relative;
+  width: 500px;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  animation: searchBarFadeIn 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+/* Suchfeld */
+#searchInput {
+  flex: 1;
+  margin: 0;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #444;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: none;
+  width: auto;
+  transition: all 0.3s ease;
+  will-change: transform, opacity;
+}
+
+
+
+/* Filter Icon links */
+#categoryFilter::before {
+  content: '\f0b0';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1473A8;
+  font-size: 0.9rem;
+}
+
+/* Pfeil-Icon rechts */
+#categoryFilter::after {
+  content: '\f0d7';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1473A8;
+  font-size: 0.9rem;
+}
+
+/* Hover-Effekt */
+#categoryFilter:hover {
+  background: rgba(138, 208, 241, 0.25);
+  box-shadow: 0 2px 4px rgba(20, 115, 168, 0.1);
+}
+
+/* Animationen */
+@keyframes searchBarFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes albumListFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Albumlisten Animation */
+.albumlist {
+  animation: albumListFadeIn 0.8s ease-out forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+  margin-top: 30px;
+}
+
+

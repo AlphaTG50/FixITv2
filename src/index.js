@@ -177,7 +177,7 @@ async function executeBatchScript(scriptName) {
 // Modifiziere den Event-Listener für Album-Items
 document.querySelectorAll('.albumitem').forEach(item => {
     item.addEventListener('click', async function() {
-        if (!this.classList.contains('found') && !this.querySelector('.wip-label')) {
+        if (!this.classList.contains('found') && !this.querySelector('.Entwicklung-Badge')) {
             const programName = this.getAttribute('data-search');
             
             if (programName === 'OneDriveUninstaller') {
@@ -198,11 +198,11 @@ function initializeCategoryFilter() {
     const categorySelect = document.createElement('select');
     categorySelect.id = 'categoryFilter';
     categorySelect.innerHTML = `
-        <option value="">Alle</option>
-        <option value="favorites">Favoriten</option>
-        <option value="portable">Portable</option>
-        <option value="tool">Tool</option>
-        <option value="wip">In Progress</option>
+        <option value="">Alle Programme</option>
+        <option value="favorites">Meine Favoriten</option>
+        <option value="portable">Portable Apps</option>
+        <option value="tool">System Tools</option>
+        <option value="wip">In Entwicklung</option>
     `;
 
     // Entferne das ursprüngliche Suchelement
@@ -213,7 +213,7 @@ function initializeCategoryFilter() {
     searchContainer.appendChild(searchInput);
     searchContainer.appendChild(categorySelect);
 
-    // Füge die Event Listener hinzu
+    // Event Listener
     searchInput.addEventListener('input', filterAlbums);
     categorySelect.addEventListener('change', filterAlbums);
 
@@ -232,12 +232,12 @@ function filterAlbums() {
 
     albums.forEach(album => {
         const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
-        const description = album.querySelector('.albumtitle h2').textContent.toLowerCase();
+        const description = album.querySelector('.albumtitle h2')?.textContent.toLowerCase() || '';
         const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
-        const isPortable = album.querySelector('.albumtitle h3') !== null;
-        const isWip = album.querySelector('.wip-label') !== null;
+        const isPortable = album.querySelector('.Portable-Badge') !== null;
+        const isWip = album.querySelector('.Entwicklung-Badge') !== null;
         const isFavorite = favorites.includes(album.getAttribute('data-search'));
-        const isTool = album.querySelector('.tool-badge') !== null;
+        const isTool = album.querySelector('.Tool-Badge') !== null;
         
         const matchesSearch = searchTerm === '' || 
             title.includes(searchTerm) || 
@@ -308,8 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 500);
     }, 2000);
-
-    startTutorial();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -514,160 +512,6 @@ function createMatrixEffect() {
     }, 4000);
 }
 
-// Nach den bestehenden Konstanten
-const TUTORIAL_STEPS = [
-    {
-        element: '.search-container',
-        title: 'Suche',
-        text: 'Hier kannst du nach Programmen suchen',
-        position: 'bottom'
-    },
-    {
-        element: '#categoryFilter',
-        title: 'Filter',
-        text: 'Filtere nach Kategorien',
-        position: 'bottom'
-    },
-    {
-        element: '.albumitem:first-child',
-        title: 'Programme',
-        text: 'Klicke auf ein Programm um es zu starten',
-        position: 'center'
-    }
-];
-
-// Tutorial-Funktion prüft, ob es bereits gezeigt wurde
-function startTutorial() {
-    if (localStorage.getItem('tutorialShown')) return;
-
-    let currentStep = 0;
-    
-    function createTutorialOverlay() {
-        const overlay = document.createElement('div');
-        overlay.className = 'tutorial-overlay';
-        document.body.appendChild(overlay);
-        return overlay;
-    }
-
-    function createTutorialBox() {
-        const box = document.createElement('div');
-        box.className = 'tutorial-box';
-        box.innerHTML = `
-            <div class="tutorial-content">
-                <h3></h3>
-                <p></p>
-            </div>
-            <div class="tutorial-buttons">
-                <button class="tutorial-skip">Überspringen</button>
-                <button class="tutorial-next">Weiter</button>
-            </div>
-        `;
-        document.body.appendChild(box);
-        return box;
-    }
-
-    const overlay = createTutorialOverlay();
-    const tutorialBox = createTutorialBox();
-
-    function showStep(step) {
-        const targetElement = document.querySelector(step.element);
-        if (!targetElement) return;
-
-        const rect = targetElement.getBoundingClientRect();
-        
-        // Präzisere Hervorhebung für die Suchleiste
-        if (step.element === '.search-container') {
-            const searchInput = document.querySelector('#searchInput');
-            if (searchInput) {
-                searchInput.style.outline = '2px solid var(--darkblue)';
-                searchInput.style.outlineOffset = '2px';
-            }
-        } else {
-            targetElement.style.outline = '2px solid var(--darkblue)';
-            targetElement.style.outlineOffset = '2px';
-        }
-
-        tutorialBox.querySelector('h3').textContent = step.title;
-        tutorialBox.querySelector('p').textContent = step.text;
-
-        // Position the tutorial box
-        switch(step.position) {
-            case 'bottom':
-                tutorialBox.style.top = `${rect.bottom + 10}px`;
-                tutorialBox.style.left = `${rect.left + (rect.width / 2) - (tutorialBox.offsetWidth / 2)}px`;
-                break;
-            case 'right':
-                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
-                tutorialBox.style.left = `${rect.right + 10}px`;
-                break;
-            case 'left':
-                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
-                tutorialBox.style.left = `${rect.left - tutorialBox.offsetWidth - 10}px`;
-                break;
-            case 'center':
-                tutorialBox.style.top = `${rect.top + (rect.height / 2) - (tutorialBox.offsetHeight / 2)}px`;
-                tutorialBox.style.left = `${rect.left + (rect.width / 2) - (tutorialBox.offsetWidth / 2)}px`;
-                break;
-            case 'bottom-left':
-                tutorialBox.style.top = `${rect.bottom + 10}px`;
-                tutorialBox.style.left = `${rect.left}px`;
-                break;
-        }
-    }
-
-    function nextStep() {
-        // Entferne das Highlight vom aktuellen Element
-        const currentElement = document.querySelector(TUTORIAL_STEPS[currentStep].element);
-        if (currentElement) {
-            if (TUTORIAL_STEPS[currentStep].element === '.search-container') {
-                const searchInput = document.querySelector('#searchInput');
-                if (searchInput) {
-                    searchInput.style.outline = '';
-                    searchInput.style.outlineOffset = '';
-                }
-            } else {
-                currentElement.style.outline = '';
-                currentElement.style.outlineOffset = '';
-            }
-        }
-
-        if (currentStep < TUTORIAL_STEPS.length - 1) {
-            currentStep++;
-            showStep(TUTORIAL_STEPS[currentStep]);
-        } else {
-            endTutorial();
-        }
-    }
-
-    function endTutorial() {
-        // Entferne alle Highlights
-        TUTORIAL_STEPS.forEach(step => {
-            if (step.element === '.search-container') {
-                const searchInput = document.querySelector('#searchInput');
-                if (searchInput) {
-                    searchInput.style.outline = '';
-                    searchInput.style.outlineOffset = '';
-                }
-            } else {
-                const element = document.querySelector(step.element);
-                if (element) {
-                    element.style.outline = '';
-                    element.style.outlineOffset = '';
-                }
-            }
-        });
-
-        overlay.remove();
-        tutorialBox.remove();
-        localStorage.setItem('tutorialShown', 'true');
-    }
-
-    tutorialBox.querySelector('.tutorial-next').addEventListener('click', nextStep);
-    tutorialBox.querySelector('.tutorial-skip').addEventListener('click', endTutorial);
-
-    showStep(TUTORIAL_STEPS[0]);
-}
-
 // Ersetze den bestehenden Event Listener für STRG+S
 document.addEventListener('keydown', (e) => {
     // Prüfe auf Strg+F (Windows) oder Cmd+F (Mac)
@@ -795,7 +639,7 @@ function sortAlbumItems() {
 function addFavoriteButtonsToAll() {
     document.querySelectorAll('.albumitem').forEach(item => {
         // Überspringe Items mit WIP-Label
-        if (item.querySelector('.wip-label')) return;
+        if (item.querySelector('.Entwicklung-Badge')) return;
         
         // Prüfe ob bereits ein Favoriten-Button existiert
         if (!item.querySelector('.favorite-btn')) {

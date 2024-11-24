@@ -1,0 +1,17 @@
+body {
+  background-color: #f0f0f0;
+  background: linear-gradient(
+    135deg, 
+    #f0f0f0 0%,    /* Hellgrau */
+    #e5e5e5 25%,   /* Mittleres Grau */
+    #d9d9d9 50%,   /* Dunkleres Grau */
+    #cccccc 75%,   /* Noch dunkleres Grau */
+    #c0c0c0 100%   /* Dunkelstes Grau */
+  );
+  background-attachment: fixed;
+}
+
+
+.logo svg {
+    fill: #000000;
+}

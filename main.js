@@ -481,15 +481,6 @@ const template = [
         submenu: [
             // Hilfe & Support Gruppe
             {
-                label: 'Tutorial starten',
-                click: () => {
-                    mainWindow.webContents.executeJavaScript(`
-                        localStorage.removeItem('tutorialShown');
-                        startTutorial();
-                    `);
-                }
-            },
-            {
                 label: 'Alle Favoriten entfernen',
                 click: () => {
                     mainWindow.webContents.executeJavaScript(`

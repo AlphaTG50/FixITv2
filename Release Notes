@@ -1,20 +1,16 @@
 Release Notes - 23.11.2024
 
-Bugfixes:
-- Der Darkmode wurde repariert und funktioniert jetzt wieder einwandfrei
-
-Features:
-- OneDriveUninstaller wurde als neue ausführbare Anwendung hinzugefügt
-  • Ermöglicht die vollständige Deinstallation von OneDrive
-  • Entfernt alle Überreste und Registry-Einträge
-- Neues "Tool" Badge zur besseren Kategorisierung von Programmen
-  • Visuell ansprechende Kennzeichnung von Tools
-  • Verbesserte Übersichtlichkeit der Programmsammlung
-
 Verbesserungen:
-- Die Überprüfung von laufenden Prozessen beim Programmstart wurde optimiert
-  • Schnellere Erkennung bereits laufender Programme
-  • Zuverlässigere Vermeidung von Doppelstarts
-- Neuer Filter für die Kategorie "Tools" implementiert
-  • Einfachere Navigation durch die Programmsammlung
-  • Schnelleres Auffinden relevanter Werkzeuge
+- Hintergrundfarbe von Suchleiste und Background wurden angepasst
+- Texte wurden eindeutiger gemacht
+- Die Suchleiste wurde etwas vergrößert
+- Die Kategorieauswahl wurde etwas vergrößert
+- Die Hintergrundfarbe der Kategorieauswahl wurde etwas dunkler gemacht
+- Die Hintergrundfarbe der Kategorieauswahl wurde etwas dunkler gemacht
+- Logo neue Design mit Animation
+- Tutorial wurde entfernt
+- Code Struktur wurde überarbeitet
+
+Bugs:
+- Lightmode und Darkmode sind nicht perfekt getestet
+- Lightmode funktioniert nicht mehr so wie erwartet
