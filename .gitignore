@@ -1,4 +1,5 @@
 node_modules
 dist
+logs
 src/assets/portable-apps
 src/assets/portable-scripts

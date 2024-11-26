@@ -1,5 +1,5 @@
 
-[2024-11-24T22:10:21.557Z]
+[2024-11-25T19:39:07.219Z]
 Typ: Error Modal
 Kontext: Fehler beim Laden der Benutzereinstellungen
 Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
@@ -12,37 +12,7 @@ Stack: Error: Script failed to execute, this normally means an error was thrown.
     at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
 --------------------------------------------------
 
-[2024-11-24T22:10:28.078Z]
-Typ: Error Modal
-Kontext: Error Modal
-Fehlermeldung: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
-Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
-Benutzer abgebrochen.
-In Zeile:1 Zeichen:1
-+ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
-    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
- 
-
-Benutzeraktion: BODY
-Seite: file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.html
-Stack: Error: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
-Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
-Benutzer abgebrochen.
-In Zeile:1 Zeichen:1
-+ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
-    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
- 
-
-    at showErrorModal (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:397:16)
-    at executeBatchScript (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:172:9)
-    at async HTMLDivElement.<anonymous> (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:183:17)
---------------------------------------------------
-
-[2024-11-24T22:29:30.385Z]
+[2024-11-25T19:41:11.165Z]
 Typ: Error Modal
 Kontext: Fehler beim Laden der Benutzereinstellungen
 Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
@@ -55,50 +25,427 @@ Stack: Error: Script failed to execute, this normally means an error was thrown.
     at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
 --------------------------------------------------
 
-[2024-11-24T22:31:47.738Z]
+[2024-11-25T19:43:59.684Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T19:50:04.316Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T19:50:44.001Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T19:53:28.890Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T19:54:58.153Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T19:56:27.032Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:00:40.098Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:03:27.635Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:04:23.278Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:14:47.459Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:45:49.064Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:50:33.579Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T20:57:09.228Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:04:48.908Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:09:24.989Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:12:25.076Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:15:55.398Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:17:49.349Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:18:42.232Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:18:55.936Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:20:07.007Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:29:27.769Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:29:31.359Z]
+Typ: Error Modal
+Kontext: Unbehandelter Fehler
+Fehlermeldung: easterEggMenuOpenCount is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: easterEggMenuOpenCount is not defined
+    at click (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:693:21)
+    at MenuItem.click (node:electron/js2c/browser_init:2:34425)
+    at a._executeCommand (node:electron/js2c/browser_init:2:39840)
+--------------------------------------------------
+
+[2024-11-25T21:29:36.466Z]
+Typ: Error Modal
+Kontext: Unbehandelter Fehler
+Fehlermeldung: easterEggMenuOpenCount is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: easterEggMenuOpenCount is not defined
+    at click (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:693:21)
+    at MenuItem.click (node:electron/js2c/browser_init:2:34425)
+    at a._executeCommand (node:electron/js2c/browser_init:2:39840)
+--------------------------------------------------
+
+[2024-11-25T21:29:37.458Z]
+Typ: Error Modal
+Kontext: Unbehandelter Fehler
+Fehlermeldung: easterEggMenuOpenCount is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: easterEggMenuOpenCount is not defined
+    at click (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:693:21)
+    at MenuItem.click (node:electron/js2c/browser_init:2:34425)
+    at a._executeCommand (node:electron/js2c/browser_init:2:39840)
+--------------------------------------------------
+
+[2024-11-25T21:30:10.423Z]
+Typ: Error Modal
+Kontext: Unbehandelter Fehler
+Fehlermeldung: easterEggMenuOpenCount is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: easterEggMenuOpenCount is not defined
+    at click (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:693:21)
+    at MenuItem.click (node:electron/js2c/browser_init:2:34425)
+    at a._executeCommand (node:electron/js2c/browser_init:2:39840)
+--------------------------------------------------
+
+[2024-11-25T21:30:20.168Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:30:37.106Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:31:05.346Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:35:26.038Z]
 Typ: Error Modal
 Kontext: Error Modal
-Fehlermeldung: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
-Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
-Benutzer abgebrochen.
-In Zeile:1 Zeichen:1
-+ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
-    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
- 
-
-Benutzeraktion: BODY
+Fehlermeldung: Meme konnte nicht geladen werden
+Benutzeraktion: INPUT
 Seite: file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.html
-Stack: Error: Fehler beim Ausführen des Scripts: Error invoking remote method 'execute-batch': Error: Command failed: powershell.exe -Command "Start-Process cmd -ArgumentList '/c """C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\assets\portable-scripts\OneDriveUninstaller.bat"""' -Verb RunAs -WindowStyle Normal"
-Start-Process : Dieser Befehl kann aufgrund des folgenden Fehlers nicht ausgef�hrt werden: Der Vorgang wurde durch den 
-Benutzer abgebrochen.
-In Zeile:1 Zeichen:1
-+ Start-Process cmd -ArgumentList '/c "C:\Users\guerkan\SynologyDrive\D ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidOperation: (:) [Start-Process], InvalidOperationException
-    + FullyQualifiedErrorId : InvalidOperationException,Microsoft.PowerShell.Commands.StartProcessCommand
- 
-
+Stack: Error: Meme konnte nicht geladen werden
     at showErrorModal (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:435:16)
-    at executeBatchScript (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:172:9)
-    at async HTMLDivElement.<anonymous> (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:183:17)
+    at memeImg.onerror (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:979:9)
 --------------------------------------------------
 
-[2024-11-24T22:34:35.933Z]
+[2024-11-25T21:35:29.531Z]
+Typ: Error Modal
+Kontext: Error Modal
+Fehlermeldung: Meme konnte nicht geladen werden
+Benutzeraktion: INPUT
+Seite: file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.html
+Stack: Error: Meme konnte nicht geladen werden
+    at showErrorModal (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:435:16)
+    at memeImg.onerror (file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/index.js:979:9)
+--------------------------------------------------
+
+[2024-11-25T21:37:25.624Z]
+Typ: Error Modal
+Kontext: Fehler beim Laden der Benutzereinstellungen
+Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: Error: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
+    at node:electron/js2c/renderer_init:2:16600
+    at IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:10905)
+    at IpcRendererInternal.emit (node:events:519:28)
+    at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
+--------------------------------------------------
+
+[2024-11-25T21:44:20.409Z]
 Typ: Error Modal
 Kontext: Unbehandelte Promise Rejection
-Fehlermeldung: ERR_FAILED (-2) loading 'file:///C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\index.html'
+Fehlermeldung: ERR_ABORTED (-3) loading 'file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/login.html'
 Benutzeraktion: Nicht verfügbar
 Seite: Nicht verfügbar
-Stack: Error: ERR_FAILED (-2) loading 'file:///C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\src\index.html'
+Stack: Error: ERR_ABORTED (-3) loading 'file:///C:/Users/guerkan/SynologyDrive/Dateien/Geteilte%20Ablage/Development/Desktop%20Application/FixIT/Versions/Github_Verison/FixIT/src/login.html'
     at rejectAndCleanup (node:electron/js2c/browser_init:2:80099)
-    at finishListener (node:electron/js2c/browser_init:2:80261)
-    at WebContents.stopLoadingListener (node:electron/js2c/browser_init:2:80648)
-    at WebContents.emit (node:events:519:28)
+    at WebContents.navigationListener (node:electron/js2c/browser_init:2:80379)
+    at WebContents.emit (node:events:531:35)
 --------------------------------------------------
 
-[2024-11-24T22:34:53.530Z]
+[2024-11-25T21:45:26.956Z]
 Typ: Error Modal
 Kontext: Fehler beim Laden der Benutzereinstellungen
 Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.
@@ -111,7 +458,77 @@ Stack: Error: Script failed to execute, this normally means an error was thrown.
     at Object.onMessage (node:electron/js2c/renderer_init:2:8918)
 --------------------------------------------------
 
-[2024-11-24T22:35:27.121Z]
+[2024-11-25T21:46:36.077Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: auth is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: auth is not defined
+    at isLoggedIn (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1050:5)
+    at createMainWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:125:10)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:69:7
+--------------------------------------------------
+
+[2024-11-25T21:46:36.078Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: auth is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: auth is not defined
+    at isLoggedIn (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1050:5)
+    at createMainWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:125:10)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:486:9
+--------------------------------------------------
+
+[2024-11-25T21:47:46.560Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: auth is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: auth is not defined
+    at isLoggedIn (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1050:5)
+    at createMainWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:125:10)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:69:7
+--------------------------------------------------
+
+[2024-11-25T21:47:46.561Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: auth is not defined
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: auth is not defined
+    at isLoggedIn (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1050:5)
+    at createMainWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:125:10)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:486:9
+--------------------------------------------------
+
+[2024-11-25T21:50:52.409Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: Cannot access 'authWindow' before initialization
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: Cannot access 'authWindow' before initialization
+    at createAuthWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1044:5)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:60:9
+--------------------------------------------------
+
+[2024-11-25T21:57:11.702Z]
+Typ: Error Modal
+Kontext: Unbehandelte Promise Rejection
+Fehlermeldung: Cannot access 'authWindow' before initialization
+Benutzeraktion: Nicht verfügbar
+Seite: Nicht verfügbar
+Stack: ReferenceError: Cannot access 'authWindow' before initialization
+    at createAuthWindow (C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:1044:5)
+    at C:\Users\guerkan\SynologyDrive\Dateien\Geteilte Ablage\Development\Desktop Application\FixIT\Versions\Github_Verison\FixIT\main.js:60:9
+--------------------------------------------------
+
+[2024-11-25T22:08:02.790Z]
 Typ: Error Modal
 Kontext: Fehler beim Laden der Benutzereinstellungen
 Fehlermeldung: Script failed to execute, this normally means an error was thrown. Check the renderer console for the error.

@@ -90,9 +90,6 @@ function createMainWindow() {
         }
     });
 
-    splash.loadFile(path.join(__dirname, 'src', 'sites', 'loading-screen', 'loading-screen.html'));
-    splash.center();
-
     // Hauptfenster im Hintergrund laden
     mainWindow = new BrowserWindow({
         width: 1024,
@@ -778,12 +775,12 @@ const template = [
                 }
             },
             {
-                label: 'Lizenz',
+                label: 'Lizenz (In Entwicklung)',
                 click: () => {
                     dialog.showMessageBox(mainWindow, {
                         type: "warning",
                         title: 'Lizenzsteuerung',
-                        message: `Work in Progress!`,
+                        message: `In Entwicklung!`,
                         buttons: ['OK'],
                         noLink: true
                     });

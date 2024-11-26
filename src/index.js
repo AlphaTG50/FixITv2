@@ -506,6 +506,26 @@ searchInput.addEventListener('input', (e) => {
         searchCode = '';
     }
     
+    if (searchCode.includes('dvd')) {
+        searchInput.value = '';
+        createDVDBounce();
+        
+        // Easter Egg Logik
+        const foundEasterEggs = JSON.parse(localStorage.getItem('foundEasterEggs') || '[]');
+        if (!foundEasterEggs.includes('dvd_bounce')) {
+            foundEasterEggs.push('dvd_bounce');
+            localStorage.setItem('foundEasterEggs', JSON.stringify(foundEasterEggs));
+            
+            new Notification('Easter Egg', {
+                body: 'DVD Logo Bounce freigeschaltet',
+                icon: './assets/images/logo/png/64x64.png',
+                silent: true
+            });
+        }
+        
+        searchCode = '';
+    }
+    
     setTimeout(() => searchCode = '', 2000);
 });
 
@@ -575,6 +595,90 @@ function createMatrixEffect() {
             }
         }, 60);
     }, 4000);
+}
+
+// Füge die DVD Bounce Funktion hinzu
+function createDVDBounce() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.disabled = true;
+    
+    const dvdLogo = document.createElement('div');
+    dvdLogo.style.position = 'fixed';
+    dvdLogo.style.zIndex = '9999';
+    dvdLogo.style.width = '150px';
+    dvdLogo.style.height = '150px';
+    dvdLogo.style.transition = 'none'; // Verhindert unerwünschte Transitionen
+    dvdLogo.innerHTML = document.querySelector('.logo svg').outerHTML;
+    
+    // Setze initiale Position
+    dvdLogo.style.left = '0px';
+    dvdLogo.style.top = '0px';
+    document.body.appendChild(dvdLogo);
+
+    let x = Math.random() * (window.innerWidth - 150);
+    let y = Math.random() * (window.innerHeight - 150);
+    let xSpeed = 2; // Reduzierte Geschwindigkeit für smoothere Animation
+    let ySpeed = 2;
+    let hue = 0;
+
+    function updatePosition() {
+        // Aktualisiere Position
+        x += xSpeed;
+        y += ySpeed;
+
+        // Kollisionserkennung mit Bildschirmrändern
+        if (x <= 0 || x >= window.innerWidth - 150) {
+            xSpeed = -xSpeed;
+            changeColor();
+        }
+        if (y <= 0 || y >= window.innerHeight - 150) {
+            ySpeed = -ySpeed;
+            changeColor();
+        }
+
+        // Begrenze die Position innerhalb des Bildschirms
+        x = Math.max(0, Math.min(x, window.innerWidth - 150));
+        y = Math.max(0, Math.min(y, window.innerHeight - 150));
+
+        // Aktualisiere die Position mit transform statt left/top
+        dvdLogo.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+
+    function changeColor() {
+        hue = (hue + 60) % 360;
+        const svg = dvdLogo.querySelector('svg');
+        if (svg) {
+            svg.style.fill = `hsl(${hue}, 100%, 50%)`;
+        }
+    }
+
+    // Setze initiale Farbe
+    changeColor();
+
+    // Starte Animation
+    const animation = setInterval(updatePosition, 16);
+
+    // Füge Resize-Handler hinzu
+    const handleResize = () => {
+        // Begrenze Position bei Fenstergrößenänderung
+        x = Math.min(x, window.innerWidth - 150);
+        y = Math.min(y, window.innerHeight - 150);
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup nach 10 Sekunden
+    setTimeout(() => {
+        // Sanftes Ausblenden
+        dvdLogo.style.transition = 'opacity 0.5s ease-out';
+        dvdLogo.style.opacity = '0';
+        
+        setTimeout(() => {
+            clearInterval(animation);
+            window.removeEventListener('resize', handleResize);
+            dvdLogo.remove();
+            searchInput.disabled = false;
+        }, 500);
+    }, 10000);
 }
 
 // Ersetze den bestehenden Event Listener für STRG+S
