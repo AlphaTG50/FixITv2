@@ -128,13 +128,6 @@ function createMainWindow() {
             event.preventDefault();
             mainWindow.hide();
             showTrayIcon();
-            const notification = {           
-                title: 'Minimiert in die Symbolleiste',
-                body: 'Die Anwendung wurde in die Symbolleiste minimiert.',
-                silent: true,
-                icon: path.join(__dirname, './src/assets/images/logo/png/64x64.png')
-            };
-            new Notification(notification).show();
         } else {
             app.isQuiting = true;
             mainWindow = null;
@@ -250,16 +243,6 @@ const showTrayIcon = () => {
                         }).show();
                     }
                 } 
-            },
-            { type: 'separator' },
-            { 
-                label: 'Logs anzeigen',
-                click: () => {
-                    const logDir = app.isPackaged 
-                        ? path.join(process.resourcesPath, 'logs')
-                        : path.join(__dirname, 'logs');
-                    shell.openPath(logDir);
-                }
             },
             { type: 'separator' },
             { 
@@ -391,14 +374,16 @@ ipcMain.handle('check-process', async (event, processName) => {
 ipcMain.handle('execute-powershell', async (event, scriptName) => {
     return new Promise((resolve, reject) => {
         const scriptPath = app.isPackaged 
-            ? path.join(process.resourcesPath,'portable-scripts', scriptName)
+            ? path.join(process.resourcesPath, 'portable-scripts', scriptName)
             : path.join(__dirname, 'src', 'assets', 'portable-scripts', scriptName);
 
         if (!fs.existsSync(scriptPath)) {
+            console.error('Script nicht gefunden:', scriptPath);
             reject(new Error(`Script nicht gefunden: ${scriptName}`));
             return;
         }
 
+        // Führe das PowerShell-Script mit erhöhten Rechten aus
         const command = `powershell.exe -ExecutionPolicy Bypass -File "${scriptPath}"`;
         
         exec(command, { windowsHide: true }, (error, stdout, stderr) => {
@@ -965,68 +950,3 @@ function compareVersions(v1, v2) {
     }
     return 0;
 }
-
-// Logger-Funktion hinzufügen
-function logError(error, context = '', additionalInfo = {}) {
-    const logDir = app.isPackaged 
-        ? path.join(process.resourcesPath, 'logs')
-        : path.join(__dirname, 'logs');
-    
-    if (!fs.existsSync(logDir)) {
-        fs.mkdirSync(logDir, { recursive: true });
-    }
-
-    const date = new Date();
-    const logFile = path.join(logDir, `error_modal_log_${date.getFullYear()}-${(date.getMonth() + 1)}.txt`);
-    
-    const logEntry = `
-[${additionalInfo.timestamp || date.toISOString()}]
-Typ: Error Modal
-Kontext: ${context}
-Fehlermeldung: ${error.message}
-Benutzeraktion: ${additionalInfo.userAction || 'Nicht verfügbar'}
-Seite: ${additionalInfo.location || 'Nicht verfügbar'}
-Stack: ${error.stack || 'Kein Stack Trace verfügbar'}
---------------------------------------------------
-`;
-
-    fs.appendFileSync(logFile, logEntry);
-    cleanOldLogs(logDir);
-}
-
-// Funktion zum Aufräumen alter Logs
-function cleanOldLogs(logDir) {
-    const files = fs.readdirSync(logDir);
-    const threeMonthsAgo = new Date();
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    
-    files.forEach(file => {
-        const filePath = path.join(logDir, file);
-        const stats = fs.statSync(filePath);
-        
-        if (stats.mtime < threeMonthsAgo) {
-            fs.unlinkSync(filePath);
-        }
-    });
-}
-
-// Globaler Error Handler
-process.on('uncaughtException', (error) => {
-    logError(error, 'Unbehandelter Fehler');
-});
-
-process.on('unhandledRejection', (error) => {
-    logError(error, 'Unbehandelte Promise Rejection');
-});
-
-// Aktualisiere den IPC-Handler für Error Modal Logs
-ipcMain.on('log-error', (event, { error, context, timestamp, userAction, location }) => {
-    const errorObj = error instanceof Error ? error : new Error(error.message || error.toString());
-    errorObj.stack = error.stack || errorObj.stack;
-    
-    logError(errorObj, context, {
-        timestamp,
-        userAction,
-        location
-    });
-});

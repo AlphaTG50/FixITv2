@@ -100,30 +100,15 @@ async function executeExe(exeName) {
     }
 }
 
-// Füge diese Funktion nach der executeExe Funktion hinzu
+// Aktualisiere die executePowerShellScript Funktion
 async function executePowerShellScript(scriptName) {
     try {
         showLoadingScreen();
         
-        const scriptPath = app.isPackaged 
-            ? path.join(process.resourcesPath, 'portable-scripts', scriptName)
-            : path.join(__dirname, 'src', 'portable-scripts', scriptName);
-
-        const command = `powershell.exe -ExecutionPolicy Bypass -File "${scriptPath}"`;
+        // Nutze ipcRenderer um mit dem Hauptprozess zu kommunizieren
+        await ipcRenderer.invoke('execute-powershell', scriptName);
         
-        await new Promise((resolve, reject) => {
-            exec(command, { windowsHide: true }, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`PowerShell Fehler: ${error}`);
-                    reject(error);
-                    return;
-                }
-                resolve(stdout);
-            });
-        });
-
         hideLoadingScreen();
-        
     } catch (err) {
         console.error('PowerShell Script Fehler:', err);
         hideLoadingScreen();
@@ -175,14 +160,48 @@ async function executeBatchScript(scriptName) {
 
 // Modifiziere den Event-Listener für Album-Items
 document.querySelectorAll('.albumitem').forEach(item => {
-    item.addEventListener('click', async function() {
-        if (!this.classList.contains('found') && !this.querySelector('.Entwicklung-Badge')) {
+    item.addEventListener('click', async function(e) {
+        // Verhindere das Standard-Klick-Verhalten
+        e.preventDefault();
+        
+        // Prüfe ob es ein Website-Badge hat
+        const hasWebsiteBadge = this.querySelector('.Website-Badge');
+        // Prüfe ob es ein Entwicklungs-Badge hat
+        const hasEntwicklungBadge = this.querySelector('.Entwicklung-Badge');
+        
+        // Wenn es ein Website-Badge hat, öffne den Link
+        if (hasWebsiteBadge) {
+            const link = this.querySelector('a');
+            if (link) {
+                // Öffne das Fenster mit spezifischen Dimensionen
+                const width = 1200;  // Breite des Fensters
+                const height = 800;  // Höhe des Fensters
+                const left = (screen.width - width) / 2;
+                const top = (screen.height - height) / 2;
+                
+                window.open(
+                    link.href,
+                    '_blank',
+                    `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=yes,location=yes,status=yes,scrollbars=yes`
+                );
+            }
+            return;
+        }
+        
+        // Wenn es kein Entwicklungs-Badge hat und kein Website-Badge, führe das Programm aus
+        if (!hasEntwicklungBadge && !hasWebsiteBadge) {
             const programName = this.getAttribute('data-search');
             
-            if (programName === 'OneDriveUninstaller') {
-                await executeBatchScript('OneDriveUninstaller.bat');
-            } else {
-                await executeExe(programName);
+            try {
+                if (programName === 'MicrosoftActivation') {
+                    await executePowerShellScript('MicrosoftActivation.ps1');
+                } else if (programName === 'OneDriveUninstaller') {
+                    await executeBatchScript('OneDriveUninstaller.bat');
+                } else {
+                    await executeExe(programName);
+                }
+            } catch (error) {
+                showErrorModal(`Fehler beim Ausführen von ${programName}: ${error.message}`);
             }
         }
     });
@@ -200,7 +219,8 @@ function initializeCategoryFilter() {
         <option value="">Alle Programme</option>
         <option value="favorites">Meine Favoriten</option>
         <option value="portable">Portable Apps</option>
-        <option value="tool">System Tools</option>
+        <option value="script">Scripts</option>
+        <option value="website">Websites</option>
         <option value="wip">In Entwicklung</option>
     `;
 
@@ -253,7 +273,8 @@ function filterAlbums() {
             const isPortable = album.querySelector('.Portable-Badge') !== null;
             const isWip = album.querySelector('.Entwicklung-Badge') !== null;
             const isFavorite = favorites.includes(album.getAttribute('data-search'));
-            const isTool = album.querySelector('.Tool-Badge') !== null;
+            const isScript = album.querySelector('.Script-Badge') !== null;
+            const isWebsite = album.querySelector('.Website-Badge') !== null;
             
             const matchesSearch = searchTerm === '' || 
                 title.includes(searchTerm) || 
@@ -263,12 +284,11 @@ function filterAlbums() {
             const matchesCategory = selectedCategory === '' || 
                 (selectedCategory === 'portable' && isPortable) ||
                 (selectedCategory === 'wip' && isWip) ||
-                (selectedCategory === 'tool' && isTool) ||
+                (selectedCategory === 'script' && isScript) ||
+                (selectedCategory === 'website' && isWebsite) ||
                 (selectedCategory === 'favorites' && isFavorite);
 
-            const isVisible = matchesSearch && matchesCategory;
-            
-            if (isVisible) {
+            if (matchesSearch && matchesCategory) {
                 album.style.display = 'flex';
                 hasVisibleItems = true;
                 

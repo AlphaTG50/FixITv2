@@ -1,0 +1,3 @@
+DefenderControl.exe
+ProduktKey.exe
+WirelessKeyView.exe

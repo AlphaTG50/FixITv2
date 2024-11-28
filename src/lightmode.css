@@ -74,23 +74,33 @@ body {
 /* Badge Styling                    */
 /* --------------------------------- */
 .albumtitle .Entwicklung-Badge {
-  color: #ff8c00;
-  border: 2px solid #ff8c00;
-}
-
-.albumtitle .Tool-Badge {
-  color: #4CAF50;
-  border: 2px solid #4CAF50;
+  color: #8a8a8a;
+  border: 2px solid #8a8a8a;
+  background: rgba(138, 138, 138, 0.15);
 }
 
 .albumtitle .Admin-Badge {
+  border: 2px solid #fd6868;
   color: #ff4444;
-  border: 2px solid #ff4444;
+  background: rgba(255, 68, 68, 0.15);
 }
 
 .albumtitle .Portable-Badge {
+  border: 2px solid #78cffd;
   color: #1473A8;
-  border: 2px solid #1473A8;
+  background: rgba(20, 115, 168, 0.15);
+}
+
+.albumtitle .Website-Badge {
+  border: 2px solid #e492f8;
+  color: #9B59B6;
+  background: rgba(155, 89, 182, 0.15);
+}
+
+.albumtitle .Script-Badge {
+  border: 2px solid #ff9800;
+  color: #f57c00;
+  background: rgba(255, 152, 0, 0.15);
 }
 
 /* --------------------------------- */
