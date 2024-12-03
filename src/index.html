@@ -57,9 +57,9 @@
     </div>
   </div>
 
-
   <!-- Suchleiste -->
   <input type="text" id="searchInput" placeholder="Suche">
+
 
 
   <!-- Album -->
@@ -526,7 +526,28 @@
         </div>
       </div>
     </div>
+
+    <!-- AutoUnattend -->
+    <div class="albumitem" data-search="AutoUnattend" data-category="tools">
+      <button class="favorite-btn" title="Als Favorit markieren">
+        <i class="fas fa-star"></i>
+      </button>
+      <figure class="albumartwork">
+        <a href="https://schneegans.de/windows/unattend-generator/" target="_blank">
+          <img src="./assets/images/programs/autounattend.png" alt="AutoUnattend">
+        </a>
+      </figure>
+      <div class="albuminfo">
+        <div class="albumtitle">
+          <h1>AutoUnattend</h1>
+          <h2>Automatische Windows-Installation konfigurieren</h2>
+          <h3 class="Website-Badge">Website</h3>
+        </div>
+      </div>
+    </div>
   </section>
+
+
 
 
   <!-- SCRIPT -->
@@ -540,6 +561,37 @@
       </div>
       <div class="error-modal-message" id="errorMessage"></div>
       <button class="error-modal-button" onclick="hideErrorModal()">OK</button>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <i class="fas fa-wifi"></i>
+      <span id="connectionStatus">Verbunden</span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-memory"></i>
+      <span id="ramStatus"></span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-microchip"></i>
+      <span id="cpuStatus"></span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-hdd"></i>
+      <span id="diskStatus"></span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-clock"></i>
+      <span id="uptimeStatus"></span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-desktop"></i>
+      <span id="osStatus"></span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-info-circle"></i>
+      <span id="versionInfo"></span>
+    </div>
   </div>
 
 </body>

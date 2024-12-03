@@ -864,3 +864,91 @@ figure {
 .fade-in {
     animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Quick Actions Styles */
+.quick-actions {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.quick-action-btn i {
+  font-size: 1.1rem;
+}
+
+/* Status Bar Styles */
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  font-size: 0.9rem;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-item i {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Filter Container Styles */
+.filter-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+#categoryFilter {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .quick-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+body.dark-mode .status-bar {
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+body.dark-mode #categoryFilter {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.1);
+}

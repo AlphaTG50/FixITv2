@@ -115,7 +115,9 @@ function createMainWindow() {
     // Optimierte Ladesequenz
     mainWindow.loadFile(path.join(__dirname, 'src', 'index.html')).then(() => {
         loadUserPreferences();
-        // Kurze Verzögerung für smootheren Übergang
+        mainWindow.webContents.executeJavaScript(`
+            document.getElementById('versionInfo').textContent = 'Version ${version}';
+        `);
         setTimeout(() => {
             splash.destroy();
             mainWindow.show();

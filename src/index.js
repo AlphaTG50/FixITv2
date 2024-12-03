@@ -1,5 +1,8 @@
 const { ipcRenderer } = require('electron');
 const { execFile, exec } = require('child_process');
+const { version } = require('../package.json');
+const { networkInterfaces } = require('os');
+const os = require('os');
 let containerWidth;
 
 // Konstanten für Menüs und andere häufig verwendete Strings
@@ -384,28 +387,30 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     });
+
+    // Version aus package.json in die Statusbar einfügen
+    document.getElementById('versionInfo').textContent = `Version ${version}`;
+    
+    // WLAN-Namen abrufen und alle 10 Sekunden aktualisieren
+    getWifiName();
+    setInterval(getWifiName, 10000); // Alle 10 Sekunden
+    
+    // Systeminfos aktualisieren
+    updateSystemRAMCPU();
+    setInterval(updateSystemRAMCPU, 2000); // Jede 2 Sekunden
+    
+    // Festplattennutzung aktualisieren
+    updateDiskSpace();
+    setInterval(updateDiskSpace, 5000); // Jede 5 Sekunden
+    
+    // OS-Info und Version einmalig setzen
+    updateStaticInfo();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
 function handleAlbumNotFound(album) {
     // console.warn entfernt
 }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const albumList = document.querySelector('.albumlist');
-    const items = Array.from(albumList.children); // Konvertiere NodeList in Array
-
-    // Sortiere die Items alphabetisch basierend auf dem Titel (h1-Element)
-    items.sort((a, b) => {
-      const titleA = a.querySelector('.albumtitle h1').innerText.toLowerCase();
-      const titleB = b.querySelector('.albumtitle h1').innerText.toLowerCase();
-      return titleA.localeCompare(titleB);
-    });
-
-    // Leere die aktuelle Liste und füge die sortierten Items hinzu
-    albumList.innerHTML = '';
-    items.forEach(item => albumList.appendChild(item));
-  });
 
 // Dark Mode beim Laden wiederherstellen
 if (localStorage.getItem('darkMode') === 'true') {
@@ -918,4 +923,98 @@ ipcRenderer.on('toggle-dark-mode', (event, isDarkMode) => {
 function initializeDarkMode() {
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', savedDarkMode);
+}
+
+// Füge diese neue Funktion hinzu
+function getWifiName() {
+    try {
+        // Windows-spezifischer Befehl
+        exec('netsh wlan show interfaces', (error, stdout) => {
+            if (error) {
+                document.getElementById('connectionStatus').textContent = 'Nicht verbunden';
+                return;
+            }
+            
+            // Extrahiere den SSID-Namen aus der Ausgabe
+            const ssidMatch = stdout.match(/SSID\s*: (.*)/);
+            if (ssidMatch && ssidMatch[1]) {
+                const ssidName = ssidMatch[1].trim();
+                document.getElementById('connectionStatus').textContent = ssidName;
+            } else {
+                document.getElementById('connectionStatus').textContent = 'Nicht verbunden';
+            }
+        });
+    } catch (error) {
+        document.getElementById('connectionStatus').textContent = 'Nicht verbunden';
+    }
+}
+
+// Teile updateSystemInfo in separate Funktionen auf
+function updateSystemRAMCPU() {
+    // RAM Status
+    const totalRAM = (os.totalmem() / (1024 * 1024 * 1024)).toFixed(1);
+    const freeRAM = (os.freemem() / (1024 * 1024 * 1024)).toFixed(1);
+    const usedRAM = (totalRAM - freeRAM).toFixed(1);
+    document.getElementById('ramStatus').textContent = `${usedRAM}/${totalRAM} GB`;
+
+    // CPU Status
+    const cpus = os.cpus();
+    const cpuModel = cpus[0].model.split(' ').slice(0, 3).join(' ');
+    document.getElementById('cpuStatus').textContent = `${cpuModel}`;
+
+    // Uptime kompakter formatiert
+    const uptimeSeconds = os.uptime();
+    const hours = Math.floor(uptimeSeconds / 3600);
+    const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+    
+    let uptimeText = '';
+    if (hours > 0) {
+        uptimeText += `${hours}h`;
+        if (minutes > 0) {
+            uptimeText += ` ${minutes}m`;
+        }
+    } else {
+        uptimeText += `${minutes}m`;
+    }
+    
+    document.getElementById('uptimeStatus').textContent = uptimeText;
+}
+
+function updateDiskSpace() {
+    checkDiskSpace('C:').then(space => {
+        const total = Math.round(space.total / (1024 * 1024 * 1024));  // Gesamtgröße in GB
+        const free = Math.round(space.free / (1024 * 1024 * 1024));    // Freier Speicher in GB
+        document.getElementById('diskStatus').textContent = `C: ${total-free}/${total} GB`;  // Belegt/Gesamt
+    });
+}
+
+function updateStaticInfo() {
+    // Betriebssystem Info
+    const osInfo = `${os.arch()}`;
+    document.getElementById('osStatus').textContent = osInfo;
+}
+
+// Hilfsfunktion für Festplatteninfo
+async function checkDiskSpace(drive) {
+    return new Promise((resolve, reject) => {
+        exec('wmic logicaldisk get size,freespace,caption', (error, stdout) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+            
+            const lines = stdout.trim().split('\n');
+            const drives = lines.slice(1).map(line => {
+                const [caption, freeSpace, size] = line.trim().split(/\s+/);
+                return {
+                    drive: caption,
+                    free: parseInt(freeSpace || 0),
+                    total: parseInt(size || 0)
+                };
+            });
+            
+            const systemDrive = drives.find(d => d.drive === drive);
+            resolve(systemDrive || { free: 0, total: 0 });
+        });
+    });
 }
