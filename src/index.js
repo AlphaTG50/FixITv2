@@ -391,20 +391,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Version aus package.json in die Statusbar einfügen
     document.getElementById('versionInfo').textContent = `Version ${version}`;
     
-    // WLAN-Namen abrufen und alle 10 Sekunden aktualisieren
+    // WLAN-Namen abrufen und alle 30 Sekunden aktualisieren
     getWifiName();
-    setInterval(getWifiName, 10000); // Alle 10 Sekunden
+    setInterval(getWifiName, 30000);
     
-    // Systeminfos aktualisieren
+    // RAM, CPU, Uptime - alle 2 Sekunden
     updateSystemRAMCPU();
-    setInterval(updateSystemRAMCPU, 2000); // Jede 2 Sekunden
+    setInterval(updateSystemRAMCPU, 2000);
     
-    // Festplattennutzung aktualisieren
+    // Festplattennutzung - alle 5 Sekunden
     updateDiskSpace();
-    setInterval(updateDiskSpace, 5000); // Jede 5 Sekunden
-    
-    // OS-Info und Version einmalig setzen
-    updateStaticInfo();
+    setInterval(updateDiskSpace, 5000);
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -986,12 +983,6 @@ function updateDiskSpace() {
         const free = Math.round(space.free / (1024 * 1024 * 1024));    // Freier Speicher in GB
         document.getElementById('diskStatus').textContent = `C: ${total-free}/${total} GB`;  // Belegt/Gesamt
     });
-}
-
-function updateStaticInfo() {
-    // Betriebssystem Info
-    const osInfo = `${os.arch()}`;
-    document.getElementById('osStatus').textContent = osInfo;
 }
 
 // Hilfsfunktion für Festplatteninfo
