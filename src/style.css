@@ -468,10 +468,10 @@ figure {
 /* ---------------------------------- */
 /* Favorite Button Styles             */
 /* ---------------------------------- */
-.favorite-btn {
+.favorite-btn,
+.info-btn {
     position: absolute;
     top: 10px;
-    right: 10px;
     background: none;
     border: none;
     cursor: pointer;
@@ -482,64 +482,87 @@ figure {
     padding: 8px;
     opacity: 0;
     transform: scale(0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
 }
 
-/* Media Queries für den Favoriten-Button */
-@media screen and (max-width: 1400px) {
-    .favorite-btn {
-        top: 8px;
-        right: 8px;
-        font-size: 1.1rem;
-        padding: 6px;
-    }
+.favorite-btn {
+    right: 10px;
 }
 
-@media screen and (max-width: 768px) {
-    .favorite-btn {
-        top: 6px;
-        right: 6px;
-        font-size: 1rem;
-        padding: 5px;
-    }
+.info-btn {
+    right: 45px;
 }
 
-@media screen and (max-width: 450px) {
-    .favorite-btn {
-        top: 4px;
-        right: 4px;
-        font-size: 0.9rem;
-        padding: 4px;
-    }
-}
-
-@media screen and (max-width: 350px) {
-    .favorite-btn {
-        top: 2px;
-        right: 2px;
-        font-size: 0.8rem;
-        padding: 3px;
-    }
-}
-
-.albumitem:hover .favorite-btn {
+.albumitem:hover .favorite-btn,
+.albumitem:hover .info-btn {
     opacity: 1;
     transform: scale(1);
-}
-
-.favorite-btn:not(.active):hover {
-    transform: scale(1);
-    color: #FFD700;
 }
 
 .favorite-btn.active {
     color: #FFD700;
     opacity: 1;
-    transform: scale(1);
 }
 
+.favorite-btn:hover,
 .favorite-btn.active:hover {
-    transform: scale(1);
-    color: #999 !important;
+    color: #FFD700;
+    transform: scale(1.1);
+}
+
+body.dark-mode .favorite-btn.active,
+body.dark-mode .favorite-btn:hover,
+body.dark-mode .favorite-btn.active:hover {
+    color: #1473A8;
+}
+
+/* Media Queries für responsive Design */
+@media screen and (max-width: 1400px) {
+    .favorite-btn,
+    .info-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .favorite-btn,
+    .info-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .favorite-btn,
+    .info-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    
+    .info-btn {
+        right: 40px;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .favorite-btn,
+    .info-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+    }
+    
+    .info-btn {
+        right: 35px;
+    }
 }
 
 /* ---------------------------------- */
@@ -902,47 +925,67 @@ figure {
   left: 0;
   right: 0;
   display: flex;
-  justify-content: flex-end;
-  gap: 20px;
-  padding: 8px 20px;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 25px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
   font-size: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 .status-item {
+  flex: 0 1 auto;
+  min-width: max-content;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   position: relative;
-}
-
-.status-item::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
   padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
+  border-radius: 6px;
   transition: all 0.2s ease;
-  margin-bottom: 5px;
 }
 
-.status-item:hover::before {
-  opacity: 1;
-  visibility: visible;
+.status-item:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .status-item i {
   font-size: 1rem;
   opacity: 0.8;
+  color: rgb(0, 0, 0);
+  transition: opacity 0.3s ease;
+}
+
+.status-item:hover i {
+  opacity: 1;
+}
+
+.status-item::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.status-item:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Filter Container Styles */
@@ -980,4 +1023,194 @@ body.dark-mode #categoryFilter {
 body.dark-mode .status-item::before {
   background: rgba(255, 255, 255, 0.9);
   color: black;
+}
+
+/* Media Queries für responsive Anpassungen */
+@media screen and (max-width: 768px) {
+  .status-bar {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 8px 15px;
+    gap: 8px;
+  }
+
+  .status-item {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+  
+  .status-item i {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .status-bar {
+    justify-content: flex-start;
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .status-item {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+
+  .status-item i {
+    font-size: 0.85rem;
+  }
+  
+  /* Tooltips auf mobilen Geräten deaktivieren */
+  .status-item::before {
+    display: none;
+  }
+}
+
+/* Scrollbar Styling für die Statusbar */
+.status-bar::-webkit-scrollbar {
+  height: 3px;
+}
+
+.status-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.status-bar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+body.dark-mode .status-bar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.info-btn {
+    position: absolute;
+    top: 10px;
+    right: 45px; /* Abstand zum Favoriten-Button */
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #999;
+    transition: all 0.3s ease;
+    z-index: 1;
+    padding: 8px;
+    opacity: 0;
+    transform: scale(0.9);
+    display: flex; /* Für bessere Ausrichtung */
+    align-items: center; /* Vertikale Zentrierung */
+    justify-content: center; /* Horizontale Zentrierung */
+}
+
+.albumitem:hover .info-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.info-btn:hover {
+    transform: scale(1.1);
+    color: #1473A8;
+}
+
+/* Info Modal Styles */
+.info-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display: none;
+    width: 500px;
+    max-width: 90vw;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.info-modal-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-modal-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    object-fit: contain;
+}
+
+.info-modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.info-modal-content {
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.info-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-modal-close {
+    background: #1473A8;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.info-modal-close:hover {
+    background: #0d5c8c;
+}
+
+.info-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .info-modal {
+    background: rgba(30, 34, 39, 0.95);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .info-modal-header,
+body.dark-mode .info-modal-footer {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
 }

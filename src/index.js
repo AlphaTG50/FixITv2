@@ -1009,3 +1009,360 @@ async function checkDiskSpace(drive) {
         });
     });
 }
+
+// Aktualisiere die showInfoModal Funktion
+function showInfoModal(program) {
+    const modal = document.getElementById('infoModal');
+    const overlay = document.getElementById('infoModalOverlay');
+    const icon = modal.querySelector('.info-modal-icon');
+    const title = modal.querySelector('.info-modal-title');
+    const content = modal.querySelector('.info-modal-content');
+    
+    // Programm-spezifische Informationen setzen
+    icon.src = program.icon;
+    title.textContent = program.name;
+    content.innerHTML = `
+        <p><strong>Beschreibung:</strong> ${program.description}</p>
+        <p><strong>Author:</strong> ${program.author || 'Unbekannt'}</p>
+        <p><strong>Funktionen:</strong></p>
+        <ul>
+            ${program.features.map(feature => `<li>${feature}</li>`).join('')}
+        </ul>
+        ${program.requirements ? `
+        <p><strong>Systemanforderungen:</strong></p>
+        <ul>
+            ${program.requirements.map(req => `<li>${req}</li>`).join('')}
+        </ul>
+        ` : ''}
+    `;
+    
+    // Modal und Overlay anzeigen
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+    
+    // ESC-Taste zum Schließen
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            hideInfoModal();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+}
+
+// Funktion zum Verstecken des Info-Modals
+function hideInfoModal() {
+    const modal = document.getElementById('infoModal');
+    const overlay = document.getElementById('infoModalOverlay');
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+// Info-Buttons zu allen Album-Items hinzufügen
+document.querySelectorAll('.albumitem').forEach(item => {
+    const infoBtn = document.createElement('button');
+    infoBtn.className = 'info-btn';
+    infoBtn.innerHTML = '<i class="fas fa-info-circle"></i>';
+    infoBtn.title = 'Informationen anzeigen';
+    
+    infoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const programName = item.getAttribute('data-search');
+        const programInfo = getProgramInfo(programName);
+        showInfoModal(programInfo);
+    });
+    
+    item.appendChild(infoBtn);
+});
+
+// Programm-Informationen abrufen
+function getProgramInfo(programName) {
+    const programInfos = {
+        'AdvancedIPScanner': {
+            name: 'Advanced IP Scanner',
+            icon: './assets/images/programs/advancedipscanner.png',
+            description: 'Ein leistungsstarker Netzwerk-Scanner, der es Ihnen ermöglicht, alle Geräte in Ihrem lokalen Netzwerk schnell zu erkennen und zu analysieren.',
+            author: 'Famatech Corp.',
+            features: [
+                'Schnelles Scannen und Erkennen von Netzwerkgeräten',
+                'Einfacher Fernzugriff auf freigegebene Ordner und FTP-Server',
+                'Remote-Steuerung von PCs über RDP und Radmin',
+                'Erkennung von MAC-Adressen und Geräteherstellern'
+            ]
+        },
+        'CrystalDiskInfo': {
+            name: 'CrystalDiskInfo',
+            icon: './assets/images/programs/crystaldiskinfo.png',
+            description: 'Ein unverzichtbares Tool zur Überwachung der Gesundheit Ihrer Festplatten, das detaillierte S.M.A.R.T.-Daten und Temperaturinformationen bereitstellt.',
+            author: 'Crystal Dew World',
+            features: [
+                'Echtzeit-Überwachung der Festplattengesundheit',
+                'Detaillierte S.M.A.R.T.-Datenanalyse',
+                'Temperaturüberwachung für SSDs und HDDs',
+                'Unterstützung für eine Vielzahl von Festplattentypen'
+            ]
+        },
+        'Heavyload': {
+            name: 'Heavyload',
+            icon: './assets/images/programs/heavyload.png',
+            description: 'Ein umfassendes Stresstest-Tool, das die Belastbarkeit Ihrer Hardware-Komponenten unter extremen Bedingungen prüft.',
+            author: 'JAM Software GmbH',
+            features: [
+                'Intensiver CPU-Belastungstest',
+                'RAM-Auslastungssimulation',
+                'Festplatten-Schreib- und Lesetests',
+                'Grafikprozessor-Stresstests'
+            ]
+        },
+        'MicrosoftActivation': {
+            name: 'Microsoft Activation Scripts',
+            icon: './assets/images/programs/Microsoft Activation Scripts.png',
+            description: 'Ein vielseitiges Skript zur Aktivierung von Microsoft-Produkten, das verschiedene Aktivierungsmethoden unterstützt.',
+            author: 'massgravel',
+            features: [
+                'Aktivierung von Windows-Betriebssystemen',
+                'Aktivierung von Microsoft Office-Produkten',
+                'Unterstützung für HWID- und KMS38-Aktivierung',
+                'Einfache und schnelle Anwendung'
+            ]
+        },
+        'OneDriveUninstaller': {
+            name: 'OneDrive Uninstaller',
+            icon: './assets/images/programs/onedriveunistaller.png',
+            description: 'Ein effizientes Tool zur vollständigen Entfernung von OneDrive von Ihrem System, inklusive aller zugehörigen Dateien und Registry-Einträge.',
+            author: 'JaredCabot',
+            features: [
+                'Vollständige Deinstallation von OneDrive',
+                'Bereinigung von Registry-Einträgen',
+                'Entfernung aller OneDrive-Ordner',
+                'Deaktivierung der OneDrive-Integration'
+            ]
+        },
+        'DriverIdentifier': {
+            name: 'DriverIdentifier',
+            icon: './assets/images/programs/driveridentifier.png',
+            description: 'Ein nützliches Tool zur Identifizierung und Aktualisierung von Treibern, das Ihnen hilft, die Leistung Ihres Systems zu optimieren.',
+            author: 'DriverIdentifier Ltd.',
+            features: [
+                'Automatische Erkennung veralteter Treiber',
+                'Bereitstellung von Download-Links für Treiber',
+                'Backup-Funktion für bestehende Treiber',
+                'Offline-Scan für Treiberaktualisierungen'
+            ]
+        },
+        'HiBit Uninstaller': {
+            name: 'HiBit Uninstaller',
+            icon: './assets/images/programs/hibituninstaller.png',
+            description: 'Ein fortschrittliches Deinstallations-Tool, das Programme gründlich entfernt und alle Rückstände beseitigt.',
+            author: 'HiBitSoft',
+            features: [
+                'Gründliche Deinstallation von Programmen',
+                'Entfernung von Programmresten und -rückständen',
+                'Batch-Deinstallationsoption',
+                'Integrierter Startup-Manager'
+            ]
+        },
+        'Hibit Systeminfo': {
+            name: 'Hibit Systeminfo',
+            icon: './assets/images/programs/hibitsysteminfo.png',
+            description: 'Ein detailliertes Analyse-Tool, das umfassende Informationen über Ihre Hardware und Software bereitstellt.',
+            author: 'HiBitSoft',
+            features: [
+                'Umfassende Hardware-Informationen',
+                'Detaillierte Software-Analyse',
+                'Netzwerk- und Verbindungsdetails',
+                'Betriebssystem- und Sicherheitsinformationen'
+            ]
+        },
+        'HWiNFO': {
+            name: 'HWiNFO',
+            icon: './assets/images/programs/hwinfo.png',
+            description: 'Ein professionelles Tool zur Hardware-Analyse und Überwachung, das detaillierte Berichte und Echtzeit-Daten liefert.',
+            author: 'REALiX Corp.',
+            features: [
+                'Detaillierte Erkennung von Hardware-Komponenten',
+                'Echtzeit-Überwachung von Systemressourcen',
+                'Umfassendes Sensor-Monitoring',
+                'Erstellung detaillierter Berichte'
+            ]
+        },
+        'TreeSizeFree': {
+            name: 'TreeSize Free',
+            icon: './assets/images/programs/treesizefree.png',
+            description: 'Ein leistungsstarkes Tool zur Analyse und Verwaltung Ihres Festplattenspeichers, das Ihnen hilft, Speicherplatz effizient zu nutzen.',
+            author: 'JAM Software GmbH',
+            features: [
+                'Visualisierung der Festplattennutzung',
+                'Analyse von Ordnergrößen',
+                'Export von Scan-Ergebnissen',
+                'Integration ins Kontextmenü'
+            ]
+        },
+        'Everything': {
+            name: 'Everything',
+            icon: './assets/images/programs/everything.png',
+            description: 'Ein ultraschnelles Such-Tool für Windows, das Ihnen hilft, Dateien und Ordner in Sekundenschnelle zu finden.',
+            author: 'voidtools',
+            features: [
+                'Echtzeit-Indizierung von Dateien',
+                'Unterstützung für reguläre Ausdrücke',
+                'Netzwerkweite Dateisuche',
+                'Verfügbar als portable Version'
+            ]
+        },
+        'BatteryInfoView': {
+            name: 'BatteryInfoView',
+            icon: './assets/images/programs/batteryinfoview.png',
+            description: 'Ein nützliches Tool zur Überwachung des Batteriezustands von Laptops, das detaillierte Informationen und Analysen bietet.',
+            author: 'NirSoft',
+            features: [
+                'Überwachung des Akku-Zustands',
+                'Analyse des Batterieverschleißes',
+                'Anzeige der Akkukapazität',
+                'Verfolgung der Ladezyklen'
+            ]
+        },
+        'Rufus': {
+            name: 'Rufus',
+            icon: './assets/images/programs/rufus.png',
+            description: 'Ein unverzichtbares Tool zum Erstellen bootfähiger USB-Laufwerke, das eine Vielzahl von ISO-Formaten unterstützt.',
+            author: 'Akeo Consulting',
+            features: [
+                'Konvertierung von ISO zu USB',
+                'Erstellung bootfähiger USB-Laufwerke',
+                'Unterstützung für UEFI-Systeme',
+                'Verschiedene Formatierungsoptionen'
+            ]
+        },
+        'VirusTotal': {
+            name: 'VirusTotal',
+            icon: './assets/images/programs/virustotal.png',
+            description: 'Eine Online-Plattform zur Analyse von verdächtigen Dateien und URLs mit über 70 Antiviren-Engines.',
+            author: 'Google LLC',
+            features: [
+                'Überprüfung mit über 70 Antiviren-Engines',
+                'Analyse von URLs und Domains',
+                'Detaillierte Bedrohungsberichte',
+                'Community-basierte Bewertungen'
+            ]
+        },
+        'Ninite': {
+            name: 'Ninite',
+            icon: './assets/images/programs/ninite.png',
+            description: 'Ein praktisches Tool zur automatisierten Installation und Aktualisierung mehrerer Programme gleichzeitig.',
+            author: 'Secure By Design Inc.',
+            features: [
+                'Installation beliebter Software in einem Schritt',
+                'Automatische Aktualisierung von Programmen',
+                'Keine unerwünschte Zusatzsoftware',
+                'Einfache und intuitive Benutzeroberfläche'
+            ]
+        },
+        'MonkeyType': {
+            name: 'MonkeyType',
+            icon: './assets/images/programs/monkeytype.png',
+            description: 'Ein modernes Tipp-Trainingstool, das Ihnen hilft, Ihre Tippgeschwindigkeit und Genauigkeit zu verbessern.',
+            author: 'Miodec',
+            features: [
+                'Verschiedene Tipp-Modi und Zeitlimits',
+                'Umfangreiche Textbibliotheken',
+                'Detaillierte Tippstatistiken',
+                'Anpassbare Themes und Layouts'
+            ]
+        },
+        'Encycolorpedia': {
+            name: 'Encycolorpedia',
+            icon: './assets/images/programs/encycolorpedia.png',
+            description: 'Ein umfassendes Tool zur Farbcode-Konvertierung und -Analyse, das Ihnen hilft, die perfekte Farbpalette zu finden.',
+            author: 'Encycolorpedia',
+            features: [
+                'Konvertierung von Farbcodes (HEX, RGB, HSL, etc.)',
+                'Erstellung von Farbpaletten',
+                'Vorschläge für Farbharmonien',
+                'Analyse von Farbschemata'
+            ]
+        },
+        'Browser Privacy Check': {
+            name: 'Browser Privacy Check',
+            icon: './assets/images/programs/browserprivacycheck.png',
+            description: 'Ein Tool zur Überprüfung der Sicherheit und Privatsphäre-Einstellungen Ihres Browsers, das Schwachstellen aufdeckt.',
+            author: 'EXPERTE',
+            features: [
+                'Sicherheitsanalyse des Browsers',
+                'Überprüfung der Datenschutzeinstellungen',
+                'Erkennung von Schwachstellen',
+                'Empfehlungen zur Verbesserung der Sicherheit'
+            ]
+        },
+        'DNSDumpster': {
+            name: 'DNSDumpster',
+            icon: './assets/images/programs/dnsdumpster.png',
+            description: 'Ein leistungsstarkes DNS-Reconnaissance-Tool, das Ihnen hilft, DNS-Server und Subdomains zu identifizieren.',
+            author: 'HackerTarget',
+            features: [
+                'Mapping von DNS-Servern',
+                'Erkennung von Subdomains',
+                'Analyse der DNS-Sicherheit',
+                'Visuelle Darstellung der DNS-Struktur'
+            ]
+        },
+        'LastPass Password Generator': {
+            name: 'LastPass Password Generator',
+            icon: './assets/images/programs/lastpass.png',
+            description: 'Ein Tool zur Erstellung sicherer und einzigartiger Passwörter, das Ihre Online-Sicherheit erhöht.',
+            author: 'GoTo',
+            features: [
+                'Anpassbare Länge der Passwörter',
+                'Auswahl verschiedener Zeichentypen',
+                'Generierung von Passwörtern mit hoher Entropie',
+                'Sofortige Analyse der Passwortstärke'
+            ]
+        },
+        'SystemRequirementsLab': {
+            name: 'System Requirements Lab',
+            icon: './assets/images/programs/systemrequirementslab.png',
+            description: 'Ein Tool zur Analyse und Bewertung der PC-Leistung im Vergleich zu Spieleanforderungen.',
+            author: 'Husdawg LLC',
+            features: [
+                'Automatische Erkennung der Hardware',
+                'Prüfung der Kompatibilität mit Spielen',
+                'Detaillierte Leistungsanalyse',
+                'Empfehlungen für Hardware-Upgrades'
+            ]
+        },
+        'AutoUnattend': {
+            name: 'AutoUnattend',
+            icon: './assets/images/programs/autounattend.png',
+            description: 'Ein Generator für automatisierte Windows-Installationen, der die Einrichtung vereinfacht.',
+            author: 'Christian Schneider',
+            features: [
+                'Erstellung benutzerdefinierter Windows-Installationen',
+                'Automatische Konfiguration von Einstellungen',
+                'Integration von Treibern',
+                'Generierung von Installationsskripten'
+            ]
+        }
+    };
+    
+    // Wenn keine spezifischen Informationen vorhanden sind, hole die Basis-Infos aus dem DOM
+    if (!programInfos[programName]) {
+        const albumItem = document.querySelector(`[data-search="${programName}"]`);
+        if (albumItem) {
+            return {
+                name: albumItem.querySelector('.albumtitle h1').textContent,
+                icon: albumItem.querySelector('.albumartwork img').src,
+                description: albumItem.querySelector('.albumtitle h2')?.textContent || 'Keine Beschreibung verfügbar.',
+                author: 'Nicht verfügbar',
+                features: ['Grundlegende Funktionalität']
+            };
+        }
+    }
+    
+    return programInfos[programName] || {
+        name: programName,
+        icon: './assets/images/programs/default.png',
+        description: 'Keine detaillierten Informationen verfügbar.',
+        author: 'Nicht verfügbar',
+        features: ['Grundlegende Funktionalität']
+    };
+}

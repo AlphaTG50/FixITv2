@@ -144,7 +144,6 @@ body {
 /* Favoriten Button                 */
 /* --------------------------------- */
 .favorite-btn:hover {
-  background: linear-gradient(45deg, #1473A8, #2b8fc1);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -156,4 +155,13 @@ body {
 .error-modal {
   background: #ffffff;
   color: #333333;
+}
+
+.favorite-btn.active {
+  color: #FFD700;
+  opacity: 1;
+}
+
+.favorite-btn:hover {
+  color: #FFD700;
 }
