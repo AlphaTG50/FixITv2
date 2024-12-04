@@ -1,0 +1,2 @@
+src/assets/portable-apps/** filter=lfs diff=lfs merge=lfs -text
+src/assets/portable-scripts/** filter=lfs diff=lfs merge=lfs -text
