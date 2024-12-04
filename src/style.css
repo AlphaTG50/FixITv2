@@ -914,6 +914,30 @@ figure {
   display: flex;
   align-items: center;
   gap: 6px;
+  position: relative;
+}
+
+.status-item::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  margin-bottom: 5px;
+}
+
+.status-item:hover::before {
+  opacity: 1;
+  visibility: visible;
 }
 
 .status-item i {
@@ -951,4 +975,9 @@ body.dark-mode #categoryFilter {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .status-item::before {
+  background: rgba(255, 255, 255, 0.9);
+  color: black;
 }

@@ -1,6 +1,6 @@
 
 
-Release Notes - v1.0.7 - 03.12.2024
+Release Notes - v1.0.7 - 03.12.2024 & 04.12.2024
 
 ## **Release Notes**
 
@@ -11,6 +11,8 @@ Release Notes - v1.0.7 - 03.12.2024
 ### **🚀 Features**
 - Software AutoUnattend hinzugefügt
 - Statusbar hinzugefügt mit Systeminformationen
+    - WLAN-Status, RAM-Auslastung, CPU-Info, Speicherplatz, Uptime, FixIT-Version
+    - Beschreibung zu den Elementen per Hover
 ---
 
 ### **🐛 Bug Fixes**
