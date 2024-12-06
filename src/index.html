@@ -35,12 +35,6 @@
 </head>
 
 <body>
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="loading-screen hidden">
-    <div class="spinner"></div>
-    <p>Programm wird gestartet...</p>
-  </div>
-
   <div class="logo">
     <div id="svgContainer">
       <a>
@@ -58,9 +52,24 @@
   </div>
 
   <!-- Suchleiste -->
-  <input type="text" id="searchInput" placeholder="Suche">
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Suche nach Programmen...">
+  </div>
 
-
+  <!-- Füge dies direkt nach dem <body> Tag ein -->
+  <div class="titlebar">
+    <div class="window-controls">
+      <button class="window-control close" id="closeBtn"></button>
+      <button class="window-control minimize" id="minimizeBtn"></button>
+      <button class="window-control maximize" id="maximizeBtn"></button>
+    </div>
+    <div class="window-title">FixIT</div>
+    <div class="settings-control">
+      <button id="settingsBtn" type="button">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- Album -->
   <section class="albumlist">
@@ -600,6 +609,132 @@
       <div class="info-modal-footer">
           <button class="info-modal-close" onclick="hideInfoModal()">Schließen</button>
       </div>
+  </div>
+
+  <!-- Füge dies am Ende der Datei vor </body> ein -->
+  <div class="settings-overlay" id="settingsOverlay" style="display: none;">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2>Einstellungen</h2>
+        <button class="settings-close" id="closeSettings">×</button>
+      </div>
+      <div class="settings-content">
+        <!-- Erscheinungsbild -->
+        <div class="settings-section">
+          <h3>Erscheinungsbild</h3>
+          <div class="settings-item checkbox">
+            <span>Dark Mode</span>
+            <label class="switch">
+              <input type="checkbox" id="darkModeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item checkbox">
+            <span>Immer im Vordergrund</span>
+            <label class="switch">
+              <input type="checkbox" id="alwaysOnTopToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Verhalten -->
+        <div class="settings-section">
+          <h3>Verhalten</h3>
+          <div class="settings-item checkbox">
+            <span>In Symbolleiste minimieren</span>
+            <label class="switch">
+              <input type="checkbox" id="minimizeToTrayToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-item checkbox">
+            <span>Autostart</span>
+            <label class="switch">
+              <input type="checkbox" id="autostartToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Socials -->
+        <div class="settings-section">
+          <h3>Socials</h3>
+          <div class="settings-item link" data-url="https://helpinformatik.de">
+            <i class="fas fa-globe"></i>
+            <span>Website</span>
+          </div>
+          <div class="settings-item link" data-url="https://www.instagram.com/helpit.informatik">
+            <i class="fab fa-instagram"></i>
+            <span>Instagram</span>
+          </div>
+          <div class="settings-item link" data-url="https://github.com/alphatg050">
+            <i class="fab fa-github"></i>
+            <span>GitHub</span>
+          </div>
+          <div class="settings-item link" data-url="mailto:guerkan.privat@gmail.com">
+            <i class="fas fa-envelope"></i>
+            <span>E-Mail</span>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="settings-section">
+          <h3>Tools</h3>
+          <div class="settings-item action" id="clearFavorites">
+            <i class="fas fa-star"></i>
+            <span>Meine Favoriten entfernen</span>
+          </div>
+          <div class="settings-item action" id="openTeamViewer">
+            <i class="fas fa-desktop"></i>
+            <span>TeamViewer QS</span>
+          </div>
+        </div>
+
+        <!-- Entwickler -->
+        <div class="settings-section">
+          <h3>Entwickler</h3>
+          <div class="settings-item action" id="openDevTools">
+            <i class="fas fa-code"></i>
+            <span>DevTools öffnen</span>
+          </div>
+          <div class="settings-item action" id="exportLogs">
+            <i class="fas fa-file-export"></i>
+            <span>Logs exportieren</span>
+          </div>
+        </div>
+
+        <!-- Extras -->
+        <div class="settings-section">
+          <h3>Extras</h3>
+          <div class="settings-item action" id="openEasterEggs">
+            <i class="fas fa-egg"></i>
+            <span>Easter Eggs Menü</span>
+          </div>
+          <div class="settings-item action" id="openShortcuts">
+            <i class="fas fa-keyboard"></i>
+            <span>Shortcuts Menü</span>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="settings-section">
+          <h3>Info</h3>
+          <div class="settings-item action" id="checkUpdates">
+            <i class="fas fa-sync"></i>
+            <span>Updates prüfen</span>
+          </div>
+          <div class="settings-item action" id="showLicense">
+            <i class="fas fa-key"></i>
+            <span>Lizenz (In Entwicklung)</span>
+          </div>
+          <div class="settings-item action" id="showAbout">
+            <i class="fas fa-info-circle"></i>
+            <span>Über FixIT</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </body>

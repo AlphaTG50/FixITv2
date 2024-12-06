@@ -210,120 +210,80 @@ document.querySelectorAll('.albumitem').forEach(item => {
     });
 });
 
-// Neue Funktion zur Initialisierung der Kategoriefilter
-function initializeCategoryFilter() {
-    const searchContainer = document.createElement('div');
-    searchContainer.className = 'search-container';
-    
-    const searchInput = document.getElementById('searchInput');
-    const categorySelect = document.createElement('select');
-    categorySelect.id = 'categoryFilter';
-    categorySelect.innerHTML = `
-        <option value="">Alle Programme</option>
-        <option value="favorites">Meine Favoriten</option>
-        <option value="portable">Portable Apps</option>
-        <option value="script">Scripts</option>
-        <option value="website">Websites</option>
-        <option value="wip">In Entwicklung</option>
-    `;
-
-    // Entferne das ursprüngliche Suchelement
-    searchInput.parentNode.removeChild(searchInput);
-    
-    // Füge die neue Struktur hinzu
-    document.body.insertBefore(searchContainer, document.querySelector('.albumlist'));
-    searchContainer.appendChild(searchInput);
-    searchContainer.appendChild(categorySelect);
-
-    // Event Listener
-    searchInput.addEventListener('input', filterAlbums);
-    categorySelect.addEventListener('change', filterAlbums);
-
-    return categorySelect;
-}
-
-// Aktualisierte Filteralben-Funktion
+// Aktualisiere die filterAlbums Funktion
 function filterAlbums() {
     const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-    const selectedCategory = document.getElementById('categoryFilter').value;
-    const albums = document.querySelectorAll('.albumitem');
+    const albums = Array.from(document.querySelectorAll('.albumitem'));
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let hasResults = false;
+
+    // Füge No-Results-Message hinzu, falls noch nicht vorhanden
+    let noResultsMsg = document.querySelector('.no-results-message');
+    if (!noResultsMsg) {
+        noResultsMsg = document.createElement('div');
+        noResultsMsg.className = 'no-results-message';
+        noResultsMsg.textContent = 'Keine Ergebnisse gefunden';
+        noResultsMsg.style.display = 'none';
+        document.querySelector('.albumlist').appendChild(noResultsMsg);
+    }
+
+    // Sortiere die Alben alphabetisch und nach Favoriten
+    albums.sort((a, b) => {
+        const aIsFav = favorites.includes(a.getAttribute('data-search'));
+        const bIsFav = favorites.includes(b.getAttribute('data-search'));
+        
+        if (aIsFav && !bIsFav) return -1;
+        if (!aIsFav && bIsFav) return 1;
+        
+        const titleA = a.querySelector('h1').textContent.toLowerCase();
+        const titleB = b.querySelector('h1').textContent.toLowerCase();
+        return titleA.localeCompare(titleB);
+    });
+
+    // Aktualisiere die Reihenfolge im DOM
     const albumList = document.querySelector('.albumlist');
-    
-    let hasVisibleItems = false;
+    albums.forEach(album => albumList.appendChild(album));
 
-    // Entferne alle bestehenden Hover-Effekte
+    // Filtere und zeige/verstecke Alben
     albums.forEach(album => {
-        album.classList.remove('not-found-hover');
-    });
+        const dataSearch = album.getAttribute('data-search').toLowerCase();
+        
+        // Exakte Übereinstimmung mit data-search
+        const matchesSearch = searchTerm === '' || dataSearch.includes(searchTerm);
 
-    // Erste Phase: Ausblenden mit Animation
-    const hidePromises = Array.from(albums).map(album => {
-        return new Promise(resolve => {
-            album.style.transition = 'all 0.3s ease-out';
+        if (matchesSearch) {
+            hasResults = true;
+            album.style.display = '';
+            album.style.opacity = '1';
+            album.style.transform = 'scale(1)';
+        } else {
+            album.style.display = 'none';
             album.style.opacity = '0';
-            album.style.transform = 'translateY(-20px)';
-            setTimeout(resolve, 300); // Warte auf Animation
-        });
+            album.style.transform = 'scale(0.95)';
+        }
     });
 
-    // Zweite Phase: Filtern und Einblenden
-    Promise.all(hidePromises).then(() => {
-        albums.forEach(album => {
-            const title = album.querySelector('.albumtitle h1').textContent.toLowerCase();
-            const description = album.querySelector('.albumtitle h2')?.textContent.toLowerCase() || '';
-            const searchData = album.getAttribute('data-search')?.toLowerCase() || '';
-            const isPortable = album.querySelector('.Portable-Badge') !== null;
-            const isWip = album.querySelector('.Entwicklung-Badge') !== null;
-            const isFavorite = favorites.includes(album.getAttribute('data-search'));
-            const isScript = album.querySelector('.Script-Badge') !== null;
-            const isWebsite = album.querySelector('.Website-Badge') !== null;
-            
-            const matchesSearch = searchTerm === '' || 
-                title.includes(searchTerm) || 
-                description.includes(searchTerm) || 
-                searchData.includes(searchTerm);
-                
-            const matchesCategory = selectedCategory === '' || 
-                (selectedCategory === 'portable' && isPortable) ||
-                (selectedCategory === 'wip' && isWip) ||
-                (selectedCategory === 'script' && isScript) ||
-                (selectedCategory === 'website' && isWebsite) ||
-                (selectedCategory === 'favorites' && isFavorite);
-
-            if (matchesSearch && matchesCategory) {
-                album.style.display = 'flex';
-                hasVisibleItems = true;
-                
-                // Verzögerte Einblend-Animation
-                requestAnimationFrame(() => {
-                    album.style.opacity = '0.8';
-                    album.style.transform = 'translateY(0)';
-                });
-                
-                // Hover-Effekte
-                album.onmouseenter = () => {
-                    if (!album.querySelector('.Entwicklung-Badge')) {
-                        album.style.opacity = '1';
-                        album.style.transform = 'translateX(10px)';
-                    }
-                };
-                
-                album.onmouseleave = () => {
-                    album.style.opacity = '0.8';
-                    album.style.transform = 'translateX(0)';
-                };
-                
-            } else {
-                album.style.display = 'none';
-                album.onmouseenter = null;
-                album.onmouseleave = null;
-            }
-        });
-
-        albumList.style.display = hasVisibleItems ? 'flex' : 'none';
-    });
+    // Zeige/Verstecke "Keine Ergebnisse" Nachricht
+    if (!hasResults && searchTerm !== '') {
+        noResultsMsg.style.display = 'block';
+        noResultsMsg.style.opacity = '1';
+    } else {
+        noResultsMsg.style.display = 'none';
+        noResultsMsg.style.opacity = '0';
+    }
 }
+
+// Event Listener für die Suche
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            filterAlbums();
+        });
+        // Initialisiere die Suche und Sortierung
+        filterAlbums();
+    }
+});
 
 // Funktion zur Anpassung der Grid-Spalten
 function adjustGridColumns() {
@@ -343,8 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     containerWidth = document.documentElement.clientWidth;
     adjustGridColumns();
-
-    const categoryFilter = initializeCategoryFilter();
 
     // Warte einen kurzen Moment, bis das DOM vollständig geladen ist
     setTimeout(() => {
@@ -1366,3 +1324,154 @@ function getProgramInfo(programName) {
         features: ['Grundlegende Funktionalität']
     };
 }
+
+// Globale Variablen
+let settingsOverlay;
+let minimizeToTray = false;
+
+// Warte auf DOM-Laden
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialisiere Referenzen
+    settingsOverlay = document.getElementById('settingsOverlay');
+    
+    // Fenster-Steuerung
+    document.getElementById('closeBtn')?.addEventListener('click', () => {
+        ipcRenderer.send('close-window');
+    });
+
+    document.getElementById('minimizeBtn')?.addEventListener('click', () => {
+        ipcRenderer.send('minimize-window');
+    });
+
+    document.getElementById('maximizeBtn')?.addEventListener('click', () => {
+        ipcRenderer.send('maximize-window');
+    });
+
+    // Settings Panel
+    const settingsBtn = document.getElementById('settingsBtn');
+    const closeSettings = document.getElementById('closeSettings');
+
+    settingsBtn?.addEventListener('click', () => {
+        if (settingsOverlay) {
+            settingsOverlay.style.display = 'flex';
+        }
+    });
+
+    closeSettings?.addEventListener('click', () => {
+        if (settingsOverlay) {
+            settingsOverlay.style.display = 'none';
+        }
+    });
+
+    // Lade und setze gespeicherte Einstellungen
+    loadSavedSettings();
+    
+    // Initialisiere Settings-Event-Handler
+    initializeSettingsHandlers();
+});
+
+// Funktion zum Laden der gespeicherten Einstellungen
+function loadSavedSettings() {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const alwaysOnTop = localStorage.getItem('alwaysOnTop') === 'true';
+    minimizeToTray = localStorage.getItem('minimizeToTray') === 'true';
+    const autostart = localStorage.getItem('autostart') === 'true';
+
+    // Setze Checkbox-Zustände
+    document.getElementById('darkModeToggle').checked = darkMode;
+    document.getElementById('alwaysOnTopToggle').checked = alwaysOnTop;
+    document.getElementById('minimizeToTrayToggle').checked = minimizeToTray;
+    document.getElementById('autostartToggle').checked = autostart;
+
+    // Wende Einstellungen an
+    document.body.classList.toggle('dark-mode', darkMode);
+    ipcRenderer.send('set-always-on-top', alwaysOnTop);
+    ipcRenderer.send('set-autostart', autostart);
+}
+
+// Funktion zum Initialisieren der Settings-Handler
+function initializeSettingsHandlers() {
+    // Switch-Handler
+    document.getElementById('darkModeToggle')?.addEventListener('change', (e) => {
+        const isDarkMode = e.target.checked;
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        localStorage.setItem('darkMode', isDarkMode);
+        ipcRenderer.send('toggle-dark-mode', isDarkMode);
+    });
+
+    document.getElementById('alwaysOnTopToggle')?.addEventListener('change', (e) => {
+        const value = e.target.checked;
+        localStorage.setItem('alwaysOnTop', value);
+        ipcRenderer.send('set-always-on-top', value);
+    });
+
+    document.getElementById('minimizeToTrayToggle')?.addEventListener('change', (e) => {
+        minimizeToTray = e.target.checked;
+        localStorage.setItem('minimizeToTray', minimizeToTray);
+    });
+
+    document.getElementById('autostartToggle')?.addEventListener('change', (e) => {
+        const value = e.target.checked;
+        localStorage.setItem('autostart', value);
+        ipcRenderer.send('set-autostart', value);
+    });
+
+    // Link-Handler - ohne Schließen des Fensters
+    document.querySelectorAll('.settings-item.link').forEach(item => {
+        item.addEventListener('click', () => {
+            const url = item.dataset.url;
+            if (url) {
+                ipcRenderer.send('open-external-url', url);
+            }
+        });
+    });
+
+    // Action-Handler - ohne Schließen des Fensters
+    const actionHandlers = {
+        'clearFavorites': () => {
+            localStorage.setItem('favorites', '[]');
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            sortAlbumItems();
+        },
+        'openTeamViewer': () => ipcRenderer.send('open-teamviewer'),
+        'openDevTools': () => ipcRenderer.send('open-devtools'),
+        'exportLogs': () => ipcRenderer.send('export-logs'),
+        'openEasterEggs': () => ipcRenderer.send('open-easter-eggs'),
+        'openShortcuts': () => ipcRenderer.send('open-shortcuts'),
+        'checkUpdates': () => ipcRenderer.send('check-updates'),
+        'showLicense': () => ipcRenderer.send('show-license'),
+        'showAbout': () => ipcRenderer.send('show-about')
+    };
+
+    // Füge Event-Listener für alle Action-Items hinzu - ohne Schließen des Fensters
+    Object.keys(actionHandlers).forEach(id => {
+        document.getElementById(id)?.addEventListener('click', () => {
+            actionHandlers[id]();
+        });
+    });
+
+    // Schließen mit ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && settingsOverlay?.style.display === 'flex') {
+            settingsOverlay.style.display = 'none';
+        }
+    });
+
+    // Schließen beim Klick außerhalb
+    settingsOverlay?.addEventListener('click', (e) => {
+        if (e.target === settingsOverlay) {
+            settingsOverlay.style.display = 'none';
+        }
+    });
+}
+
+// Dark Mode IPC Handler
+ipcRenderer.on('dark-mode-changed', (event, isDarkMode) => {
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.checked = isDarkMode;
+    }
+});

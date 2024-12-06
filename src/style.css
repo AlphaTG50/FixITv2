@@ -21,8 +21,9 @@ body {
   /* Basic body styles */
   font-family: 'Circular', 'Helvetica Neue', 'Arial', sans-serif;
   margin: 0;
-  padding: 40px 0;
-  min-height: 100%;
+  padding-top: 38px !important;
+  min-height: calc(100vh - 38px);
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,12 +45,18 @@ figure {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 30px;
+  margin-top: 50px;
   animation: logoFadeIn 0.8s ease-out forwards;
+  background: transparent !important;
 }
 
 .logo svg {
   width: 75px;
+  background: transparent !important;
+}
+
+#svgContainer {
+  background: transparent !important;
 }
 
 /* Logo fade in animation */
@@ -79,6 +86,7 @@ figure {
   opacity: 0;
   margin-top: 30px;
   will-change: contents;
+  margin-bottom: 110px;
   transform: translateZ(0);
   backface-visibility: hidden;
 }
@@ -214,58 +222,6 @@ figure {
   transition: all 0.3s ease;
   background-color: transparent;
 }
-
-/* ---------------------------------- */
-/* Filter Styles                      */
-/* ---------------------------------- */
-
-#categoryFilter {
-  margin-right: 5px;
-  padding: 9px 10px 9px 5px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    background-color: transparent;
-
-}
-
-#categoryFilter:focus {
-    outline: none;
-}
-
-/* Filter icons */
-#categoryFilter::before {
-    content: '\f0b0';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.9rem;
-}
-
-#categoryFilter::after {
-    content: '\f0d7';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.9rem;
-}
-
-/* Filter options */
-#categoryFilter option {
-    font-weight: 500;
-    text-align: start;
-}
-
 
 /* ---------------------------------- */
 /* Search Container Styles            */
@@ -871,7 +827,7 @@ body.dark-mode .favorite-btn.active:hover {
   }
 }
 
-/* Füge diese Animationen hinzu */
+/* Fge diese Animationen hinzu */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -956,7 +912,6 @@ body.dark-mode .favorite-btn.active:hover {
 .status-item i {
   font-size: 1rem;
   opacity: 0.8;
-  color: rgb(0, 0, 0);
   transition: opacity 0.3s ease;
 }
 
@@ -1214,3 +1169,591 @@ body.dark-mode .info-modal-footer {
         opacity: 1;
     }
 }
+/* Titlebar Styles */
+.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  -webkit-app-region: drag;
+  display: grid;
+  /* Drei gleiche Spalten, mittlere Spalte für Text */
+  grid-template-columns: 120px 1fr 120px;
+  align-items: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+
+body.dark-mode .titlebar {
+  background: rgba(28, 28, 28, 0.8);
+}
+
+.window-controls {
+  -webkit-app-region: no-drag;
+  display: flex;
+  gap: 0;
+  justify-self: start;
+  height: 38px;
+}
+
+.window-control {
+  width: 40px;
+  height: 38px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+/* Minimieren */
+.window-control.minimize::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 1px;
+  background-color: currentColor;
+  position: relative;
+  top: 1px;
+}
+
+/* Maximieren */
+.window-control.maximize::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 1px solid currentColor;
+  box-sizing: border-box;
+}
+
+/* Schließen */
+.window-control.close {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  color: inherit;
+}
+
+.window-control.close::before {
+  content: '✕';
+  display: block;
+  width: auto;
+  height: auto;
+  line-height: 38px;
+  text-align: center;
+}
+
+/* Light Mode */
+.window-control {
+  color: #000000;
+}
+
+.window-control:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.window-control.close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+}
+
+/* Dark Mode */
+body.dark-mode .window-control {
+  color: #ffffff;
+}
+
+body.dark-mode .window-control:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .window-control.close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+}
+
+.window-title {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  padding: 0 20px;
+  text-align: center;
+  justify-self: center;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+body.dark-mode .window-title {
+  color: #fff;
+}
+
+.settings-control {
+  -webkit-app-region: no-drag;
+  justify-self: end;
+  padding-right: 5px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settings-control button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-control button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 6px;
+}
+
+.settings-control button:hover::before {
+  opacity: 0.1;
+}
+
+.settings-control button i {
+  position: relative;
+  z-index: 1;
+}
+
+body.dark-mode .settings-control button {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-mode .settings-control button:hover {
+  color: #fff;
+}
+
+/* Settings Overlay Styles */
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.settings-overlay[style*="flex"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .settings-control button {
+    color: #999;
+}
+
+body.dark-mode .settings-control button:hover {
+    color: #fff;
+}
+
+/* Animation für das Settings-Icon */
+@keyframes rotateGear {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+.settings-control button:hover i {
+    animation: rotateGear 1s linear infinite;
+}
+
+/* Settings Menu Styles */
+.settings-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.settings-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.settings-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.settings-close:hover {
+    color: #d53032;
+}
+
+body.dark-mode .settings-close:hover {
+  color: #d53032;
+}
+
+.settings-content {
+    padding: 35px;
+    overflow-y: auto;
+    max-height: calc(80vh - 60px);
+}
+
+.settings-section {
+    margin-bottom: 25px;
+}
+
+.settings-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.settings-item {
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.settings-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.settings-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+}
+
+.settings-item.link i {
+    color: #1473A8;
+}
+
+.settings-item span {
+    flex: 1;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .settings-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .settings-item i {
+    color: #999;
+}
+
+body.dark-mode .settings-item.link i {
+    color: #8AD0F1;
+}
+
+/* Passe den Body-Padding an */
+body {
+  padding-top: 38px !important;
+}
+
+/* Füge diese Styles zur style.css hinzu */
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.settings-panel {
+    background: #ffffff;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: slideIn 0.3s ease-out;
+}
+
+.settings-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+
+
+.settings-section {
+    margin-bottom: 25px;
+}
+
+.settings-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.settings-item {
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.settings-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.settings-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+}
+
+.settings-item.link i {
+    color: #1473A8;
+}
+
+.settings-item span {
+    flex: 1;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .settings-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .settings-item i {
+    color: #999;
+}
+
+body.dark-mode .settings-item.link i {
+    color: #8AD0F1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Füge diese Styles für den Switch hinzu */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    margin-left: auto;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(120, 120, 128, 0.16);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Aktiver Zustand - immer grün */
+input:checked + .slider {
+    background-color: #34C759 !important;
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .slider {
+    background-color: rgba(120, 120, 128, 0.32);
+}
+
+body.dark-mode .slider:before {
+    background-color: #ffffff;
+}
+
+/* Hover-Effekte */
+.switch:hover .slider:before {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+}
+
+.settings-item.checkbox {
+    padding: 12px 15px;
+}
+
+.settings-item.checkbox:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.dark-mode .settings-item.checkbox:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Animation für den Switch */
+.slider, .slider:before {
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Aktiver Zustand Animation */
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* Deaktivierter Zustand */
+.switch input:disabled + .slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Fokus-Zustand */
+.switch input:focus + .slider {
+    box-shadow: 0 0 1px #34C759;
+}
+
+/* Hover-Effekt für das gesamte Settings-Item */
+.settings-item.checkbox {
+    transition: background-color 0.2s ease;
+}
+
+.settings-item.checkbox:active .slider:before {
+    width: 28px;
+    transform: translateX(19px);
+}
+
+.settings-item.checkbox:active input:not(:checked) + .slider:before {
+    transform: translateX(0);
+    width: 28px;
+}
+
+/* Scrollbar ausblenden */
+/* Für Chrome, Safari und neuere Browser */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Für Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Für IE und Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+/* Stelle sicher, dass der Scrolleffekt weiterhin funktioniert */
+.settings-content, .albumlist {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+

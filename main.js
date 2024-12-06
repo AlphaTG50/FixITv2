@@ -101,6 +101,8 @@ function createMainWindow() {
         icon: path.join(process.resourcesPath, 'src/assets/images/logo/win/icon.ico'),
         backgroundColor: '#1a1a1a',
         show: false,
+        frame: false,
+        titleBarStyle: 'hidden',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -142,56 +144,35 @@ function createMainWindow() {
 const loadUserPreferences = async () => {
     try {
         // Dark Mode
-        const isDarkMode = await mainWindow.webContents.executeJavaScript(`
-            const darkMode = localStorage.getItem('darkMode') === 'true';
-            document.body.classList.toggle('dark-mode', darkMode);
-            darkMode;
+        const darkMode = await mainWindow.webContents.executeJavaScript(`
+            localStorage.getItem('darkMode') === 'true'
         `);
+        mainWindow.webContents.send('dark-mode-changed', darkMode);
         
-        const darkModeMenuItem = menu.getMenuItemById('darkModeToggle');
-        if (darkModeMenuItem) {
-            darkModeMenuItem.checked = isDarkMode;
-        }
-
         // Always on Top
-        const alwaysOnTop = await mainWindow.webContents.executeJavaScript(
-            `localStorage.getItem('alwaysOnTop')`
-        );
-        const savedAlwaysOnTop = alwaysOnTop === 'true';
-        mainWindow.setAlwaysOnTop(savedAlwaysOnTop);
-        const alwaysOnTopMenuItem = menu.getMenuItemById('alwaysOnTopToggle');
-        if (alwaysOnTopMenuItem) {
-            alwaysOnTopMenuItem.checked = savedAlwaysOnTop;
-        }
-
-        // Minimize to Tray
-        const minimizeToTrayValue = await mainWindow.webContents.executeJavaScript(
-            `localStorage.getItem('minimizeToTray')`
-        );
-        minimizeToTray = minimizeToTrayValue === 'true';
-        const minimizeToTrayMenuItem = menu.getMenuItemById('minimizeToTrayToggle');
-        if (minimizeToTrayMenuItem) {
-            minimizeToTrayMenuItem.checked = minimizeToTray;
-        }
-
-        // Autostart
-        const autostart = await mainWindow.webContents.executeJavaScript(
-            `localStorage.getItem('autostart')`
-        );
-        autostartEnabled = autostart === 'true';
-        const autostartMenuItem = menu.getMenuItemById('autostartToggle');
-        if (autostartMenuItem) {
-            autostartMenuItem.checked = autostartEnabled;
-        }
+        const alwaysOnTop = await mainWindow.webContents.executeJavaScript(`
+            localStorage.getItem('alwaysOnTop') === 'true'
+        `);
+        mainWindow.setAlwaysOnTop(alwaysOnTop);
         
+        // Minimize to Tray
+        const minimizeToTrayValue = await mainWindow.webContents.executeJavaScript(`
+            localStorage.getItem('minimizeToTray') === 'true'
+        `);
+        minimizeToTray = minimizeToTrayValue;
+        
+        // Autostart
+        const autostart = await mainWindow.webContents.executeJavaScript(`
+            localStorage.getItem('autostart') === 'true'
+        `);
         app.setLoginItemSettings({
-            openAtLogin: autostartEnabled,
+            openAtLogin: autostart,
             path: process.execPath,
             args: ['--hidden']
         });
 
     } catch (error) {
-        logError(error, 'Fehler beim Laden der Benutzereinstellungen');
+        console.error('Fehler beim Laden der Benutzereinstellungen:', error);
     }
 };
 
@@ -304,7 +285,7 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
     });
 });
 
-// IPC-Handler für URL-Öffnen
+// IPC-Handler für URL-ffnen
 ipcMain.handle('open-url', (event, url) => {
     shell.openExternal(url);
 });
@@ -445,6 +426,182 @@ ipcMain.handle('execute-batch', async (event, scriptName) => {
             }
             resolve(stdout);
         });
+    });
+});
+
+// Füge diese IPC-Handler für die Fenstersteuerung hinzu
+ipcMain.on('minimize-window', () => {
+    mainWindow.minimize();
+});
+
+ipcMain.on('maximize-window', () => {
+    if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize();
+    } else {
+        mainWindow.maximize();
+    }
+});
+
+ipcMain.on('close-window', () => {
+    mainWindow.close();
+});
+
+// Füge diese IPC-Handler nach den bestehenden Handlern hinzu
+ipcMain.on('set-always-on-top', (event, value) => {
+    mainWindow.setAlwaysOnTop(value);
+});
+
+ipcMain.on('set-autostart', (event, value) => {
+    app.setLoginItemSettings({
+        openAtLogin: value,
+        path: process.execPath,
+        args: ['--hidden']
+    });
+});
+
+ipcMain.on('toggle-dark-mode', (event, isDarkMode) => {
+    mainWindow.webContents.send('dark-mode-changed', isDarkMode);
+});
+
+// Füge diese IPC-Handler nach den bestehenden Handlern hinzu
+ipcMain.on('open-external-url', (event, url) => {
+    shell.openExternal(url);
+});
+
+ipcMain.on('open-teamviewer', () => {
+    const exePath = app.isPackaged
+        ? path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe')
+        : path.join(__dirname, 'src', 'assets', 'portable-apps', 'TeamViewerQS.exe');
+
+    if (fs.existsSync(exePath)) {
+        exec(`"${exePath}"`, (error) => {
+            if (error) {
+                dialog.showErrorBox('Fehler', 'TeamViewer QS konnte nicht gestartet werden.');
+            }
+        });
+    } else {
+        dialog.showErrorBox('Fehler', 'TeamViewer QS wurde nicht gefunden.');
+    }
+});
+
+ipcMain.on('open-devtools', () => {
+    mainWindow.webContents.openDevTools();
+});
+
+ipcMain.on('export-logs', async () => {
+    try {
+        const { filePath } = await dialog.showSaveDialog(mainWindow, {
+            title: 'Logs speichern',
+            defaultPath: path.join(app.getPath('desktop'), `FixIT-Logs_${new Date().toISOString().split('T')[0]}.txt`),
+            filters: [
+                { name: 'Text Files', extensions: ['txt'] },
+                { name: 'All Files', extensions: ['*'] }
+            ]
+        });
+
+        if (filePath) {
+            const os = require('os');
+            let logContent = [
+                `FixIT Diagnostik-Log - Erstellt am ${new Date().toLocaleString()}`,
+                '==========================================================',
+                'SYSTEM INFORMATIONEN:',
+                '---------------------------------------------------------',
+                `Hostname: ${os.hostname()}`,
+                `Betriebssystem: ${os.type()} ${os.release()}`,
+                `OS Build: ${os.version()}`,
+                `Architektur: ${os.arch()}`,
+                `Platform: ${process.platform}`,
+                '',
+                'HARDWARE INFORMATIONEN:',
+                '---------------------------------------------------------',
+                `CPU Modell: ${os.cpus()[0].model}`,
+                `CPU Kerne: ${os.cpus().length}`,
+                `CPU Geschwindigkeit: ${os.cpus()[0].speed} MHz`,
+                `Gesamter RAM: ${Math.round(os.totalmem() / 1024 / 1024 / 1024)} GB`,
+                `Freier RAM: ${Math.round(os.freemem() / 1024 / 1024 / 1024)} GB`,
+                '',
+                'BENUTZER & SYSTEM DETAILS:',
+                '---------------------------------------------------------',
+                `Benutzername: ${os.userInfo().username}`,
+                `Home Verzeichnis: ${os.homedir()}`,
+                `Temp Verzeichnis: ${os.tmpdir()}`,
+                `System Uptime: ${Math.floor(os.uptime() / 3600)} Stunden`,
+                `Netzwerk Interfaces: ${Object.keys(os.networkInterfaces()).join(', ')}`,
+                '',
+                'FIXIT PROGRAMM INFORMATIONEN:',
+                '---------------------------------------------------------',
+                `FixIT Version: ${version}`,
+                `Electron Version: ${process.versions.electron}`,
+                `Chrome Version: ${process.versions.chrome}`,
+                `Node Version: ${process.versions.node}`,
+                `V8 Version: ${process.versions.v8}`
+            ].join('\n');
+
+            fs.writeFileSync(filePath, logContent);
+            dialog.showMessageBox(mainWindow, {
+                type: 'info',
+                title: 'Logs exportiert',
+                message: 'Die Diagnose-Logs wurden erfolgreich exportiert.'
+            });
+        }
+    } catch (error) {
+        dialog.showErrorBox('Fehler', 'Beim Exportieren der Logs ist ein Fehler aufgetreten.');
+    }
+});
+
+ipcMain.on('open-easter-eggs', () => {
+    const easterEggWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        frame: false,
+        parent: mainWindow,
+        modal: true,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+    easterEggWindow.loadFile(path.join(__dirname, 'src', 'sites', 'easter-eggs', 'easter-eggs.html'));
+    easterEggWindow.once('ready-to-show', () => easterEggWindow.show());
+});
+
+ipcMain.on('open-shortcuts', () => {
+    const shortcutsWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        frame: false,
+        parent: mainWindow,
+        modal: true,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+    shortcutsWindow.loadFile(path.join(__dirname, 'src', 'sites', 'shortcuts', 'shortcuts.html'));
+    shortcutsWindow.once('ready-to-show', () => shortcutsWindow.show());
+});
+
+ipcMain.on('check-updates', () => {
+    checkForUpdates();
+});
+
+ipcMain.on('show-license', () => {
+    dialog.showMessageBox(mainWindow, {
+        type: "warning",
+        title: 'Lizenzsteuerung',
+        message: 'In Entwicklung!',
+        buttons: ['OK']
+    });
+});
+
+ipcMain.on('show-about', () => {
+    dialog.showMessageBox(mainWindow, {
+        type: "info",
+        title: 'FixIT',
+        message: `Version: ${version}\n\nEntwickelt von ${author}\nKontakt: guerkan.privat@gmail.com`,
+        buttons: ['OK']
     });
 });
 

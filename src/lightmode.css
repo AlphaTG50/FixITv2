@@ -1,167 +1,209 @@
 /* --------------------------------- */
-/* Root Variablen für Farbdefinition */
+/* Root Variablen für Apple Light Mode */
 /* --------------------------------- */
 :root {
-  /* Colors */
-  --lightblue: #8AD0F1;
-  --darkblue: #1473A8;
-  --darkgrey: #161616;
-  --lightgrey: #ebebeb;
+  --apple-bg: #f5f5f7;
+  --apple-surface: rgba(255, 255, 255, 0.8);
+  --apple-elevated: #ffffff;
+  --apple-text: #1d1d1f;
+  --apple-text-secondary: #86868b;
+  --apple-border: rgba(0, 0, 0, 0.1);
+  --apple-blue: #0066cc;
+  --apple-green: #28cd41;
+  --apple-red: #ff3b30;
+  --apple-purple: #bf5af2;
+  --apple-yellow: #ffd60a;
 }
 
 /* --------------------------------- */
 /* Grundlegende Light Mode Styles    */
 /* --------------------------------- */
 body {
-  background: 
-    radial-gradient(circle at 15% 15%, rgba(138, 208, 241, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(20, 115, 168, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(235, 235, 235, 0.2) 0%, transparent 50%),
-    linear-gradient(
-      135deg,
-      #ffffff 0%,
-      #f8f8f8 25%,
-      #f0f0f0 50%, 
-      #e8e8e8 75%,
-      #e0e0e0 100%
-    );
-  background-attachment: fixed;
-  animation: gradientShift 15s ease-in-out infinite alternate;
+  background: var(--apple-bg);
+  color: var(--apple-text);
 }
 
-/* --------------------------------- */
-/* Logo Anpassungen                  */
-/* --------------------------------- */
+/* Logo Anpassungen */
 .logo svg {
-  fill: #000000;
+  fill: var(--apple-text);
 }
 
-/* --------------------------------- */
-/* Albumlisten Styling              */
-/* --------------------------------- */
+/* Albumlisten Styling */
 .albumlist {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: var(--apple-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
 }
 
-/* --------------------------------- */
-/* Album Item Gestaltung            */
-/* --------------------------------- */
+/* Album Item Gestaltung */
 .albumitem {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--apple-elevated);
+  border: 1px solid var(--apple-border);
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .albumitem:hover {
-  background: #f8f8f8;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 12px 28px rgba(0, 0, 0, 0.08);
 }
 
-/* --------------------------------- */
-/* Text Formatierung                */
-/* --------------------------------- */
+/* Text Formatierung */
 .albumtitle h1 {
-  color: #333333;
+  color: var(--apple-text);
+  font-weight: 600;
 }
 
 .albumtitle h2 {
-  color: #666666;
+  color: var(--apple-text-secondary);
+  font-weight: 400;
 }
 
-/* --------------------------------- */
-/* Badge Styling                    */
-/* --------------------------------- */
+/* Badge Styling */
 .albumtitle .Entwicklung-Badge {
-  color: #8a8a8a;
-  border: 2px solid #8a8a8a;
-  background: rgba(138, 138, 138, 0.15);
+  color: var(--apple-text-secondary);
+  border: 1.5px solid var(--apple-border);
+  background: rgba(134, 134, 139, 0.1);
+  font-weight: 500;
 }
 
 .albumtitle .Admin-Badge {
-  border: 2px solid #fd6868;
-  color: #ff4444;
-  background: rgba(255, 68, 68, 0.15);
+  color: var(--apple-red);
+  border: 1.5px solid var(--apple-red);
+  background: rgba(255, 59, 48, 0.1);
+  font-weight: 500;
 }
 
 .albumtitle .Portable-Badge {
-  border: 2px solid #78cffd;
-  color: #1473A8;
-  background: rgba(20, 115, 168, 0.15);
+  color: var(--apple-blue);
+  border: 1.5px solid var(--apple-blue);
+  background: rgba(0, 102, 204, 0.1);
+  font-weight: 500;
 }
 
 .albumtitle .Website-Badge {
-  border: 2px solid #e492f8;
-  color: #9B59B6;
-  background: rgba(155, 89, 182, 0.15);
+  color: var(--apple-purple);
+  border: 1.5px solid var(--apple-purple);
+  background: rgba(191, 90, 242, 0.1);
+  font-weight: 500;
 }
 
 .albumtitle .Script-Badge {
-  border: 2px solid #ff9800;
-  color: #f57c00;
-  background: rgba(255, 152, 0, 0.15);
+  color: var(--apple-yellow);
+  border: 1.5px solid var(--apple-yellow);
+  background: rgba(255, 214, 10, 0.1);
+  font-weight: 500;
 }
 
-/* --------------------------------- */
-/* Suchleisten Design               */
-/* --------------------------------- */
+/* Suchleisten Design */
 .search-container {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: var(--apple-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border);
+  border-radius: 8px;
   box-shadow: 
-    0 8px 20px rgba(0, 0, 0, 0.05),
-    0 2px 4px rgba(0, 0, 0, 0.03),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 #searchInput {
-  color: #333333;
+  color: var(--apple-text);
+  background: transparent;
+  font-size: 0.95rem;
 }
 
 #searchInput::placeholder {
-  color: #999999;
+  color: var(--apple-text-secondary);
 }
 
-/* --------------------------------- */
-/* Kategorie Filter                 */
-/* --------------------------------- */
-#categoryFilter {
-  color: #333333;
+/* Titlebar */
+.titlebar {
+  background: var(--apple-surface);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--apple-border);
 }
 
-#categoryFilter:hover {
-  background: rgba(138, 208, 241, 0.25);
-  box-shadow: 0 2px 4px rgba(20, 115, 168, 0.1);
+.window-title {
+  color: var(--apple-text);
+  font-weight: 500;
 }
 
-#categoryFilter option {
+.settings-control button {
+  color: var(--apple-text-secondary);
+}
+
+.settings-control button:hover {
+  color: var(--apple-text);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+/* Settings Panel */
+.settings-panel {
+  background: var(--apple-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 0 1px var(--apple-border),
+    0 8px 40px rgba(0, 0, 0, 0.15);
+}
+
+.settings-header {
+  border-bottom: 1px solid var(--apple-border);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.settings-header h2 {
+  color: var(--apple-text);
+  font-weight: 500;
+}
+
+.settings-close {
+  color: var(--apple-text-secondary);
+}
+
+.settings-section h3 {
+  color: var(--apple-text);
+  font-weight: 500;
+  border-bottom: 1px solid var(--apple-border);
+}
+
+.settings-item {
+  color: var(--apple-text);
+}
+
+.settings-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+/* Switch Styling */
+.slider {
+  background-color: rgba(120, 120, 128, 0.16);
+}
+
+.slider:before {
   background-color: #ffffff;
-  color: #1473A8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-/* --------------------------------- */
-/* Favoriten Button                 */
-/* --------------------------------- */
-.favorite-btn:hover {
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+input:checked + .slider {
+  background-color: var(--apple-green) !important;
 }
 
-/* --------------------------------- */
-/* Error Modal                      */
-/* --------------------------------- */
+/* Error Modal */
 .error-modal {
-  background: #ffffff;
-  color: #333333;
-}
-
-.favorite-btn.active {
-  color: #FFD700;
-  opacity: 1;
-}
-
-.favorite-btn:hover {
-  color: #FFD700;
+  background: var(--apple-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-border);
+  border-radius: 12px;
+  box-shadow: 
+    0 0 0 1px var(--apple-border),
+    0 8px 40px rgba(0, 0, 0, 0.15);
 }
