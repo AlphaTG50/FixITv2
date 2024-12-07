@@ -360,6 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Festplattennutzung - alle 5 Sekunden
     updateDiskSpace();
     setInterval(updateDiskSpace, 5000);
+    
+    // Stelle den Status Bar Status wieder her
+    const statusBar = document.querySelector('.status-bar');
+    if (localStorage.getItem('statusBarCollapsed') === 'true') {
+        statusBar.classList.add('collapsed');
+    }
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -735,53 +741,36 @@ function toggleFavorite(programId, btn) {
 function sortAlbumItems() {
     const albumList = document.querySelector('.albumlist');
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const items = Array.from(albumList.children);
-    
-    // Speichere die ursprünglichen Positionen und Scroll-Position
-    const originalPositions = new Map();
-    items.forEach(item => {
-        originalPositions.set(item, item.getBoundingClientRect().top);
-    });
-    const scrollPosition = window.scrollY;
+    const items = Array.from(document.querySelectorAll('.albumitem'));
     
     // Sortiere die Items
     items.sort((a, b) => {
         const aIsFav = favorites.includes(a.getAttribute('data-search'));
         const bIsFav = favorites.includes(b.getAttribute('data-search'));
         
+        // Favoriten zuerst
         if (aIsFav && !bIsFav) return -1;
         if (!aIsFav && bIsFav) return 1;
         
+        // Bei gleichem Favoritenstatus alphabetisch sortieren
         const titleA = a.querySelector('.albumtitle h1').textContent.toLowerCase();
         const titleB = b.querySelector('.albumtitle h1').textContent.toLowerCase();
         return titleA.localeCompare(titleB);
     });
 
-    // Entferne alle Items temporär
-    const fragment = document.createDocumentFragment();
+    // Entferne alle Items
+    items.forEach(item => item.remove());
+
+    // Füge die sortierten Items wieder hinzu
     items.forEach(item => {
-        // Setze die ursprüngliche Position als Startpunkt
-        const originalTop = originalPositions.get(item);
-        item.style.position = 'relative';
-        item.style.top = '0';
-        item.style.transition = 'none';
-        fragment.appendChild(item);
+        albumList.appendChild(item);
+        
+        // Optional: Füge eine Animation für neue Positionen hinzu
+        requestAnimationFrame(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        });
     });
-
-    // Füge die sortierten Items wieder ein
-    albumList.appendChild(fragment);
-
-    // Trigger reflow
-    albumList.offsetHeight;
-
-    // Aktiviere Transitions und bewege Items an ihre finalen Positionen
-    items.forEach(item => {
-        item.style.transition = 'all 0.3s ease';
-        item.style.top = '0';
-    });
-
-    // Stelle die Scroll-Position wieder her
-    window.scrollTo(0, scrollPosition);
 }
 
 // Funktion zum Hinzufügen der Favoriten-Buttons
@@ -1105,7 +1094,7 @@ function getProgramInfo(programName) {
                 'Automatische Erkennung veralteter Treiber',
                 'Bereitstellung von Download-Links für Treiber',
                 'Backup-Funktion für bestehende Treiber',
-                'Offline-Scan für Treiberaktualisierungen'
+                'Offline-Scan f��r Treiberaktualisierungen'
             ]
         },
         'HiBit Uninstaller': {
@@ -1475,3 +1464,12 @@ ipcRenderer.on('dark-mode-changed', (event, isDarkMode) => {
         darkModeToggle.checked = isDarkMode;
     }
 });
+
+// Füge diese Funktion hinzu
+function toggleStatusBar() {
+    const statusBar = document.querySelector('.status-bar');
+    statusBar.classList.toggle('collapsed');
+    
+    // Speichere den Status
+    localStorage.setItem('statusBarCollapsed', statusBar.classList.contains('collapsed'));
+}

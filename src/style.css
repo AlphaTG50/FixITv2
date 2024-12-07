@@ -197,10 +197,49 @@ figure {
 /* Work In Progress Styles            */
 /* ---------------------------------- */
 .albumitem:has(.Entwicklung-Badge) {
-  opacity: 0.5;
-  filter: grayscale(100%);
+  opacity: 0.75;
+  filter: grayscale(100%) brightness(95%);
   pointer-events: none;
   cursor: not-allowed;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Zusätzlicher Overlay-Effekt */
+.albumitem:has(.Entwicklung-Badge)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 15px;
+  z-index: 1;
+}
+
+/* Badge-Styling für "In Entwicklung" */
+.Entwicklung-Badge {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+  color: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .albumitem:has(.Entwicklung-Badge) {
+  filter: grayscale(100%) brightness(70%);
+}
+
+body.dark-mode .albumitem:has(.Entwicklung-Badge)::before {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .Entwicklung-Badge {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* ---------------------------------- */
@@ -890,7 +929,8 @@ body.dark-mode .favorite-btn.active:hover {
   font-size: 0.9rem;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
 }
 
 .status-item {
@@ -965,8 +1005,8 @@ body.dark-mode .quick-action-btn {
 }
 
 body.dark-mode .status-bar {
-  background: rgba(0, 0, 0, 0.2);
-  color: #fff;
+  background: rgba(28, 28, 30, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 body.dark-mode #categoryFilter {
@@ -980,31 +1020,9 @@ body.dark-mode .status-item::before {
   color: black;
 }
 
-/* Media Queries für responsive Anpassungen */
-@media screen and (max-width: 768px) {
-  .status-bar {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 8px 15px;
-    gap: 8px;
-  }
-
-  .status-item {
-    font-size: 0.8rem;
-    padding: 4px 8px;
-  }
-  
-  .status-item i {
-    font-size: 0.9rem;
-  }
-}
 
 @media screen and (max-width: 480px) {
-  .status-bar {
-    justify-content: flex-start;
-    padding: 6px 10px;
-    gap: 6px;
-  }
+
 
   .status-item {
     font-size: 0.75rem;
@@ -1757,3 +1775,223 @@ input:checked + .slider:before {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Füge diese Styles für die neue Socials Bar hinzu */
+.socials-bar {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 25px 0 15px;
+  margin: 30px 30px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.socials-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.08) 20%,
+    rgba(0, 0, 0, 0.08) 80%,
+    transparent
+  );
+}
+
+.social-item {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.3rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.social-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.social-item:hover {
+  transform: translateY(-3px);
+  background: rgba(0, 0, 0, 0.06);
+  color: #1473A8;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.social-item:hover::before {
+  opacity: 1;
+}
+
+.social-item i {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.social-item:hover i {
+  transform: scale(1.1);
+}
+
+/* Spezifische Icon-Farben beim Hover */
+.social-item:hover .fa-globe { color: #2196F3; }
+.social-item:hover .fa-instagram { color: #E4405F; }
+.social-item:hover .fa-github { color: #333; }
+.social-item:hover .fa-envelope { color: #34A853; }
+
+/* Dark Mode Anpassungen */
+body.dark-mode .socials-bar {
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .socials-bar::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent
+  );
+}
+
+body.dark-mode .social-item {
+  color: #999;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .social-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Spezifische Icon-Farben für Dark Mode */
+body.dark-mode .social-item:hover .fa-globe { color: #64B5F6; }
+body.dark-mode .social-item:hover .fa-instagram { color: #FF6B81; }
+body.dark-mode .social-item:hover .fa-github { color: #fff; }
+body.dark-mode .social-item:hover .fa-envelope { color: #66BB6A; }
+
+/* Responsive Anpassungen */
+@media screen and (max-width: 480px) {
+  .socials-bar {
+    gap: 15px;
+    padding: 15px 0;
+    margin: 0 20px 20px;
+  }
+  
+  .social-item {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Status Bar Styles aktualisieren */
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 25px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+/* Toggle Button für Status Bar */
+.status-bar-toggle {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  min-width: 30px;
+  min-height: 20px;
+  justify-content: center;
+}
+
+.status-bar-toggle i {
+  transition: transform 0.3s ease;
+}
+
+.status-bar-toggle:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Collapsed State */
+.status-bar.collapsed {
+  transform: translateY(100%);
+}
+
+.status-bar.collapsed .status-bar-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .status-bar {
+  background: rgba(28, 28, 30, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .status-bar-toggle {
+  background: rgba(28, 28, 30, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+body.dark-mode .status-bar-toggle:hover {
+  background: rgba(28, 28, 30, 0.9);
+}
+
+/* Responsive Anpassungen */
+@media screen and (max-width: 1024px) {
+  .status-bar {
+    padding: 8px 20px;
+  }
+  
+  .status-item {
+    font-size: 0.85rem;
+  }
+}

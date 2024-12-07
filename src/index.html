@@ -579,6 +579,9 @@
   </div>
 
   <div class="status-bar">
+    <button class="status-bar-toggle" onclick="toggleStatusBar()">
+        <i class="fas fa-chevron-down"></i>
+    </button>
     <div class="status-item" data-tooltip="Aktuelle WLAN-Verbindung">
       <i class="fas fa-wifi"></i>
       <span id="connectionStatus">Verbunden</span>
@@ -663,27 +666,6 @@
           </div>
         </div>
 
-        <!-- Socials -->
-        <div class="settings-section">
-          <h3>Socials</h3>
-          <div class="settings-item link" data-url="https://helpinformatik.de">
-            <i class="fas fa-globe"></i>
-            <span>Website</span>
-          </div>
-          <div class="settings-item link" data-url="https://www.instagram.com/helpit.informatik">
-            <i class="fab fa-instagram"></i>
-            <span>Instagram</span>
-          </div>
-          <div class="settings-item link" data-url="https://github.com/alphatg050">
-            <i class="fab fa-github"></i>
-            <span>GitHub</span>
-          </div>
-          <div class="settings-item link" data-url="mailto:guerkan.privat@gmail.com">
-            <i class="fas fa-envelope"></i>
-            <span>E-Mail</span>
-          </div>
-        </div>
-
         <!-- Tools -->
         <div class="settings-section">
           <h3>Tools</h3>
@@ -738,6 +720,22 @@
             <i class="fas fa-info-circle"></i>
             <span>Über FixIT</span>
           </div>
+        </div>
+
+        <!-- Socials Bar - Jetzt am Ende -->
+        <div class="socials-bar">
+          <a class="social-item" onclick="ipcRenderer.send('open-external-url', 'https://helpinformatik.de')">
+            <i class="fas fa-globe"></i>
+          </a>
+          <a class="social-item" onclick="ipcRenderer.send('open-external-url', 'https://www.instagram.com/helpit.informatik')">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a class="social-item" onclick="ipcRenderer.send('open-external-url', 'https://github.com/alphatg050')">
+            <i class="fab fa-github"></i>
+          </a>
+          <a class="social-item" onclick="ipcRenderer.send('open-external-url', 'mailto:guerkan.privat@gmail.com')">
+            <i class="fas fa-envelope"></i>
+          </a>
         </div>
       </div>
     </div>
