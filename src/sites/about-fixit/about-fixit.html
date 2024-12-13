@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Über FixIT</title>
+    <link rel="stylesheet" href="about-fixit.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h2>Uber FixIT</h2>
+        <button class="close-button" onclick="window.close()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="content">
+        <div class="app-header">
+            <img src="../../assets/images/logo/png/128x128.png" alt="FixIT Logo">
+            <div class="app-title">
+                <h1>FixIT</h1>
+                <p class="version">Version <span id="versionNumber"></span></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>System Informationen</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Electron Version</span>
+                    <span id="electronVersion" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Chrome Version</span>
+                    <span id="chromeVersion" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Node Version</span>
+                    <span id="nodeVersion" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">V8 Version</span>
+                    <span id="v8Version" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Betriebssystem</span>
+                    <span id="osInfo" class="value"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Plattform</span>
+                    <span id="platform" class="value"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const os = require('os');
+        const process = require('process');
+
+        // Version anzeigen
+        document.getElementById('versionNumber').textContent = require('../../../package.json').version;
+        
+        // System Informationen anzeigen
+        document.getElementById('electronVersion').textContent = process.versions.electron;
+        document.getElementById('chromeVersion').textContent = process.versions.chrome;
+        document.getElementById('nodeVersion').textContent = process.versions.node;
+        document.getElementById('v8Version').textContent = process.versions.v8;
+        document.getElementById('osInfo').textContent = `${os.type()} ${os.release()}`;
+        document.getElementById('platform').textContent = process.platform;
+
+        // Dark Mode Check
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html> 

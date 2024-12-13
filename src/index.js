@@ -1094,7 +1094,7 @@ function getProgramInfo(programName) {
                 'Automatische Erkennung veralteter Treiber',
                 'Bereitstellung von Download-Links für Treiber',
                 'Backup-Funktion für bestehende Treiber',
-                'Offline-Scan f��r Treiberaktualisierungen'
+                'Offline-Scan für Treiberaktualisierungen'
             ]
         },
         'HiBit Uninstaller': {
@@ -1172,7 +1172,7 @@ function getProgramInfo(programName) {
         'Rufus': {
             name: 'Rufus',
             icon: './assets/images/programs/rufus.png',
-            description: 'Ein unverzichtbares Tool zum Erstellen bootfähiger USB-Laufwerke, das eine Vielzahl von ISO-Formaten unterstützt.',
+            description: 'Ein unverzichtbares Tool zum Erstellen bootf��higer USB-Laufwerke, das eine Vielzahl von ISO-Formaten unterstützt.',
             author: 'Akeo Consulting',
             features: [
                 'Konvertierung von ISO zu USB',
@@ -1431,7 +1431,8 @@ function initializeSettingsHandlers() {
         'openShortcuts': () => ipcRenderer.send('open-shortcuts'),
         'checkUpdates': () => ipcRenderer.send('check-updates'),
         'showLicense': () => ipcRenderer.send('show-license'),
-        'showAbout': () => ipcRenderer.send('show-about')
+        'showAbout': () => ipcRenderer.send('show-about'),
+        'createSupportSession': () => ipcRenderer.send('open-support-session')
     };
 
     // Füge Event-Listener für alle Action-Items hinzu - ohne Schließen des Fensters
@@ -1473,3 +1474,50 @@ function toggleStatusBar() {
     // Speichere den Status
     localStorage.setItem('statusBarCollapsed', statusBar.classList.contains('collapsed'));
 }
+
+// Füge diese Funktion hinzu
+function initializeShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Suchleiste fokussieren (Strg + F)
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            document.getElementById('searchInput')?.focus();
+        }
+
+        // Einstellungen öffnen (Strg + ,)
+        if (e.ctrlKey && e.key === ',') {
+            e.preventDefault();
+            document.getElementById('settingsOverlay').style.display = 'flex';
+        }
+
+        // Dark Mode umschalten (Strg + D)
+        if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            if (darkModeToggle) {
+                darkModeToggle.checked = !darkModeToggle.checked;
+                darkModeToggle.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // DevTools öffnen (F12)
+        if (e.key === 'F12') {
+            e.preventDefault();
+            ipcRenderer.send('open-devtools');
+        }
+
+        // Anwendung neu laden (Strg + R)
+        if (e.ctrlKey && e.key === 'r') {
+            e.preventDefault();
+            window.location.reload();
+        }
+    });
+}
+
+// Füge den Aufruf in document.addEventListener('DOMContentLoaded', ...) hinzu
+document.addEventListener('DOMContentLoaded', () => {
+    // Bestehender Code...
+    
+    // Initialisiere Shortcuts
+    initializeShortcuts();
+});

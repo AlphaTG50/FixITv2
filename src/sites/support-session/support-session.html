@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Support-Session</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="support-session.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h2>Support-Session erstellen</h2>
+        <button class="close-button" onclick="window.close()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="content">
+        <form id="supportForm">
+            <div class="form-group">
+                <label class="required">Problem-Titel</label>
+                <input type="text" id="title" required placeholder="Kurze Beschreibung des Problems">
+            </div>
+
+            <div class="form-group">
+                <label class="required">Priorität</label>
+                <select id="priority" required>
+                    <option value="low" class="priority-option priority-low">
+                        <i class="fas fa-info-circle priority-icon"></i>
+                        Niedrig - Keine Einschränkung der Arbeit
+                    </option>
+                    <option value="medium" class="priority-option priority-medium">
+                        <i class="fas fa-exclamation-circle priority-icon"></i>
+                        Mittel - Teilweise Einschränkung der Arbeit
+                    </option>
+                    <option value="high" class="priority-option priority-high">
+                        <i class="fas fa-exclamation-triangle priority-icon"></i>
+                        Hoch - Starke Einschränkung der Arbeit
+                    </option>
+                    <option value="critical" class="priority-option priority-critical">
+                        <i class="fas fa-stop-circle priority-icon"></i>
+                        Kritisch - Arbeiten nicht möglich
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Detaillierte Beschreibung</label>
+                <textarea id="description" required placeholder="Beschreiben Sie das Problem so genau wie möglich"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Wann tritt das Problem auf?</label>
+                <textarea id="occurrence" required placeholder="z.B. Nach dem Systemstart, Bei bestimmten Aktionen..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Was wurde bereits versucht?</label>
+                <textarea id="attempts" placeholder="Welche Lösungsversuche wurden bereits unternommen?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Telefonnummer für Rückfragen</label>
+                <input type="tel" id="phone" 
+                       placeholder="z.B. +49 123 45678901"
+                       pattern="^(?:\+|0)[0-9\s]*$">
+                <div class="phone-info">
+                    Gültige Formate: +49..., 0049..., oder 0...
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Kontakt E-Mail</label>
+                <input type="email" id="email" required placeholder="Ihre E-Mail-Adresse für Rückfragen">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeScreenshots" checked>
+                <label for="includeScreenshots">Screenshots der Bildschirme einschließen</label>
+            </div>
+
+            <div class="form-group file-upload">
+                <label>Fotos oder Videos anhängen</label>
+                <div class="file-input-container">
+                    <input type="file" id="attachments" multiple class="file-input" 
+                           accept="image/*,video/*">
+                    <div class="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="upload-text">Dateien hierher ziehen oder</span>
+                        <button type="button" class="file-button">
+                            <i class="fas fa-folder-open"></i>
+                            Durchsuchen
+                        </button>
+                    </div>
+                </div>
+                <div id="fileList" class="file-list"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-paper-plane"></i>
+                    Support-Session erstellen
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="support-session.js"></script>
+</body>
+</html> 

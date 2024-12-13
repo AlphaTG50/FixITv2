@@ -3,14 +3,37 @@
 <head>
     <title>Easter Eggs</title>
     <link rel="stylesheet" href="easter-eggs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="header">
         <h2>Easter Eggs</h2>
-        <button class="close-button" onclick="window.close()">×</button>
+        <button class="close-button" onclick="window.close()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
+    
     <div id="easterEggList"></div>
-    <button class="reset-button" onclick="resetEasterEggs()">Easter Eggs zurücksetzen</button>
+    
+    <button class="reset-button" onclick="showConfirmDialog()">
+        <i class="fas fa-undo-alt"></i> Zurücksetzen
+    </button>
+
+    <div class="dialog-overlay" id="confirmDialog" style="display: none;">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Easter Eggs zurücksetzen</h3>
+            </div>
+            <div class="dialog-body">
+                Möchtest du wirklich alle gefundenen Easter Eggs zurücksetzen?
+            </div>
+            <div class="dialog-footer">
+                <button class="dialog-button secondary" onclick="hideConfirmDialog()">Abbrechen</button>
+                <button class="dialog-button primary" onclick="confirmReset()">Zurücksetzen</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const EASTER_EGGS = {
@@ -18,19 +41,22 @@
                 id: 'logo_rotation',
                 title: 'Logo Rotation',
                 description: 'Drehe das Logo durch sechzehnmaliges Klicken',
-                hint: 'Das Logo wartet auf deine Berührung... aber wie oft?'
+                hint: 'Das Logo wartet auf deine Berührung... aber wie oft?',
+                icon: 'fas fa-sync'
             },
             matrix_code: {
                 id: 'matrix_code',
                 title: 'Matrix Code',
                 description: 'Matrix-Effekt durch Eingabe von "matrix" in der Suchleiste',
-                hint: 'Grüne Zeichen fallen... aber wie? Vielleicht hilft dir der Film mit Keanu Reeves...'
+                hint: 'Grüne Zeichen fallen... aber wie? Vielleicht hilft dir der Film mit Keanu Reeves...',
+                icon: 'fas fa-terminal'
             },
             dvd_bounce: {
                 id: 'dvd_bounce',
                 title: 'DVD Logo',
                 description: 'DVD Logo Animation durch Eingabe von "dvd" in der Suchleiste',
-                hint: 'Erinnert ihr euch an den alten DVD-Player Bildschirmschoner?'
+                hint: 'Erinnert ihr euch an den alten DVD-Player Bildschirmschoner?',
+                icon: 'fas fa-compact-disc'
             }
         };
 
@@ -44,7 +70,9 @@
                 const div = document.createElement('div');
                 div.className = `easter-egg ${isFound ? 'found' : 'locked'}`;
                 div.innerHTML = `
-                    <div class="easter-egg-title">${egg.title}</div>
+                    <div class="easter-egg-title">
+                        <i class="${egg.icon}"></i> ${egg.title}
+                    </div>
                     <div class="easter-egg-description">
                         ${isFound ? egg.description : egg.hint}
                     </div>
@@ -64,12 +92,22 @@
         // Update bei Änderungen im localStorage
         window.addEventListener('storage', updateEasterEggList);
 
-        function resetEasterEggs() {
-            if (confirm('Möchtest du wirklich alle gefundenen Easter Eggs zurücksetzen?')) {
-                localStorage.setItem('foundEasterEggs', '[]');
-                updateEasterEggList();
-            }
+        function showConfirmDialog() {
+            document.getElementById('confirmDialog').style.display = 'flex';
         }
+
+        function hideConfirmDialog() {
+            document.getElementById('confirmDialog').style.display = 'none';
+        }
+
+        function confirmReset() {
+            localStorage.setItem('foundEasterEggs', '[]');
+            updateEasterEggList();
+            hideConfirmDialog();
+        }
+
+        // Ändere den onClick Handler des Reset-Buttons
+        document.querySelector('.reset-button').onclick = showConfirmDialog;
     </script>
 </body>
 </html> 

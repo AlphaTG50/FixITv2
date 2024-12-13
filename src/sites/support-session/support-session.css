@@ -1,0 +1,409 @@
+:root {
+    --apple-bg: #f5f5f7;
+    --apple-surface: rgba(255, 255, 255, 0.8);
+    --apple-elevated: #ffffff;
+    --apple-text: #1d1d1f;
+    --apple-text-secondary: #86868b;
+    --apple-border: rgba(0, 0, 0, 0.1);
+    --apple-blue: #0066cc;
+}
+
+body.dark-mode {
+    --apple-bg: #1c1c1e;
+    --apple-surface: rgba(28, 28, 30, 0.8);
+    --apple-elevated: #2c2c2e;
+    --apple-text: #ffffff;
+    --apple-text-secondary: rgba(255, 255, 255, 0.6);
+    --apple-border: rgba(255, 255, 255, 0.15);
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--apple-bg);
+    color: var(--apple-text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    background: var(--apple-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--apple-border);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-app-region: drag;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.close-button {
+    -webkit-app-region: no-drag;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--apple-text-secondary);
+    transition: all 0.2s;
+    border-radius: 6px;
+}
+
+.close-button:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(500px - 52px);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: 500;
+    color: var(--apple-text);
+}
+
+input, textarea {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--apple-border);
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+textarea {
+    min-height: 80px;
+    max-height: 120px;
+    resize: vertical;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    margin-bottom: 10px;
+}
+
+.submit-button {
+    background: var(--apple-blue);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.submit-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.submit-button i {
+    font-size: 0.9em;
+}
+
+/* Scrollbar ausblenden */
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Einheitliche Font-Stile für alle Eingabefelder */
+input, 
+textarea,
+input::placeholder,
+textarea::placeholder {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 0.9rem;
+    color: var(--apple-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--apple-text-secondary);
+}
+
+/* Neue Styles für File Upload */
+.file-upload {
+    margin-top: 10px;
+}
+
+.file-input-container {
+    position: relative;
+    border: 2px dashed var(--apple-border);
+    border-radius: 12px;
+    transition: all 0.2s;
+    background: var(--apple-elevated);
+}
+
+.file-input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.upload-area {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.upload-area i.fa-cloud-upload-alt {
+    font-size: 2em;
+    color: var(--apple-text-secondary);
+    margin-bottom: 4px;
+}
+
+.upload-text {
+    color: var(--apple-text-secondary);
+    font-size: 0.9rem;
+}
+
+.file-button {
+    background: none;
+    border: none;
+    color: var(--apple-blue);
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.file-button:hover {
+    text-decoration: underline;
+}
+
+.file-input-container.drag-over {
+    border-color: var(--apple-blue);
+    background: rgba(0, 102, 204, 0.05);
+}
+
+.file-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--apple-elevated);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--apple-border);
+}
+
+.file-item .file-icon {
+    color: var(--apple-text-secondary);
+    font-size: 1.1em;
+}
+
+.file-item .file-name {
+    flex: 1;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-item .file-size {
+    color: var(--apple-text-secondary);
+    font-size: 0.8rem;
+    margin-right: 8px;
+}
+
+.file-item .remove-file {
+    color: var(--apple-text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.file-item .remove-file:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+/* Fehlermeldung Styles */
+.error-message {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-message i {
+    font-size: 1.1em;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body:not(.file-input-container) {
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+/* Styles für Select-Element und Prioritäten */
+select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--apple-border);
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+/* Prioritäts-Optionen mit Icons und Farben */
+.priority-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 4px 0;
+    transition: all 0.2s;
+}
+
+.priority-low {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+}
+
+.priority-medium {
+    background: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+}
+
+.priority-high {
+    background: rgba(230, 126, 34, 0.1);
+    color: #e67e22;
+}
+
+.priority-critical {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+.priority-icon {
+    font-size: 1.1em;
+}
+
+/* Styling für ungültige Eingaben */
+input:invalid:not(:placeholder-shown) {
+    border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+input[type="tel"] {
+    letter-spacing: 0.5px;
+}
+
+/* Tooltip für Telefonnummer */
+.phone-info {
+    color: var(--apple-text-secondary);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* Styling für Pflichtfeld-Stern */
+.required::after {
+    content: '*';
+    color: #e74c3c;
+    margin-left: 4px;
+    font-size: 1.1em;
+}

@@ -37,19 +37,15 @@ body.dark-mode .albumlist {
   box-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.3),
     0 12px 28px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
 }
 
 /* Album Item Gestaltung */
 body.dark-mode .albumitem {
   background: var(--apple-elevated);
   border: 1px solid var(--apple-border);
-  border-radius: 10px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.dark-mode .albumitem:hover {
-  transform: translateY(-2px);
   background: rgba(44, 44, 46, 0.9);
   box-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.3),
@@ -68,55 +64,31 @@ body.dark-mode .albumtitle h2 {
 }
 
 /* Badge Styling */
-body.dark-mode .albumtitle .Entwicklung-Badge {
-  color: var(--apple-text-secondary);
-  border: 1.5px solid var(--apple-border);
-  background: rgba(255, 255, 255, 0.1);
-  font-weight: 500;
+body.dark-mode .Entwicklung-Badge {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
-body.dark-mode .albumtitle .Admin-Badge {
-  color: var(--apple-red);
-  border: 1.5px solid var(--apple-red);
-  background: rgba(255, 69, 58, 0.15);
-  font-weight: 500;
+/* Work in Progress Styles */
+body.dark-mode .albumitem:has(.Entwicklung-Badge) {
+  filter: grayscale(100%) brightness(70%);
 }
 
-body.dark-mode .albumtitle .Portable-Badge {
-  color: var(--apple-blue);
-  border: 1.5px solid var(--apple-blue);
-  background: rgba(10, 132, 255, 0.15);
-  font-weight: 500;
+body.dark-mode .albumitem:has(.Entwicklung-Badge)::before {
+  background: rgba(0, 0, 0, 0.15);
 }
 
-body.dark-mode .albumtitle .Website-Badge {
-  color: var(--apple-purple);
-  border: 1.5px solid var(--apple-purple);
-  background: rgba(191, 90, 242, 0.15);
-  font-weight: 500;
-}
-
-body.dark-mode .albumtitle .Script-Badge {
-  color: var(--apple-yellow);
-  border: 1.5px solid var(--apple-yellow);
-  background: rgba(255, 214, 10, 0.15);
-  font-weight: 500;
-}
-
-/* Suchleisten Design */
+/* Suchleiste */
 body.dark-mode .search-container {
   background: var(--apple-surface);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid var(--apple-border);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode #searchInput {
   color: var(--apple-text);
-  background: transparent;
-  font-size: 0.95rem;
 }
 
 body.dark-mode #searchInput::placeholder {
@@ -133,18 +105,16 @@ body.dark-mode .titlebar {
 
 body.dark-mode .window-title {
   color: var(--apple-text);
-  font-weight: 500;
 }
 
+/* Settings Control */
 body.dark-mode .settings-control button {
   color: var(--apple-text-secondary);
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 body.dark-mode .settings-control button:hover {
   color: var(--apple-text);
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
 }
 
 /* Settings Panel */
@@ -153,7 +123,6 @@ body.dark-mode .settings-panel {
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid var(--apple-border);
-  border-radius: 12px;
   box-shadow: 
     0 0 0 1px var(--apple-border),
     0 8px 40px rgba(0, 0, 0, 0.5);
@@ -164,28 +133,57 @@ body.dark-mode .settings-header {
   background: rgba(44, 44, 46, 0.5);
 }
 
-body.dark-mode .settings-header h2 {
+body.dark-mode .settings-header h2,
+body.dark-mode .settings-section h3 {
   color: var(--apple-text);
   font-weight: 500;
+}
+
+body.dark-mode .settings-section h3 {
+  border-bottom: 1px solid var(--apple-border);
 }
 
 body.dark-mode .settings-close {
   color: var(--apple-text-secondary);
 }
 
-body.dark-mode .settings-section h3 {
-  color: var(--apple-text);
-  font-weight: 500;
-  border-bottom: 1px solid var(--apple-border);
-}
-
 body.dark-mode .settings-item {
   color: var(--apple-text);
+  transition: all 0.2s ease;
 }
 
 body.dark-mode .settings-item:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+}
+
+/* Checkbox Items speziell */
+body.dark-mode .settings-item.checkbox:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Action Items speziell */
+body.dark-mode .settings-item.action {
+  transition: all 0.2s ease;
+}
+
+body.dark-mode .settings-item.action:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Text und Icons behalten ihre Farbe beim Hover */
+body.dark-mode .settings-item:hover i,
+body.dark-mode .settings-item:hover span {
+  color: var(--apple-text) !important;
+}
+
+/* Link Items speziell */
+body.dark-mode .settings-item.link:hover {
+  background: rgba(var(--apple-blue-rgb), 0.15);
+}
+
+body.dark-mode .settings-item.link:hover i,
+body.dark-mode .settings-item.link:hover span {
+  color: var(--apple-blue) !important;
 }
 
 /* Switch Styling */
@@ -202,19 +200,56 @@ body.dark-mode input:checked + .slider {
   background-color: var(--apple-green) !important;
 }
 
-/* Error Modal */
-body.dark-mode .error-modal {
-  background: var(--apple-surface);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--apple-border);
-  border-radius: 12px;
-  box-shadow: 
-    0 0 0 1px var(--apple-border),
-    0 8px 40px rgba(0, 0, 0, 0.5);
+/* Status Bar */
+body.dark-mode .status-bar {
+  background: rgba(28, 28, 30, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Scrollbar (wenn sichtbar) */
+body.dark-mode .status-bar-toggle {
+  background: rgba(28, 28, 30, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+body.dark-mode .status-bar-toggle:hover {
+  background: rgba(28, 28, 30, 0.9);
+}
+
+/* Socials Bar */
+body.dark-mode .socials-bar {
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .socials-bar::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent
+  );
+}
+
+body.dark-mode .social-item {
+  color: #999;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .social-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Spezifische Icon-Farben für Dark Mode */
+body.dark-mode .social-item:hover .fa-globe { color: #64B5F6; }
+body.dark-mode .social-item:hover .fa-instagram { color: #FF6B81; }
+body.dark-mode .social-item:hover .fa-github { color: #fff; }
+body.dark-mode .social-item:hover .fa-envelope { color: #66BB6A; }
+
+/* Scrollbar */
 body.dark-mode ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 8px;

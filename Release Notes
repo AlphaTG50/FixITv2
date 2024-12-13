@@ -1,11 +1,12 @@
-
-
-Release Notes - v1.0.7 - 03.12.2024 & 04.12.2024
+Release Notes - v1.0.7 - 03.12.2024 & 04.12.2024 & 13.12.2024
 
 ## **Release Notes**
 
 ### **🆕 Änderungen**
-
+- Easter Eggs und Shortcuts Fenster Design überarbeitet im Apple-Style
+- TeamViewer QS aus den Einstellungen entfernt
+- Bestätigungsdialog für Easter Eggs Reset im Apple-Design hinzugefügt
+- Fenster können nur noch einmal geöffnet werden
 ---
 
 ### **🚀 Features**
@@ -17,8 +18,17 @@ Release Notes - v1.0.7 - 03.12.2024 & 04.12.2024
     - Hover Effekte
 - Info-Fenster hinzugefügt
     - Beschreibung, Autor, Features
+- Shortcuts implementiert:
+    - Strg + F: Suchleiste fokussieren
+    - Strg + ,: Einstellungen öffnen
+    - Strg + D: Dark Mode umschalten
+    - F12: DevTools öffnen
+    - Strg + R: Anwendung neu laden
+- Bereich Info wurde zu Support umbenannt
+- Über FixIT-Info Fenster hinzugefügt
 ---
 
 ### **🐛 Bug Fixes**
-
+- Problem mit ungewolltem TeamViewer-Start behoben
+- Mehrfachöffnen von Easter Eggs und Shortcuts Fenster verhindert
 ---

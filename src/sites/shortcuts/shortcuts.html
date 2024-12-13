@@ -3,22 +3,72 @@
 <head>
     <title>Shortcuts</title>
     <link rel="stylesheet" href="shortcuts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="header">
         <h2>Shortcuts</h2>
-        <button class="close-button" onclick="window.close()">×</button>
+        <button class="close-button" onclick="window.close()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-    <div class="shortcut-list">
-        <div class="shortcut-item">
-            <div class="shortcut-title">Suchleiste fokussieren<span class="shortcut-key">Strg + F</span></div>
-            <div class="shortcut-description">Springt direkt zur Suchleiste</div>
-        </div>
-        <div class="shortcut-item">
-            <div class="shortcut-title">Neu laden<span class="shortcut-key">Strg + R</span></div>
-            <div class="shortcut-description">Lädt die Anwendung neu</div>
-        </div>
-    </div>
-    <script src="shortcuts.js"></script>
+    
+    <div id="shortcutList"></div>
+
+    <script>
+        const SHORTCUTS = {
+            search: {
+                key: 'Strg + F',
+                description: 'Suchleiste fokussieren',
+                icon: 'fas fa-search'
+            },
+            settings: {
+                key: 'Strg + ,',
+                description: 'Einstellungen öffnen',
+                icon: 'fas fa-cog'
+            },
+            darkMode: {
+                key: 'Strg + D',
+                description: 'Dark Mode umschalten',
+                icon: 'fas fa-moon'
+            },
+            devTools: {
+                key: 'F12',
+                description: 'DevTools öffnen',
+                icon: 'fas fa-code'
+            },
+            reload: {
+                key: 'Strg + R',
+                description: 'Anwendung neu laden',
+                icon: 'fas fa-sync'
+            }
+        };
+
+        function updateShortcutList() {
+            const container = document.getElementById('shortcutList');
+            container.innerHTML = '';
+
+            Object.entries(SHORTCUTS).forEach(([id, shortcut]) => {
+                const div = document.createElement('div');
+                div.className = 'shortcut-item';
+                div.innerHTML = `
+                    <div class="shortcut-title">
+                        <i class="${shortcut.icon}"></i>
+                        <span>${shortcut.description}</span>
+                    </div>
+                    <div class="shortcut-key">${shortcut.key}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Dark Mode Check
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Initial Update
+        updateShortcutList();
+    </script>
 </body>
 </html>

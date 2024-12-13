@@ -64,16 +64,18 @@
 
   <!-- Füge dies direkt nach dem <body> Tag ein -->
   <div class="titlebar">
-    <div class="window-controls">
-      <button class="window-control close" id="closeBtn"></button>
-      <button class="window-control minimize" id="minimizeBtn"></button>
-      <button class="window-control maximize" id="maximizeBtn"></button>
-    </div>
-    <div class="window-title">FixIT</div>
     <div class="settings-control">
       <button id="settingsBtn" type="button">
         <i class="fas fa-cog"></i>
       </button>
+    </div>
+    
+    <div class="window-title">FixIT</div>
+    
+    <div class="window-controls">
+      <button class="window-control minimize" id="minimizeBtn"></button>
+      <button class="window-control maximize" id="maximizeBtn"></button>
+      <button class="window-control close" id="closeBtn"></button>
     </div>
   </div>
 
@@ -625,7 +627,9 @@
     <div class="settings-panel">
       <div class="settings-header">
         <h2>Einstellungen</h2>
-        <button class="settings-close" id="closeSettings">×</button>
+        <button class="settings-close" id="closeSettings">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
       <div class="settings-content">
         <!-- Erscheinungsbild -->
@@ -666,19 +670,6 @@
           </div>
         </div>
 
-        <!-- Tools -->
-        <div class="settings-section">
-          <h3>Tools</h3>
-          <div class="settings-item action" id="clearFavorites">
-            <i class="fas fa-star"></i>
-            <span>Meine Favoriten entfernen</span>
-          </div>
-          <div class="settings-item action" id="openTeamViewer">
-            <i class="fas fa-desktop"></i>
-            <span>TeamViewer QS</span>
-          </div>
-        </div>
-
         <!-- Entwickler -->
         <div class="settings-section">
           <h3>Entwickler</h3>
@@ -705,9 +696,17 @@
           </div>
         </div>
 
-        <!-- Info -->
+        <!-- Support -->
         <div class="settings-section">
-          <h3>Info</h3>
+          <h3>Support</h3>
+          <div class="settings-item action" id="openTeamViewer">
+            <i class="fas fa-desktop"></i>
+            <span>TeamViewer QS</span>
+          </div>
+          <div class="settings-item action" id="createSupportSession">
+            <i class="fas fa-headset"></i>
+            <span>Support-Session erstellen</span>
+          </div>
           <div class="settings-item action" id="checkUpdates">
             <i class="fas fa-sync"></i>
             <span>Updates prüfen</span>

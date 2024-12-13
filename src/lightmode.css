@@ -133,16 +133,6 @@ body {
   font-weight: 500;
 }
 
-.settings-control button {
-  color: var(--apple-text-secondary);
-}
-
-.settings-control button:hover {
-  color: var(--apple-text);
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 50%;
-}
-
 /* Settings Panel */
 .settings-panel {
   background: var(--apple-surface);
@@ -178,11 +168,6 @@ body {
   color: var(--apple-text);
 }
 
-.settings-item:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-}
-
 /* Switch Styling */
 .slider {
   background-color: rgba(120, 120, 128, 0.16);
@@ -206,4 +191,14 @@ input:checked + .slider {
   box-shadow: 
     0 0 0 1px var(--apple-border),
     0 8px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Settings-Icon Hover im Light Mode */
+.settings-control button {
+  color: var(--apple-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.settings-control button:hover {
+  color: var(--apple-text); /* Dunklere Farbe beim Hover */
 }

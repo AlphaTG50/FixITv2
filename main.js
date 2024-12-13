@@ -6,6 +6,11 @@ const path = require('path');
 const { type } = require('os');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const { desktopCapturer } = require('electron');
+const fsPromises = require('fs').promises;
+const os = require('os');
+const crypto = require('crypto');
+const archiver = require('archiver');
 
 // Lizenzfenster-Erstellung
 // function createLicenseWindow() { ... }
@@ -24,6 +29,9 @@ let autostartEnabled = false;
 let minimizeToTray = false;
 const currentVersion = `v${version}`;
 let licenseWindow;
+let easterEggWindow = null;
+let shortcutsWindow = null;
+let aboutFixitWindow = null;
 
 // Am Anfang der Datei, nach den imports
 const gotTheLock = app.requestSingleInstanceLock();
@@ -468,22 +476,6 @@ ipcMain.on('open-external-url', (event, url) => {
     shell.openExternal(url);
 });
 
-ipcMain.on('open-teamviewer', () => {
-    const exePath = app.isPackaged
-        ? path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe')
-        : path.join(__dirname, 'src', 'assets', 'portable-apps', 'TeamViewerQS.exe');
-
-    if (fs.existsSync(exePath)) {
-        exec(`"${exePath}"`, (error) => {
-            if (error) {
-                dialog.showErrorBox('Fehler', 'TeamViewer QS konnte nicht gestartet werden.');
-            }
-        });
-    } else {
-        dialog.showErrorBox('Fehler', 'TeamViewer QS wurde nicht gefunden.');
-    }
-});
-
 ipcMain.on('open-devtools', () => {
     mainWindow.webContents.openDevTools();
 });
@@ -550,37 +542,95 @@ ipcMain.on('export-logs', async () => {
 });
 
 ipcMain.on('open-easter-eggs', () => {
-    const easterEggWindow = new BrowserWindow({
+    if (easterEggWindow) {
+        easterEggWindow.focus();
+        return;
+    }
+
+    easterEggWindow = new BrowserWindow({
         width: 400,
         height: 500,
-        frame: false,
+        title: "Easter Eggs",
+        modal: false,
         parent: mainWindow,
-        modal: true,
         show: false,
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
+        },
+        backgroundColor: '#ffffff',
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        autoHideMenuBar: true,
+        menuBarVisible: false,
+        alwaysOnTop: true
+    });
+
+    easterEggWindow.setMenu(null);
+
+    easterEggWindow.once('ready-to-show', () => {
+        easterEggWindow.show();
+    });
+
+    easterEggWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.key === 'Escape') {
+            easterEggWindow.close();
         }
     });
+
+    easterEggWindow.on('closed', () => {
+        easterEggWindow = null;
+    });
+
     easterEggWindow.loadFile(path.join(__dirname, 'src', 'sites', 'easter-eggs', 'easter-eggs.html'));
-    easterEggWindow.once('ready-to-show', () => easterEggWindow.show());
 });
 
 ipcMain.on('open-shortcuts', () => {
-    const shortcutsWindow = new BrowserWindow({
+    if (shortcutsWindow) {
+        shortcutsWindow.focus();
+        return;
+    }
+
+    shortcutsWindow = new BrowserWindow({
         width: 400,
         height: 500,
-        frame: false,
+        title: "Shortcuts",
+        modal: false,
         parent: mainWindow,
-        modal: true,
         show: false,
+        frame: false,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
+        },
+        backgroundColor: '#ffffff',
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        autoHideMenuBar: true,
+        menuBarVisible: false,
+        alwaysOnTop: true
+    });
+
+    shortcutsWindow.setMenu(null);
+
+    shortcutsWindow.once('ready-to-show', () => {
+        shortcutsWindow.show();
+    });
+
+    shortcutsWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.key === 'Escape') {
+            shortcutsWindow.close();
         }
     });
+
+    shortcutsWindow.on('closed', () => {
+        shortcutsWindow = null;
+    });
+
     shortcutsWindow.loadFile(path.join(__dirname, 'src', 'sites', 'shortcuts', 'shortcuts.html'));
-    shortcutsWindow.once('ready-to-show', () => shortcutsWindow.show());
 });
 
 ipcMain.on('check-updates', () => {
@@ -597,13 +647,261 @@ ipcMain.on('show-license', () => {
 });
 
 ipcMain.on('show-about', () => {
-    dialog.showMessageBox(mainWindow, {
-        type: "info",
-        title: 'FixIT',
-        message: `Version: ${version}\n\nEntwickelt von ${author}\nKontakt: guerkan.privat@gmail.com`,
-        buttons: ['OK']
+    if (aboutFixitWindow) {
+        aboutFixitWindow.focus();
+        return;
+    }
+
+    aboutFixitWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        title: "Uber FixIT",
+        modal: false,
+        parent: mainWindow,
+        show: false,
+        frame: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        },
+        backgroundColor: '#ffffff',
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        autoHideMenuBar: true,
+        menuBarVisible: false,
+        alwaysOnTop: true
+    });
+
+    aboutFixitWindow.setMenu(null);
+
+    aboutFixitWindow.once('ready-to-show', () => {
+        aboutFixitWindow.show();
+    });
+
+    aboutFixitWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.key === 'Escape') {
+            aboutFixitWindow.close();
+        }
+    });
+
+    aboutFixitWindow.on('closed', () => {
+        aboutFixitWindow = null;
+    });
+
+    aboutFixitWindow.loadFile(path.join(__dirname, 'src', 'sites', 'about-fixit', 'about-fixit.html'));
+});
+
+ipcMain.on('open-teamviewer', () => {
+    const exePath = app.isPackaged
+        ? path.join(process.resourcesPath, 'portable-apps', 'TeamViewerQS.exe')
+        : path.join(__dirname, 'src', 'assets', 'portable-apps', 'TeamViewerQS.exe');
+
+    if (fs.existsSync(exePath)) {
+        exec(`"${exePath}"`, (error) => {
+            if (error) {
+                dialog.showErrorBox('Fehler', 'TeamViewer QS konnte nicht gestartet werden.');
+            }
+        });
+    } else {
+        dialog.showErrorBox('Fehler', 'TeamViewer QS wurde nicht gefunden.');
+    }
+});
+
+// Support-Session-Fenster Handler
+ipcMain.on('open-support-session', () => {
+    const supportWindow = new BrowserWindow({
+        width: 400,
+        height: 500,
+        title: "Support-Session",
+        modal: true,
+        parent: mainWindow,
+        show: false,
+        frame: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        },
+        backgroundColor: '#ffffff',
+        minimizable: false,
+        maximizable: false,
+        resizable: false
+    });
+
+    supportWindow.loadFile(path.join(__dirname, 'src', 'sites', 'support-session', 'support-session.html'));
+    supportWindow.once('ready-to-show', () => {
+        supportWindow.show();
     });
 });
+
+// Support-Session erstellen Handler (nur dieser eine Handler für create-support-session)
+ipcMain.handle('create-support-session', async (event, formData) => {
+    try {
+        const date = new Date();
+        const dateStr = date.toISOString().split('T')[0];
+        const timeStr = date.toTimeString().split(' ')[0].replace(/:/g, '-');
+        const sessionDir = path.join(
+            app.getPath('documents'), 
+            'FixIT-Support', 
+            `Support-Session-${dateStr}-${timeStr}`
+        );
+        await fsPromises.mkdir(sessionDir, { recursive: true });
+
+        // Support-Beschreibung speichern
+        const supportInfo = 
+`Support-Anfrage: ${formData.title}
+====================================
+Erstellt am: ${new Date(formData.timestamp).toLocaleString()}
+Priorität: ${getPriorityDisplay(formData.priority)}
+E-Mail: ${formData.email}
+${formData.phone ? `Telefon: ${formData.phone}` : ''}
+
+PROBLEMBESCHREIBUNG
+------------------
+${formData.description}
+
+AUFTRETEN DES PROBLEMS
+---------------------
+${formData.occurrence}
+
+BISHERIGE LÖSUNGSVERSUCHE
+------------------------
+${formData.attempts || 'Keine'}
+`;
+
+        await fsPromises.writeFile(
+            path.join(sessionDir, 'Support-Anfrage.txt'),
+            supportInfo
+        );
+
+        // Screenshots erstellen wenn gewünscht
+        if (formData.includeScreenshots) {
+            const sources = await desktopCapturer.getSources({
+                types: ['screen'],
+                thumbnailSize: { width: 3840, height: 2160 }
+            });
+
+            for (let i = 0; i < sources.length; i++) {
+                const display = sources[i];
+                const filePath = path.join(sessionDir, `Monitor${i + 1}.png`);
+                const pngData = display.thumbnail.toPNG();
+                await fsPromises.writeFile(filePath, pngData);
+            }
+        }
+
+        // System-Informationen sammeln
+        const systemInfo = await getSystemInfo();
+        await fsPromises.writeFile(
+            path.join(sessionDir, 'System-Info.txt'),
+            systemInfo
+        );
+
+        // Dateien kopieren wenn vorhanden
+        if (formData.attachments && formData.attachments.length > 0) {
+            const attachmentsDir = path.join(sessionDir, 'Anhänge');
+            await fsPromises.mkdir(attachmentsDir);
+            
+            for (const file of formData.attachments) {
+                try {
+                    if (file.tempPath && file.originalName) {
+                        await fsPromises.copyFile(
+                            file.tempPath,
+                            path.join(attachmentsDir, file.originalName)
+                        );
+                    }
+                } catch (error) {
+                    console.error(`Fehler beim Kopieren der Datei ${file.originalName}:`, error);
+                }
+            }
+        }
+
+        // ZIP erstellen
+        const zipPath = `${sessionDir}.zip`;
+        const output = fs.createWriteStream(zipPath);
+        const archive = archiver('zip', { zlib: { level: 9 }});
+
+        await new Promise((resolve, reject) => {
+            output.on('close', resolve);
+            archive.on('error', reject);
+            archive.pipe(output);
+            archive.directory(sessionDir, false);
+            archive.finalize();
+        });
+
+        // Temporären Ordner löschen nach erfolgreicher ZIP-Erstellung
+        await fsPromises.rm(sessionDir, { recursive: true });
+
+        // Öffne nur den Ordner
+        shell.openPath(path.dirname(zipPath));
+
+        // Erfolgsmeldung anzeigen
+        new Notification({
+            title: 'Support-Session erstellt',
+            body: 'Die Support-Informationen wurden gesammelt und als ZIP-Datei gespeichert.',
+            icon: path.join(__dirname, './src/assets/images/logo/png/64x64.png')
+        }).show();
+
+        return { success: true, path: zipPath };
+    } catch (error) {
+        console.error('Support-Session Fehler:', error);
+        return { success: false, error: error.message };
+    }
+});
+
+// Hilfsfunktion zum Sammeln von System-Informationen
+async function getSystemInfo() {
+  const os = require('os');
+  const si = require('systeminformation');
+
+  try {
+    const [cpu, mem, graphics, osInfo] = await Promise.all([
+      si.cpu(),
+      si.mem(),
+      si.graphics(),
+      si.osInfo()
+    ]);
+
+    return `SYSTEM INFORMATIONEN
+===================
+
+Betriebssystem
+-------------
+Name: ${osInfo.distro} ${osInfo.release}
+Build: ${osInfo.build}
+Plattform: ${osInfo.platform}
+Architektur: ${os.arch()}
+
+CPU
+---
+Modell: ${cpu.manufacturer} ${cpu.brand}
+Kerne: ${cpu.cores}
+Geschwindigkeit: ${cpu.speed} GHz
+Temperatur: ${cpu.temperature ? cpu.temperature + '°C' : 'Nicht verfügbar'}
+
+Arbeitsspeicher
+--------------
+Gesamt: ${Math.round(mem.total / 1024 / 1024 / 1024)} GB
+Frei: ${Math.round(mem.free / 1024 / 1024 / 1024)} GB
+Genutzt: ${Math.round(mem.used / 1024 / 1024 / 1024)} GB
+
+Grafikkarten
+-----------
+${graphics.controllers.map(gpu => 
+  `${gpu.model} (${gpu.vram}MB VRAM)\n`
+).join('')}
+
+Netzwerk
+--------
+Hostname: ${os.hostname()}
+Netzwerkschnittstellen: ${Object.keys(os.networkInterfaces()).join(', ')}
+
+FixIT Version: ${version}
+Zeitstempel: ${new Date().toISOString()}
+`;
+  } catch (error) {
+    return `Fehler beim Sammeln der Systeminformationen: ${error.message}`;
+  }
+}
 
 // ------------------- Anwendung starten -------------------
 app.whenReady().then(async () => {
@@ -846,7 +1144,7 @@ const template = [
                             nodeIntegration: true,
                             contextIsolation: false
                         },
-                        backgroundColor: '#e3ffe3',
+                        backgroundColor: '#ffffff',
                         minimizable: false,
                         maximizable: false,
                         resizable: false,
@@ -1108,4 +1406,60 @@ function compareVersions(v1, v2) {
         if (v1Parts[i] < v2Parts[i]) return -1;
     }
     return 0;
+}
+
+// Neue Handler für temporäre Dateien
+ipcMain.handle('save-temp-file', async (event, { name, buffer }) => {
+    try {
+        const tempDir = path.join(os.tmpdir(), 'fixit-support-temp');
+        await fsPromises.mkdir(tempDir, { recursive: true });
+        
+        // Erstelle einen einzigartigen Dateinamen
+        const tempName = `${crypto.randomBytes(8).toString('hex')}-${name}`;
+        const tempPath = path.join(tempDir, tempName);
+        
+        // Speichere die Datei
+        await fsPromises.writeFile(tempPath, Buffer.from(buffer));
+        
+        return { path: tempPath };
+    } catch (error) {
+        console.error('Fehler beim Speichern der temporären Datei:', error);
+        throw error;
+    }
+});
+
+ipcMain.handle('delete-temp-file', async (event, filePath) => {
+    try {
+        await fsPromises.unlink(filePath);
+    } catch (error) {
+        console.error('Fehler beim Löschen der temporären Datei:', error);
+    }
+});
+
+// Hilfsfunktion für Prioritätstext
+function getPriorityText(priority) {
+    const priorities = {
+        low: 'Niedrig',
+        medium: 'Mittel',
+        high: 'Hoch',
+        critical: 'Kritisch'
+    };
+    return priorities[priority] || priority;
+}
+
+// Hilfsfunktion für Prioritätsanzeige
+function getPriorityDisplay(priority) {
+    const icons = {
+        low: '🔵',
+        medium: '🟡',
+        high: '🟠',
+        critical: '🔴'
+    };
+    const texts = {
+        low: 'Niedrig',
+        medium: 'Mittel',
+        high: 'Hoch',
+        critical: 'Kritisch'
+    };
+    return `${icons[priority]} ${texts[priority]}`;
 }

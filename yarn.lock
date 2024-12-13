@@ -3786,6 +3786,11 @@ svg2png@4.1.1:
     pn "^1.0.0"
     yargs "^6.5.0"
 
+systeminformation@^5.23.12:
+  version "5.23.12"
+  resolved "https://registry.npmjs.org/systeminformation/-/systeminformation-5.23.12.tgz"
+  integrity sha512-1sectjnx9oAyuoDj55uvTARWCqzO1jV7X1MG+zaAIOzoDXt9yUPXALFNYkb8ZJA4XClJzs/Rl01S6QR95nbeJA==
+
 tar-stream@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/tar-stream/-/tar-stream-2.2.0.tgz"

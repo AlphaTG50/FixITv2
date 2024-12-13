@@ -1,85 +1,146 @@
+/* Apple Design Variablen */
+:root {
+    --apple-bg: #f5f5f7;
+    --apple-surface: rgba(255, 255, 255, 0.8);
+    --apple-elevated: #ffffff;
+    --apple-text: #1d1d1f;
+    --apple-text-secondary: #86868b;
+    --apple-border: rgba(0, 0, 0, 0.1);
+    --apple-green: #28cd41;
+}
+
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #fff;
-    color: #000;
+    background: var(--apple-bg);
+    color: var(--apple-text);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
+    background: var(--apple-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--apple-border);
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
     -webkit-app-region: drag;
 }
 
+.header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--apple-text);
+}
+
 .close-button {
+    -webkit-app-region: no-drag;
     background: none;
     border: none;
-    color: #666;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 5px 15px;
-    line-height: 1;
-    -webkit-app-region: no-drag;
-    transition: color 0.3s ease;
+    padding: 5px;
+    color: var(--apple-text-secondary);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
 }
 
 .close-button:hover {
     color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
 }
 
-.shortcut-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+#shortcutList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
 }
 
 .shortcut-item {
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #f5f5f5;
+    background: var(--apple-elevated);
+    border: 1px solid var(--apple-border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.shortcut-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .shortcut-title {
-    font-weight: bold;
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.shortcut-title i {
+    color: var(--apple-text-secondary);
+    width: 20px;
+    text-align: center;
 }
 
 .shortcut-key {
-    display: inline-block;
-    padding: 3px 8px;
-    background-color: var(--darkblue);
-    color: #000;
-    border-radius: 4px;
-    font-size: 0.9em;
-    margin-left: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-family: monospace;
+    color: var(--apple-text-secondary);
 }
 
-/* Dark Mode */
+/* Dark Mode Anpassungen */
 body.dark-mode {
-    background-color: #111;
-    color: #fff;
-}
-
-body.dark-mode .close-button {
-    color: #999;
-}
-
-body.dark-mode .close-button:hover {
-    color: #e74c3c;
+    --apple-bg: #1c1c1e;
+    --apple-surface: rgba(28, 28, 30, 0.8);
+    --apple-elevated: #2c2c2e;
+    --apple-text: #ffffff;
+    --apple-text-secondary: rgba(255, 255, 255, 0.6);
+    --apple-border: rgba(255, 255, 255, 0.15);
 }
 
 body.dark-mode .shortcut-item {
-    background-color: #272727;
+    background: var(--apple-elevated);
+    border-color: var(--apple-border);
 }
 
 body.dark-mode .shortcut-key {
-    background-color: var(--darkblue);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .shortcut-key {
-    color: #fff;
+body.dark-mode .close-button {
+    color: var(--apple-text-secondary);
+}
+
+body.dark-mode .close-button:hover {
+    color: #ff6b6b;
+    background: rgba(231, 76, 60, 0.2);
+}
+
+/* Scrollbar ausblenden */
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }

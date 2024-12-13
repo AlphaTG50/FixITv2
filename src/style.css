@@ -227,20 +227,7 @@ figure {
   color: rgba(0, 0, 0, 0.45) !important;
 }
 
-/* Dark Mode Anpassungen */
-body.dark-mode .albumitem:has(.Entwicklung-Badge) {
-  filter: grayscale(100%) brightness(70%);
-}
 
-body.dark-mode .albumitem:has(.Entwicklung-Badge)::before {
-  background: rgba(0, 0, 0, 0.15);
-}
-
-body.dark-mode .Entwicklung-Badge {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-}
 
 /* ---------------------------------- */
 /* Album Artwork Styles               */
@@ -915,72 +902,138 @@ body.dark-mode .favorite-btn.active:hover {
 
 /* Status Bar Styles */
 .status-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  padding: 10px 25px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  font-size: 0.9rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 12px 20px;
+    background: var(--apple-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--apple-border);
+    font-size: 0.85rem;
+    color: var(--apple-text-secondary);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
 }
 
 .status-item {
-  flex: 0 1 auto;
-  min-width: max-content;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-  padding: 5px 10px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: default;
 }
 
 .status-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .status-item i {
-  font-size: 1rem;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+    opacity: 0.7;
 }
 
-.status-item:hover i {
-  opacity: 1;
+/* Toggle Button für Status Bar */
+.status-bar-toggle {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--apple-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--apple-border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--apple-text-secondary);
+    transition: all 0.2s ease;
+    z-index: 1001;
 }
 
-.status-item::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+.status-bar-toggle:hover {
+    background: var(--apple-elevated);
+    color: var(--apple-text);
 }
 
-.status-item:hover::before {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+.status-bar-toggle i {
+    transition: transform 0.3s ease;
+}
+
+/* Tooltip für Status Items */
+.status-item[data-tooltip] {
+    position: relative;
+}
+
+.status-item[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 6px 10px;
+    background: var(--apple-elevated);
+    border: 1px solid var(--apple-border);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-item[data-tooltip]:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* Collapsed State */
+.status-bar.collapsed {
+    transform: translateY(100%);
+}
+
+.status-bar.collapsed + .status-bar-toggle i {
+    transform: rotate(180deg);
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .status-bar {
+    background: rgba(28, 28, 30, 0.7);
+    border-top-color: var(--apple-border);
+}
+
+body.dark-mode .status-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .status-bar-toggle {
+    background: rgba(28, 28, 30, 0.7);
+    border-color: var(--apple-border);
+}
+
+body.dark-mode .status-bar-toggle:hover {
+    background: rgba(44, 44, 46, 0.9);
+}
+
+body.dark-mode .status-item[data-tooltip]::before {
+    background: var(--apple-elevated);
+    border-color: var(--apple-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Filter Container Styles */
@@ -1017,7 +1070,6 @@ body.dark-mode #categoryFilter {
 
 body.dark-mode .status-item::before {
   background: rgba(255, 255, 255, 0.9);
-  color: black;
 }
 
 
@@ -1082,7 +1134,7 @@ body.dark-mode .status-bar::-webkit-scrollbar-thumb {
 }
 
 .info-btn:hover {
-    transform: scale(1.1);
+
     color: #1473A8;
 }
 
@@ -1213,7 +1265,7 @@ body.dark-mode .titlebar {
   -webkit-app-region: no-drag;
   display: flex;
   gap: 0;
-  justify-self: start;
+  justify-self: end;
   height: 38px;
 }
 
@@ -1312,10 +1364,10 @@ body.dark-mode .window-title {
 
 .settings-control {
   -webkit-app-region: no-drag;
-  justify-self: end;
-  padding-right: 5px;
+  justify-self: start;
+  padding-left: 5px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .settings-control button {
@@ -1336,22 +1388,7 @@ body.dark-mode .window-title {
   overflow: hidden;
 }
 
-.settings-control button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  border-radius: 6px;
-}
 
-.settings-control button:hover::before {
-  opacity: 0.1;
-}
 
 .settings-control button i {
   position: relative;
@@ -1362,9 +1399,6 @@ body.dark-mode .settings-control button {
   color: rgba(255, 255, 255, 0.8);
 }
 
-body.dark-mode .settings-control button:hover {
-  color: #fff;
-}
 
 /* Settings Overlay Styles */
 .settings-overlay {
@@ -1392,9 +1426,6 @@ body.dark-mode .settings-control button {
     color: #999;
 }
 
-body.dark-mode .settings-control button:hover {
-    color: #fff;
-}
 
 /* Animation für das Settings-Icon */
 @keyframes rotateGear {
@@ -1406,9 +1437,6 @@ body.dark-mode .settings-control button:hover {
     }
 }
 
-.settings-control button:hover i {
-    animation: rotateGear 1s linear infinite;
-}
 
 /* Settings Menu Styles */
 .settings-menu {
@@ -1443,21 +1471,35 @@ body.dark-mode .settings-control button:hover {
 }
 
 .settings-close {
+    -webkit-app-region: no-drag;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
     padding: 5px;
-    color: #666;
+    color: var(--apple-text-secondary);
     transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
 }
 
 .settings-close:hover {
-    color: #d53032;
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+/* Dark Mode Anpassung */
+body.dark-mode .settings-close {
+    color: var(--apple-text-secondary);
 }
 
 body.dark-mode .settings-close:hover {
-  color: #d53032;
+    color: #ff6b6b;
+    background: rgba(231, 76, 60, 0.2);
 }
 
 .settings-content {
@@ -1509,10 +1551,6 @@ body.dark-mode .settings-close:hover {
     flex: 1;
 }
 
-/* Dark Mode Anpassungen */
-body.dark-mode .settings-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 body.dark-mode .settings-item i {
     color: #999;
@@ -1613,10 +1651,6 @@ body {
     flex: 1;
 }
 
-/* Dark Mode Anpassungen */
-body.dark-mode .settings-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
 
 body.dark-mode .settings-item i {
     color: #999;
@@ -1713,9 +1747,6 @@ body.dark-mode .slider:before {
     background: rgba(0, 0, 0, 0.03);
 }
 
-body.dark-mode .settings-item.checkbox:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
 
 /* Animation für den Switch */
 .slider, .slider:before {
@@ -1969,21 +2000,7 @@ body.dark-mode .social-item:hover .fa-envelope { color: #66BB6A; }
   transform: rotate(180deg);
 }
 
-/* Dark Mode Anpassungen */
-body.dark-mode .status-bar {
-  background: rgba(28, 28, 30, 0.7);
-  border-top-color: rgba(255, 255, 255, 0.1);
-}
 
-body.dark-mode .status-bar-toggle {
-  background: rgba(28, 28, 30, 0.7);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-body.dark-mode .status-bar-toggle:hover {
-  background: rgba(28, 28, 30, 0.9);
-}
 
 /* Responsive Anpassungen */
 @media screen and (max-width: 1024px) {
@@ -1994,4 +2011,38 @@ body.dark-mode .status-bar-toggle:hover {
   .status-item {
     font-size: 0.85rem;
   }
+}
+
+/* Anpassen der Button-Stile für die neue Reihenfolge */
+.window-controls {
+  -webkit-app-region: no-drag;
+  display: flex;
+  gap: 0;
+  justify-self: end;
+  height: 38px;
+}
+
+/* Hover-Effekt für den Close-Button in der Mitte */
+.window-control.close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+  z-index: 1; /* Stellt sicher, dass der Hover-Effekt über den anderen Buttons liegt */
+}
+
+/* Spezifische Anpassungen für den Close-Button am Ende */
+.window-control.close {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Hover-Effekt für den Close-Button am Ende */
+.window-control.close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+  z-index: 1;
+}
+
+/* Entferne die vorherigen Anpassungen für den Maximize-Button */
+.window-control.maximize {
+  border-radius: 0; /* Zurücksetzen der vorherigen Einstellungen */
 }
