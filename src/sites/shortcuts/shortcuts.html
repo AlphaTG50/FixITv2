@@ -8,15 +8,29 @@
 <body>
     <div class="header">
         <h2>Shortcuts</h2>
-        <button class="close-button" onclick="window.close()">
-            <i class="fas fa-times"></i>
-        </button>
+        <div class="header-buttons">
+            <button class="reset-button" onclick="resetShortcuts()">
+                <i class="fas fa-undo"></i>
+                Standard
+            </button>
+            <button class="close-button" onclick="window.close()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
     
     <div id="shortcutList"></div>
+    
+    <!-- Fehlermeldung Dialog -->
+    <div id="errorDialog" class="error-dialog">
+        <div class="error-content">
+            <p id="errorMessage"></p>
+            <button onclick="hideError()">OK</button>
+        </div>
+    </div>
 
     <script>
-        const SHORTCUTS = {
+        const defaultShortcuts = {
             search: {
                 key: 'Strg + F',
                 description: 'Suchleiste fokussieren',
@@ -26,11 +40,6 @@
                 key: 'Strg + ,',
                 description: 'Einstellungen öffnen',
                 icon: 'fas fa-cog'
-            },
-            darkMode: {
-                key: 'Strg + D',
-                description: 'Dark Mode umschalten',
-                icon: 'fas fa-moon'
             },
             devTools: {
                 key: 'F12',
@@ -44,6 +53,10 @@
             }
         };
 
+        let SHORTCUTS = JSON.parse(localStorage.getItem('shortcuts')) || defaultShortcuts;
+        let isRecording = false;
+        let currentEditingId = null;
+
         function updateShortcutList() {
             const container = document.getElementById('shortcutList');
             container.innerHTML = '';
@@ -56,10 +69,110 @@
                         <i class="${shortcut.icon}"></i>
                         <span>${shortcut.description}</span>
                     </div>
-                    <div class="shortcut-key">${shortcut.key}</div>
+                    <div class="shortcut-key" onclick="editShortcut('${id}')">${shortcut.key}</div>
                 `;
                 container.appendChild(div);
             });
+        }
+
+        function showError(message) {
+            const dialog = document.getElementById('errorDialog');
+            const messageEl = document.getElementById('errorMessage');
+            messageEl.textContent = message;
+            dialog.style.display = 'flex';
+        }
+
+        function hideError() {
+            const dialog = document.getElementById('errorDialog');
+            dialog.style.display = 'none';
+        }
+
+        function isShortcutDuplicate(keyCombo, currentId) {
+            return Object.entries(SHORTCUTS).some(([id, shortcut]) => 
+                shortcut.key === keyCombo && id !== currentId
+            );
+        }
+
+        function editShortcut(id) {
+            if (isRecording) return;
+            
+            isRecording = true;
+            currentEditingId = id;
+            const shortcutKey = document.querySelector(`[onclick="editShortcut('${id}')"]`);
+            shortcutKey.textContent = 'Drücken Sie Tastenkombination...';
+            shortcutKey.style.backgroundColor = 'rgba(var(--apple-green-rgb), 0.2)';
+
+            let keys = new Set();
+            let modifiers = new Set();
+            let currentHandlers = { handleKeyDown: null, handleKeyUp: null };
+
+            function cleanup() {
+                if (currentHandlers.handleKeyDown) {
+                    document.removeEventListener('keydown', currentHandlers.handleKeyDown);
+                }
+                if (currentHandlers.handleKeyUp) {
+                    document.removeEventListener('keyup', currentHandlers.handleKeyUp);
+                }
+                isRecording = false;
+                currentEditingId = null;
+                updateShortcutList();
+            }
+
+            currentHandlers.handleKeyDown = function(e) {
+                e.preventDefault();
+                
+                // Speichere Modifier-Tasten
+                modifiers.clear(); // Reset modifiers
+                if (e.ctrlKey) modifiers.add('Strg');
+                if (e.altKey) modifiers.add('Alt');
+                if (e.shiftKey) modifiers.add('Shift');
+                
+                // Speichere normale Tasten
+                if (!['Control', 'Alt', 'Shift'].includes(e.key)) {
+                    keys.add(e.key.toUpperCase());
+                }
+
+                // Zeige aktuelle Kombination
+                const currentKeys = [...modifiers, ...keys];
+                shortcutKey.textContent = currentKeys.join(' + ');
+            };
+
+            currentHandlers.handleKeyUp = function(e) {
+                // Wenn alle Tasten losgelassen wurden
+                if (!e.ctrlKey && !e.altKey && !e.shiftKey) {
+                    const finalKeys = [...modifiers, ...keys];
+                    
+                    if (finalKeys.length === 0) {
+                        cleanup();
+                        showError('Bitte geben Sie eine gültige Tastenkombination ein.');
+                        return;
+                    }
+
+                    const keyCombo = finalKeys.join(' + ');
+
+                    // Prüfe auf Duplikate
+                    if (isShortcutDuplicate(keyCombo, id)) {
+                        cleanup();
+                        showError('Diese Tastenkombination wird bereits verwendet.');
+                        return;
+                    }
+
+                    // Speichere neue Kombination
+                    SHORTCUTS[id].key = keyCombo;
+                    localStorage.setItem('shortcuts', JSON.stringify(SHORTCUTS));
+                    
+                    cleanup();
+                }
+            };
+
+            document.addEventListener('keydown', currentHandlers.handleKeyDown);
+            document.addEventListener('keyup', currentHandlers.handleKeyUp);
+        }
+
+        function resetShortcuts() {
+            SHORTCUTS = JSON.parse(JSON.stringify(defaultShortcuts)); // Deep copy
+            localStorage.setItem('shortcuts', JSON.stringify(SHORTCUTS));
+            updateShortcutList();
         }
 
         // Dark Mode Check

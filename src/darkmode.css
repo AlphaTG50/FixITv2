@@ -1,19 +1,4 @@
-/* --------------------------------- */
-/* Root Variablen für Apple Dark Mode */
-/* --------------------------------- */
-body.dark-mode {
-  --apple-bg: #1c1c1e;
-  --apple-surface: rgba(28, 28, 30, 0.8);
-  --apple-elevated: #2c2c2e;
-  --apple-text: #ffffff;
-  --apple-text-secondary: rgba(255, 255, 255, 0.6);
-  --apple-border: rgba(255, 255, 255, 0.15);
-  --apple-blue: #0a84ff;
-  --apple-green: #32d74b;
-  --apple-red: #ff453a;
-  --apple-purple: #bf5af2;
-  --apple-yellow: #ffd60a;
-}
+@import url(variables.css);
 
 /* --------------------------------- */
 /* Grundlegende Dark Mode Styles     */
@@ -258,3 +243,177 @@ body.dark-mode ::-webkit-scrollbar-thumb {
 body.dark-mode ::-webkit-scrollbar-track {
   background: var(--apple-surface);
 }
+
+body.dark-mode .favorite-btn.active,
+body.dark-mode .favorite-btn:hover,
+body.dark-mode .favorite-btn.active:hover {
+    color: #1473A8;
+}
+
+
+/* Dark Mode Anpassungen */
+body.dark-mode .status-bar {
+  background: rgba(28, 28, 30, 0.7);
+  border-top-color: var(--apple-border);
+}
+
+body.dark-mode .status-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .status-bar-toggle {
+  background: rgba(28, 28, 30, 0.7);
+  border-color: var(--apple-border);
+}
+
+body.dark-mode .status-bar-toggle:hover {
+  background: rgba(44, 44, 46, 0.9);
+}
+
+body.dark-mode .status-item[data-tooltip]::before {
+  background: var(--apple-elevated);
+  border-color: var(--apple-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Dark Mode Anpassungen */
+body.dark-mode .quick-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+body.dark-mode .status-bar {
+  background: rgba(28, 28, 30, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode #categoryFilter {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .status-item::before {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .status-bar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Dark Mode Anpassungen */
+body.dark-mode .info-modal {
+  background: rgba(30, 34, 39, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .info-modal-header,
+body.dark-mode .info-modal-footer {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .titlebar {
+  background: rgba(28, 28, 28, 0.8);
+}
+
+
+/* Dark Mode */
+body.dark-mode .window-control {
+  color: #ffffff;
+}
+
+body.dark-mode .window-control:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .window-control.close:hover {
+  background-color: #e81123;
+  color: #ffffff;
+}
+
+body.dark-mode .window-title {
+  color: #fff;
+}
+
+body.dark-mode .settings-control button {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+
+/* Dark Mode Anpassungen */
+body.dark-mode .settings-control button {
+  color: #999;
+}
+
+/* Dark Mode Anpassung */
+body.dark-mode .settings-close {
+  color: var(--apple-text-secondary);
+}
+
+body.dark-mode .settings-close:hover {
+  color: #ff6b6b;
+  background: rgba(231, 76, 60, 0.2);
+}
+
+
+body.dark-mode .settings-item i {
+  color: #999;
+}
+
+body.dark-mode .settings-item.link i {
+  color: #8AD0F1;
+}
+
+
+body.dark-mode .settings-item i {
+  color: #999;
+}
+
+body.dark-mode .settings-item.link i {
+  color: #8AD0F1;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .slider {
+  background-color: rgba(120, 120, 128, 0.32);
+}
+
+body.dark-mode .slider:before {
+  background-color: #ffffff;
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .socials-bar {
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .socials-bar::before {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent
+  );
+}
+
+body.dark-mode .social-item {
+  color: #999;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .social-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Spezifische Icon-Farben für Dark Mode */
+body.dark-mode .social-item:hover .fa-globe { color: #64B5F6; }
+body.dark-mode .social-item:hover .fa-instagram { color: #FF6B81; }
+body.dark-mode .social-item:hover .fa-github { color: #fff; }
+body.dark-mode .social-item:hover .fa-envelope { color: #66BB6A; }

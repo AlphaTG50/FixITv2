@@ -32,6 +32,8 @@ let licenseWindow;
 let easterEggWindow = null;
 let shortcutsWindow = null;
 let aboutFixitWindow = null;
+let historyWindow = null;
+let supportSessionWindow = null;
 
 // Am Anfang der Datei, nach den imports
 const gotTheLock = app.requestSingleInstanceLock();
@@ -60,6 +62,7 @@ if (!gotTheLock) {
 
   // Normale App-Initialisierung
   app.whenReady().then(async () => {
+    checkAdminRights();
     Promise.all([
       import('electron-store'),
       listPortableApps()
@@ -94,7 +97,8 @@ function createMainWindow() {
         skipTaskbar: true,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            devTools: !app.isPackaged
         }
     });
 
@@ -146,6 +150,15 @@ function createMainWindow() {
             app.quit();
         }
     });
+
+    // Füge einen neuen Handler für das 'minimize' Event hinzu
+    mainWindow.on('minimize', (event) => {
+        if (minimizeToTray) {
+            event.preventDefault();
+            mainWindow.hide();
+            showTrayIcon();
+        }
+    });
 }
 
 // Benutzerpräferenzen laden
@@ -180,7 +193,6 @@ const loadUserPreferences = async () => {
         });
 
     } catch (error) {
-        console.error('Fehler beim Laden der Benutzereinstellungen:', error);
     }
 };
 
@@ -264,7 +276,6 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
 
         // Prüfen ob die Datei existiert
         if (!fs.existsSync(exePath)) {
-            console.error(`Exe nicht gefunden: ${exePath}`);
             reject(new Error(`Programm ${exeName}.exe wurde nicht gefunden`));
             return;
         }
@@ -272,7 +283,6 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
         try {
             const childProcess = exec(`"${exePath}"`, (error, stdout, stderr) => {
                 if (error) {
-                    console.error(`Fehler beim Ausführen der .exe: ${error.message}`);
                     reject(error);
                     return;
                 }
@@ -287,7 +297,6 @@ ipcMain.handle('execute-exe', async (event, exeName) => {
             }
 
         } catch (error) {
-            console.error('Fehler beim Ausführen:', error);
             reject(error);
         }
     });
@@ -347,7 +356,6 @@ ipcMain.handle('check-process', async (event, processName) => {
             
         exec(command, (error, stdout) => {
             if (error) {
-                console.error(`Fehler beim Prüfen des Prozesses: ${error}`);
                 resolve(false);
                 return;
             }
@@ -369,7 +377,6 @@ ipcMain.handle('execute-powershell', async (event, scriptName) => {
             : path.join(__dirname, 'src', 'assets', 'portable-scripts', scriptName);
 
         if (!fs.existsSync(scriptPath)) {
-            console.error('Script nicht gefunden:', scriptPath);
             reject(new Error(`Script nicht gefunden: ${scriptName}`));
             return;
         }
@@ -379,7 +386,6 @@ ipcMain.handle('execute-powershell', async (event, scriptName) => {
         
         exec(command, { windowsHide: true }, (error, stdout, stderr) => {
             if (error) {
-                console.error(`PowerShell Fehler: ${error}`);
                 reject(error);
                 return;
             }
@@ -397,7 +403,6 @@ ipcMain.handle('check-onedrive-process', async () => {
             
         exec(command, (error, stdout) => {
             if (error) {
-                console.error(`Fehler beim Prüfen des OneDrive-Prozesses: ${error}`);
                 resolve(false);
                 return;
             }
@@ -418,7 +423,6 @@ ipcMain.handle('execute-batch', async (event, scriptName) => {
 
 
         if (!fs.existsSync(scriptPath)) {
-            console.error('Skript nicht gefunden:', scriptPath);
             reject(new Error(`Skript nicht gefunden: ${scriptName}`));
             return;
         }
@@ -428,7 +432,6 @@ ipcMain.handle('execute-batch', async (event, scriptName) => {
         
         exec(command, { windowsHide: false }, (error, stdout, stderr) => {
             if (error) {
-                console.error(`Batch Script Fehler: ${error}`);
                 reject(error);
                 return;
             }
@@ -710,7 +713,12 @@ ipcMain.on('open-teamviewer', () => {
 
 // Support-Session-Fenster Handler
 ipcMain.on('open-support-session', () => {
-    const supportWindow = new BrowserWindow({
+    if (supportSessionWindow) {
+        supportSessionWindow.focus();
+        return;
+    }
+
+    supportSessionWindow = new BrowserWindow({
         width: 400,
         height: 500,
         title: "Support-Session",
@@ -728,9 +736,14 @@ ipcMain.on('open-support-session', () => {
         resizable: false
     });
 
-    supportWindow.loadFile(path.join(__dirname, 'src', 'sites', 'support-session', 'support-session.html'));
-    supportWindow.once('ready-to-show', () => {
-        supportWindow.show();
+    supportSessionWindow.loadFile(path.join(__dirname, 'src', 'sites', 'support-session', 'support-session.html'));
+    
+    supportSessionWindow.once('ready-to-show', () => {
+        supportSessionWindow.show();
+    });
+
+    supportSessionWindow.on('closed', () => {
+        supportSessionWindow = null;
     });
 });
 
@@ -810,7 +823,6 @@ ${formData.attempts || 'Keine'}
                         );
                     }
                 } catch (error) {
-                    console.error(`Fehler beim Kopieren der Datei ${file.originalName}:`, error);
                 }
             }
         }
@@ -843,7 +855,6 @@ ${formData.attempts || 'Keine'}
 
         return { success: true, path: zipPath };
     } catch (error) {
-        console.error('Support-Session Fehler:', error);
         return { success: false, error: error.message };
     }
 });
@@ -895,7 +906,21 @@ Netzwerk
 Hostname: ${os.hostname()}
 Netzwerkschnittstellen: ${Object.keys(os.networkInterfaces()).join(', ')}
 
+Benutzer & System Details
+------------------------
+Benutzername: ${os.userInfo().username}
+Home Verzeichnis: ${os.homedir()}
+Temp Verzeichnis: ${os.tmpdir()}
+System Uptime: ${Math.floor(os.uptime() / 3600)} Stunden
+
+Versions-Informationen
+--------------------
 FixIT Version: ${version}
+Electron Version: ${process.versions.electron}
+Chrome Version: ${process.versions.chrome}
+Node Version: ${process.versions.node}
+V8 Version: ${process.versions.v8}
+
 Zeitstempel: ${new Date().toISOString()}
 `;
   } catch (error) {
@@ -1018,14 +1043,12 @@ const template = [
                     if (fs.existsSync(exePath)) {
                         exec(`"${exePath}"`, (error) => {
                             if (error) {
-                                console.error(`Fehler beim Öffnen von TeamViewer: ${error}`);
                                 dialog.showErrorBox('Fehler', 
                                     'TeamViewer QS konnte nicht gestartet werden.'
                                 );
                             }
                         });
                     } else {
-                        console.error('TeamViewer QS nicht gefunden:', exePath);
                         dialog.showErrorBox('Fehler', 
                             'TeamViewer QS wurde nicht gefunden.'
                         );
@@ -1256,7 +1279,6 @@ function listPortableApps() {
         
     try {
         if (!fs.existsSync(portableAppsPath)) {
-            console.error('Portable-Apps Ordner existiert nicht:', portableAppsPath);
             return;
         }
 
@@ -1267,8 +1289,6 @@ function listPortableApps() {
             const stats = fs.statSync(filePath);
         });
     } catch (error) {
-        console.error('Fehler beim Lesen des portable-apps Ordners:', error);
-        console.error('Pfad:', portableAppsPath);
     }
 }
 
@@ -1306,7 +1326,6 @@ async function checkForUpdates() {
             'Beim Prüfen auf Updates ist ein Fehler aufgetreten.\n' +
             'Bitte überprüfen Sie Ihre Internetverbindung.'
         );
-        console.error('Update-Fehler:', error);
     }
 }
 
@@ -1377,7 +1396,6 @@ async function downloadUpdate(downloadUrl) {
                         dialog.showErrorBox('Update-Fehler', 
                             'Beim Starten des Updates ist ein Fehler aufgetreten.'
                         );
-                        console.error('Update-Fehler:', error);
                         return;
                     }
                     app.quit();
@@ -1392,7 +1410,6 @@ async function downloadUpdate(downloadUrl) {
                 'Beim Herunterladen des Updates ist ein Fehler aufgetreten.'
             );
         }
-        console.error('Download-Fehler:', error);
     }
 }
 
@@ -1423,7 +1440,6 @@ ipcMain.handle('save-temp-file', async (event, { name, buffer }) => {
         
         return { path: tempPath };
     } catch (error) {
-        console.error('Fehler beim Speichern der temporären Datei:', error);
         throw error;
     }
 });
@@ -1432,7 +1448,6 @@ ipcMain.handle('delete-temp-file', async (event, filePath) => {
     try {
         await fsPromises.unlink(filePath);
     } catch (error) {
-        console.error('Fehler beim Löschen der temporären Datei:', error);
     }
 });
 
@@ -1462,4 +1477,184 @@ function getPriorityDisplay(priority) {
         critical: 'Kritisch'
     };
     return `${icons[priority]} ${texts[priority]}`;
+}
+
+// Prüfen ob die App mit Admin-Rechten läuft
+function checkAdminRights() {
+  if (process.platform === 'win32') {
+    try {
+      require('fs').writeFileSync('C:\\Windows\\test.txt', 'test');
+      require('fs').unlinkSync('C:\\Windows\\test.txt');
+    } catch (error) {
+      app.quit();
+    }
+  }
+}
+
+// Füge dies zu den IPC-Handlern hinzu
+ipcMain.on('open-history', () => {
+    if (historyWindow) {
+        historyWindow.focus();
+        return;
+    }
+
+    historyWindow = new BrowserWindow({
+        width: 600,
+        height: 700,
+        resizable: true,
+        minimizable: false,
+        maximizable: false,
+        frame: false,
+        parent: mainWindow,
+        modal: true,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    const historyPath = path.join(__dirname, 'src', 'sites', 'history', 'history.html');
+    
+    try {
+        historyWindow.loadFile(historyPath);
+        historyWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+        });
+
+        historyWindow.webContents.on('did-finish-load', () => {
+        });
+    } catch (error) {
+    }
+
+    historyWindow.on('closed', () => {
+        historyWindow = null;
+    });
+});
+
+// Füge dies zu den IPC-Handlern hinzu
+ipcMain.on('track-program', (event, { name, icon }) => {
+    trackProgramUsage(name, icon);
+});
+
+// Aktualisiere die trackProgramUsage Funktion
+function trackProgramUsage(programName, iconPath) {
+    const historyEntry = {
+        name: programName,
+        icon: iconPath,
+        timestamp: new Date().toISOString()
+    };
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.executeJavaScript(`
+            try {
+                const history = JSON.parse(localStorage.getItem('programHistory') || '[]');
+                history.unshift(${JSON.stringify(historyEntry)});
+                localStorage.setItem('programHistory', JSON.stringify(history));
+            } catch (error) {
+            }
+        `).catch(console.error);
+    }
+}
+
+// Füge diesen IPC Handler hinzu
+ipcMain.on('update-minimize-to-tray', (event, value) => {
+    minimizeToTray = value;
+});
+
+function updateProgress(updates) {
+    // Warten auf den nächsten Frame für visuelle Änderungen
+    requestAnimationFrame(() => {
+        const container = document.getElementById('updates-container');
+        const fragment = document.createDocumentFragment();
+        
+        updates.forEach(update => {
+            const updateElement = document.createElement('div');
+            updateElement.className = 'update-item';
+            updateElement.innerHTML = `
+                <span class="timestamp">${formatTimestamp(update.timestamp)}</span>
+                <span class="message">${update.message}</span>
+            `;
+            fragment.appendChild(updateElement);
+        });
+
+        container.innerHTML = '';
+        container.appendChild(fragment);
+    });
+}
+
+// Cache für Update-Nachrichten
+const messageCache = new Map();
+
+function handleUpdates() {
+    let updates = [];
+    let updatesPending = false;
+    
+    // Optimierte Update-Logik mit Cache
+    const processUpdates = () => {
+        if (!updatesPending) return;
+        
+        updateProgress(updates);
+        updates = [];
+        updatesPending = false;
+    };
+
+    // Wenn neue Updates ankommen
+    websocket.onmessage = (event) => {
+        const update = JSON.parse(event.data);
+        
+        // Cache-Prüfung für doppelte Nachrichten
+        const cacheKey = `${update.timestamp}-${update.message}`;
+        if (messageCache.has(cacheKey)) {
+            return;
+        }
+        
+        // Cache-Update
+        messageCache.set(cacheKey, true);
+        if (messageCache.size > 1000) {
+            // Cache-Größe begrenzen
+            const oldestKey = messageCache.keys().next().value;
+            messageCache.delete(oldestKey);
+        }
+
+        updates.push(update);
+        updatesPending = true;
+        requestAnimationFrame(processUpdates);
+    };
+}
+
+// Lazy Loading für nicht-kritische Funktionen
+const lazyLoadedFunctions = {
+    formatTimestamp: null,
+    throttle: null
+};
+
+// Lazy Loading Implementierung
+async function loadFunction(name) {
+    if (lazyLoadedFunctions[name]) {
+        return lazyLoadedFunctions[name];
+    }
+
+    switch(name) {
+        case 'formatTimestamp':
+            lazyLoadedFunctions[name] = (timestamp) => {
+                return new Date(timestamp).toLocaleTimeString();
+            };
+            break;
+            
+        case 'throttle':
+            lazyLoadedFunctions[name] = (func, limit) => {
+                let inThrottle;
+                return function() {
+                    const args = arguments;
+                    const context = this;
+                    if (!inThrottle) {
+                        func.apply(context, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                }
+            };
+            break;
+    }
+    
+    return lazyLoadedFunctions[name];
 }

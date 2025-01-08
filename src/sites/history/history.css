@@ -1,0 +1,288 @@
+/* Apple Design Variablen */
+:root {
+    --apple-bg: #f5f5f7;
+    --apple-surface: rgba(255, 255, 255, 0.8);
+    --apple-elevated: #ffffff;
+    --apple-text: #1d1d1f;
+    --apple-text-secondary: #86868b;
+    --apple-border: rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    margin: 0;
+    background: var(--apple-bg);
+    color: var(--apple-text);
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    background: var(--apple-surface);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--apple-border);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-app-region: drag;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.close-button {
+    -webkit-app-region: no-drag;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--apple-text-secondary);
+    transition: all 0.2s;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.history-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.history-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#timeFilter {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--apple-border);
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#timeFilter:hover {
+    border-color: var(--apple-text-secondary);
+}
+
+#timeFilter:focus {
+    border-color: var(--apple-text);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.clear-button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.clear-button:hover {
+    background: rgba(231, 76, 60, 0.2);
+    transform: translateY(-1px);
+}
+
+.history-item {
+    background: var(--apple-elevated);
+    border: 1px solid var(--apple-border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s;
+}
+
+.history-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.history-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.history-details {
+    flex: 1;
+}
+
+.history-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.history-info {
+    font-size: 0.9rem;
+    color: var(--apple-text-secondary);
+    display: flex;
+    gap: 15px;
+}
+
+.history-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    --apple-bg: #1c1c1e;
+    --apple-surface: rgba(28, 28, 30, 0.8);
+    --apple-elevated: #2c2c2e;
+    --apple-text: #ffffff;
+    --apple-text-secondary: rgba(255, 255, 255, 0.6);
+    --apple-border: rgba(255, 255, 255, 0.15);
+}
+
+/* Dialog Styles */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-content {
+    background: var(--apple-elevated);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 320px;
+    animation: dialogSlideIn 0.3s ease-out;
+}
+
+.dialog-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--apple-border);
+}
+
+.dialog-header i {
+    font-size: 1.5rem;
+    color: #e74c3c;
+}
+
+.dialog-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.dialog-body {
+    padding: 20px;
+    color: var(--apple-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.dialog-footer {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid var(--apple-border);
+}
+
+.dialog-button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dialog-button.secondary {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--apple-text);
+}
+
+.dialog-button.primary {
+    background: #e74c3c;
+    color: white;
+}
+
+.dialog-button:hover {
+    transform: translateY(-1px);
+}
+
+@keyframes dialogSlideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Dark Mode Anpassungen für das Dropdown */
+body.dark-mode #timeFilter {
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+    border-color: var(--apple-border);
+}
+
+body.dark-mode #timeFilter:hover {
+    border-color: var(--apple-text-secondary);
+}
+
+body.dark-mode #timeFilter:focus {
+    border-color: var(--apple-text);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown Optionen Styling */
+#timeFilter option {
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+    padding: 8px;
+}
+
+body.dark-mode #timeFilter option {
+    background: var(--apple-elevated);
+    color: var(--apple-text);
+} 

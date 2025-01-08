@@ -1,6 +1,6 @@
 {
   "name": "fixit",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "main": "main.js",
   "bin": "main.js",
   "author": "HelpIT",
@@ -50,7 +50,10 @@
         "nsis"
       ],
       "icon": "src/assets/images/logo/win/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "requireAdministrator",
+      "asarUnpack": [
+        "app.manifest"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -70,9 +73,9 @@
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
+    "archiver": "^5.3.1",
     "auto-launch": "^5.0.6",
     "axios": "^1.7.7",
-    "archiver": "^5.3.1",
     "electron-icon-maker": "^0.0.5",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^8.2.0",

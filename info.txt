@@ -1,5 +1,0 @@
-- Bei Statusbar füge mir ein das man es zusammenklappen kann
-- Easter-Eggs in Einstellungen
-- Shortcuts in Einstellungen
-- Favoriten Stern design
-

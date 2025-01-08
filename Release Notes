@@ -1,34 +1,28 @@
-Release Notes - v1.0.7 - 03.12.2024 & 04.12.2024 & 13.12.2024
-
-## **Release Notes**
+## **Release Notes - v1.0.8 - 25.12.2024**
 
 ### **🆕 Änderungen**
-- Easter Eggs und Shortcuts Fenster Design überarbeitet im Apple-Style
-- TeamViewer QS aus den Einstellungen entfernt
-- Bestätigungsdialog für Easter Eggs Reset im Apple-Design hinzugefügt
-- Fenster können nur noch einmal geöffnet werden
+- CrystalDiskInfo ist momentan in Entwicklung
+- Navbar Fixiert
+- Software wird als Administrator gestartet
+- Darkmode Shortcut wurde entfernt
+- Logs exportieren wurde entfernt
+
+Performance:
+- RequestAnimationFrame für visuelle Änderungen
+- Lazy Loading implementiert für nicht-kritische Funktionen
+- Caching verbessert
+- Window-Controls wurden angepasst von der Postition
 ---
 
 ### **🚀 Features**
-- Software AutoUnattend hinzugefügt
-- Statusbar hinzugefügt mit Systeminformationen
-    - WLAN-Status, RAM-Auslastung, CPU-Info, Speicherplatz, Uptime, FixIT-Version
-    - Beschreibung zu den Elementen per Hover
-    - Responsive Design
-    - Hover Effekte
-- Info-Fenster hinzugefügt
-    - Beschreibung, Autor, Features
-- Shortcuts implementiert:
-    - Strg + F: Suchleiste fokussieren
-    - Strg + ,: Einstellungen öffnen
-    - Strg + D: Dark Mode umschalten
-    - F12: DevTools öffnen
-    - Strg + R: Anwendung neu laden
-- Bereich Info wurde zu Support umbenannt
-- Über FixIT-Info Fenster hinzugefügt
+- Programmverlauf wurde hinzugefügt
+- Shortcuts können nun editiert werden und werden automatisch gespeichert
+- Shortcuts können auf Standard zurückgesetzt werden
+- Support-Session wurde erweitert mit neuen Informationen
 ---
 
 ### **🐛 Bug Fixes**
-- Problem mit ungewolltem TeamViewer-Start behoben
-- Mehrfachöffnen von Easter Eggs und Shortcuts Fenster verhindert
+- Support-Session zweimal öffnen behoben
+- In Symbolleiste minimieren funktioniert sofort
+- Menüs lassen sich nicht mehr öffnen nachdem sie geschlossen wurden
 ---

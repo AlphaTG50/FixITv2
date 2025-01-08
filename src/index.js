@@ -79,7 +79,6 @@ async function executeExe(exeName) {
                         resolve();
                     }
                 } catch (err) {
-                    console.error('Fehler beim Prüfen des Prozesses:', err);
                 }
             }, 500); // Prüfe alle 500ms
             
@@ -92,7 +91,6 @@ async function executeExe(exeName) {
         });
         
     } catch (err) {
-        console.error('Detaillierter Fehler:', err);
         hideLoadingScreen();
         
         const errorMessage = err.message.includes('nicht gefunden') 
@@ -113,7 +111,6 @@ async function executePowerShellScript(scriptName) {
         
         hideLoadingScreen();
     } catch (err) {
-        console.error('PowerShell Script Fehler:', err);
         hideLoadingScreen();
         showErrorModal(`Fehler beim Ausführen des Scripts: ${err.message}`);
     }
@@ -146,7 +143,6 @@ async function executeBatchScript(scriptName) {
                         resolve();
                     }
                 } catch (err) {
-                    console.error('Fehler beim Prüfen des Prozesses:', err);
                     clearInterval(checkInterval);
                     hideLoadingScreen();
                     resolve();
@@ -155,7 +151,6 @@ async function executeBatchScript(scriptName) {
         });
         
     } catch (err) {
-        console.error('Batch Script Fehler:', err);
         hideLoadingScreen();
         showErrorModal(`Fehler beim Ausführen des Scripts: ${err.message}`);
     }
@@ -177,8 +172,8 @@ document.querySelectorAll('.albumitem').forEach(item => {
             const link = this.querySelector('a');
             if (link) {
                 // Öffne das Fenster mit spezifischen Dimensionen
-                const width = 1200;  // Breite des Fensters
-                const height = 800;  // Höhe des Fensters
+                const width = 1200;
+                const height = 800;
                 const left = (screen.width - width) / 2;
                 const top = (screen.height - height) / 2;
                 
@@ -187,6 +182,11 @@ document.querySelectorAll('.albumitem').forEach(item => {
                     '_blank',
                     `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=yes,location=yes,status=yes,scrollbars=yes`
                 );
+
+                // Tracking für Website-Aufrufe
+                const programName = this.querySelector('.albumtitle h1').textContent;
+                const iconPath = this.querySelector('.albumartwork img').src;
+                ipcRenderer.send('track-program', { name: programName, icon: iconPath });
             }
             return;
         }
@@ -194,14 +194,18 @@ document.querySelectorAll('.albumitem').forEach(item => {
         // Wenn es kein Entwicklungs-Badge hat und kein Website-Badge, führe das Programm aus
         if (!hasEntwicklungBadge && !hasWebsiteBadge) {
             const programName = this.getAttribute('data-search');
+            const iconPath = this.querySelector('.albumartwork img').src;
             
             try {
                 if (programName === 'MicrosoftActivation') {
                     await executePowerShellScript('MicrosoftActivation.ps1');
+                    ipcRenderer.send('track-program', { name: programName, icon: iconPath });
                 } else if (programName === 'OneDriveUninstaller') {
                     await executeBatchScript('OneDriveUninstaller.bat');
+                    ipcRenderer.send('track-program', { name: programName, icon: iconPath });
                 } else {
                     await executeExe(programName);
+                    ipcRenderer.send('track-program', { name: programName, icon: iconPath });
                 }
             } catch (error) {
                 showErrorModal(`Fehler beim Ausführen von ${programName}: ${error.message}`);
@@ -366,6 +370,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('statusBarCollapsed') === 'true') {
         statusBar.classList.add('collapsed');
     }
+
+    // Lade und setze gespeicherte Einstellungen
+    loadSavedSettings();
+    
+    // Initialisiere Settings-Event-Handler
+    initializeSettingsHandlers();
+    
+    // Initialisiere Shortcuts
+    initializeShortcuts();
 });
 
 // Fehlerbehandlung bei nicht gefundenen Alben
@@ -405,7 +418,6 @@ async function executeProgram(programName) {
     }, 1500);
     
   } catch (error) {
-    console.error('Fehler beim Starten des Programms:', error);
     hideLoadingScreen();
   }
 }
@@ -794,7 +806,6 @@ function addFavoriteButtonsToAll() {
 
 // Event-Listener für IPC
 ipcRenderer.on('error', (event, errorMessage) => {
-    console.error('IPC Error:', errorMessage);
     alert('Ein Fehler ist aufgetreten: ' + errorMessage);
 });
 
@@ -816,7 +827,6 @@ function listPortableApps() {
             fs.statSync(filePath);
         });
     } catch (error) {
-        console.error('Kritischer Fehler beim Lesen des portable-apps Ordners:', error);
     }
 }
 
@@ -825,7 +835,6 @@ async function checkForUpdates() {
     try {
         // ... bestehender Code ...
     } catch (error) {
-        console.error('Kritischer Update-Fehler:', error);
         dialog.showErrorBox('Update-Fehler', 
             'Beim Prüfen auf Updates ist ein Fehler aufgetreten.\n' +
             'Bitte überprüfen Sie Ihre Internetverbindung.'
@@ -839,7 +848,6 @@ async function downloadUpdate(downloadUrl) {
     try {
         // ... Download-Logik ...
     } catch (error) {
-        console.error('Kritischer Download-Fehler:', error);
         if (!progressWindow.isDestroyed()) {
             progressWindow.close();
             dialog.showErrorBox('Download-Fehler', 
@@ -1172,7 +1180,7 @@ function getProgramInfo(programName) {
         'Rufus': {
             name: 'Rufus',
             icon: './assets/images/programs/rufus.png',
-            description: 'Ein unverzichtbares Tool zum Erstellen bootf��higer USB-Laufwerke, das eine Vielzahl von ISO-Formaten unterstützt.',
+            description: 'Ein unverzichtbares Tool zum Erstellen bootfähiger USB-Laufwerke, das eine Vielzahl von ISO-Formaten unterstützt.',
             author: 'Akeo Consulting',
             features: [
                 'Konvertierung von ISO zu USB',
@@ -1357,6 +1365,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialisiere Settings-Event-Handler
     initializeSettingsHandlers();
+    
+    // Initialisiere Shortcuts
+    initializeShortcuts();
 });
 
 // Funktion zum Laden der gespeicherten Einstellungen
@@ -1376,6 +1387,12 @@ function loadSavedSettings() {
     document.body.classList.toggle('dark-mode', darkMode);
     ipcRenderer.send('set-always-on-top', alwaysOnTop);
     ipcRenderer.send('set-autostart', autostart);
+
+    // Lade die minimizeToTray Einstellung und sende sie an den Hauptprozess
+    const minimizeToTrayValue = localStorage.getItem('minimizeToTray') === 'true';
+    minimizeToTray = minimizeToTrayValue;
+    document.getElementById('minimizeToTrayToggle').checked = minimizeToTrayValue;
+    ipcRenderer.send('update-minimize-to-tray', minimizeToTrayValue);
 }
 
 // Funktion zum Initialisieren der Settings-Handler
@@ -1397,6 +1414,8 @@ function initializeSettingsHandlers() {
     document.getElementById('minimizeToTrayToggle')?.addEventListener('change', (e) => {
         minimizeToTray = e.target.checked;
         localStorage.setItem('minimizeToTray', minimizeToTray);
+        // Sende die Einstellung sofort an den Hauptprozess
+        ipcRenderer.send('update-minimize-to-tray', minimizeToTray);
     });
 
     document.getElementById('autostartToggle')?.addEventListener('change', (e) => {
@@ -1429,17 +1448,20 @@ function initializeSettingsHandlers() {
         'exportLogs': () => ipcRenderer.send('export-logs'),
         'openEasterEggs': () => ipcRenderer.send('open-easter-eggs'),
         'openShortcuts': () => ipcRenderer.send('open-shortcuts'),
+        'openHistory': () => ipcRenderer.send('open-history'),
         'checkUpdates': () => ipcRenderer.send('check-updates'),
         'showLicense': () => ipcRenderer.send('show-license'),
         'showAbout': () => ipcRenderer.send('show-about'),
         'createSupportSession': () => ipcRenderer.send('open-support-session')
     };
 
-    // Füge Event-Listener für alle Action-Items hinzu - ohne Schließen des Fensters
+    // Füge Event-Listener für alle Action-Items hinzu
     Object.keys(actionHandlers).forEach(id => {
-        document.getElementById(id)?.addEventListener('click', () => {
-            actionHandlers[id]();
-        });
+        const element = document.getElementById(id);
+        if (element) {
+            // Entferne die { once: true } Option
+            element.addEventListener('click', actionHandlers[id]);
+        }
     });
 
     // Schließen mit ESC
@@ -1478,46 +1500,39 @@ function toggleStatusBar() {
 // Füge diese Funktion hinzu
 function initializeShortcuts() {
     document.addEventListener('keydown', (e) => {
-        // Suchleiste fokussieren (Strg + F)
-        if (e.ctrlKey && e.key === 'f') {
+        const shortcuts = JSON.parse(localStorage.getItem('shortcuts')) || {
+            search: { key: 'Strg + F' },
+            settings: { key: 'Strg + ,' },
+            devTools: { key: 'F12' },
+            reload: { key: 'Strg + R' }
+        };
+
+        // Konvertiere den aktuellen Tastendruck in das gleiche Format
+        let pressedKey = [];
+        if (e.ctrlKey) pressedKey.push('Strg');
+        if (e.altKey) pressedKey.push('Alt');
+        if (e.shiftKey) pressedKey.push('Shift');
+        if (e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Shift') {
+            pressedKey.push(e.key.toUpperCase());
+        }
+        const pressedKeyCombo = pressedKey.join(' + ');
+
+        // Prüfe und führe die entsprechende Aktion aus
+        if (pressedKeyCombo === shortcuts.search.key) {
             e.preventDefault();
             document.getElementById('searchInput')?.focus();
         }
-
-        // Einstellungen öffnen (Strg + ,)
-        if (e.ctrlKey && e.key === ',') {
+        else if (pressedKeyCombo === shortcuts.settings.key) {
             e.preventDefault();
             document.getElementById('settingsOverlay').style.display = 'flex';
         }
-
-        // Dark Mode umschalten (Strg + D)
-        if (e.ctrlKey && e.key === 'd') {
-            e.preventDefault();
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            if (darkModeToggle) {
-                darkModeToggle.checked = !darkModeToggle.checked;
-                darkModeToggle.dispatchEvent(new Event('change'));
-            }
-        }
-
-        // DevTools öffnen (F12)
-        if (e.key === 'F12') {
+        else if (pressedKeyCombo === shortcuts.devTools.key) {
             e.preventDefault();
             ipcRenderer.send('open-devtools');
         }
-
-        // Anwendung neu laden (Strg + R)
-        if (e.ctrlKey && e.key === 'r') {
+        else if (pressedKeyCombo === shortcuts.reload.key) {
             e.preventDefault();
             window.location.reload();
         }
     });
 }
-
-// Füge den Aufruf in document.addEventListener('DOMContentLoaded', ...) hinzu
-document.addEventListener('DOMContentLoaded', () => {
-    // Bestehender Code...
-    
-    // Initialisiere Shortcuts
-    initializeShortcuts();
-});

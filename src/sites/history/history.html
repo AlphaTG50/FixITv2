@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Programm-Verlauf</title>
+    <link rel="stylesheet" href="history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h2>Programm-Verlauf</h2>
+        <button class="close-button" onclick="window.close()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="history-container">
+        <div class="history-filters">
+            <select id="timeFilter">
+                <option value="all">Alle Zeiten</option>
+                <option value="today">Heute</option>
+                <option value="week">Diese Woche</option>
+                <option value="month">Dieser Monat</option>
+            </select>
+            <button id="clearHistory" class="clear-button">
+                <i class="fas fa-trash"></i> Verlauf löschen
+            </button>
+        </div>
+        
+        <div id="historyList"></div>
+    </div>
+
+    <div class="dialog-overlay" id="confirmDialog" style="display: none;">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3>Verlauf löschen</h3>
+            </div>
+            <div class="dialog-body">
+                Möchtest du wirklich den gesamten Programm-Verlauf löschen?
+            </div>
+            <div class="dialog-footer">
+                <button class="dialog-button secondary" onclick="hideConfirmDialog()">Abbrechen</button>
+                <button class="dialog-button primary" onclick="clearHistory()">Löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="history.js"></script>
+</body>
+</html> 

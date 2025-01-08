@@ -7,6 +7,9 @@
     --apple-text-secondary: #86868b;
     --apple-border: rgba(0, 0, 0, 0.1);
     --apple-green: #28cd41;
+    --apple-blue: #0066cc;
+    --apple-lightblue: #97c7f8;
+    --apple-green-rgb: 40, 205, 65;
 }
 
 body {
@@ -31,6 +34,32 @@ body {
     justify-content: space-between;
     align-items: center;
     -webkit-app-region: drag;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.reset-button {
+    -webkit-app-region: no-drag;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    color: var(--apple-text-secondary);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 6px;
+}
+
+.reset-button:hover {
+    color: var(--apple-text);
+    background: rgba(var(--apple-green-rgb), 0.1);
 }
 
 .header h2 {
@@ -105,6 +134,12 @@ body {
     font-size: 0.9rem;
     font-family: monospace;
     color: var(--apple-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.shortcut-key:hover {
+    background: rgba(var(--apple-green-rgb), 0.1);
 }
 
 /* Dark Mode Anpassungen */
@@ -135,6 +170,10 @@ body.dark-mode .close-button:hover {
     background: rgba(231, 76, 60, 0.2);
 }
 
+body.dark-mode .shortcut-key:hover {
+    background: rgba(var(--apple-green-rgb), 0.2);
+}
+
 /* Scrollbar ausblenden */
 ::-webkit-scrollbar {
     display: none;
@@ -143,4 +182,62 @@ body.dark-mode .close-button:hover {
 * {
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+.error-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.error-content {
+    background: var(--apple-elevated);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 300px;
+    width: 90%;
+}
+
+.error-content p {
+    margin: 0 0 15px 0;
+    color: var(--apple-text);
+}
+
+.error-content button {
+    background: var(--apple-green);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.error-content button:hover {
+    opacity: 0.9;
+}
+
+/* Dark Mode Anpassungen für den Error Dialog */
+body.dark-mode .error-content {
+    background: var(--apple-elevated);
+    border: 1px solid var(--apple-border);
+}
+
+body.dark-mode .error-content p {
+    color: var(--apple-text);
+}
+
+/* Dark Mode Anpassungen */
+body.dark-mode .reset-button:hover {
+    background: var(--apple-green);
 }

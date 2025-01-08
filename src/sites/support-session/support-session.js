@@ -92,23 +92,40 @@ function addFileToList(file) {
     selectedFiles.set(file.name, file);
 }
 
-// Drag & Drop Handler
+// Drag & Drop Event-Listener für die Drop-Zone
 const dropZone = document.querySelector('.file-input-container');
 
-dropZone.addEventListener('dragover', (e) => {
+dropZone.addEventListener('dragenter', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dropZone.classList.add('drag-over');
 });
 
-dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('drag-over');
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.add('drag-over');
+});
+
+dropZone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target === dropZone) {
+        dropZone.classList.remove('drag-over');
+    }
 });
 
 dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dropZone.classList.remove('drag-over');
     
     const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+});
+
+// Hilfsfunktion zum Verarbeiten der Dateien
+function handleFiles(files) {
     let hasInvalidFiles = false;
     
     files.forEach(file => {
@@ -122,6 +139,22 @@ dropZone.addEventListener('drop', (e) => {
     if (hasInvalidFiles) {
         showErrorMessage('Einige Dateien wurden nicht hinzugefügt (nur Bilder und Videos sind erlaubt)');
     }
+}
+
+// Globale Document Event-Listener
+document.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+});
+
+document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+});
+
+document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 });
 
 fileInput.addEventListener('change', (e) => {
@@ -202,13 +235,11 @@ document.getElementById('supportForm').addEventListener('submit', async (e) => {
                 try {
                     await ipcRenderer.invoke('delete-temp-file', file.tempPath);
                 } catch (error) {
-                    console.error('Fehler beim Löschen der temporären Datei:', error);
                 }
             }
             window.close();
         }
     } catch (error) {
-        console.error('Fehler beim Erstellen der Support-Session:', error);
     }
 });
 
@@ -222,7 +253,6 @@ async function saveFileToTemp(file) {
         });
         return result.path;
     } catch (error) {
-        console.error('Fehler beim temporären Speichern der Datei:', error);
         return null;
     }
 }
@@ -240,21 +270,6 @@ inputs.forEach(input => {
         e.stopPropagation();
     });
 });
-
-// Verhindere Drag & Drop auf dem gesamten Dokument außer der Upload-Zone
-document.addEventListener('dragover', (e) => {
-    if (!e.target.closest('.file-input-container')) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-});
-
-document.addEventListener('drop', (e) => {
-    if (!e.target.closest('.file-input-container')) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-}); 
 
 // Füge eine Funktion hinzu, um den Prioritätstext mit Icon zu formatieren
 function getPriorityDisplay(priority) {
